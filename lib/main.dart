@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memorize_scripture/pages/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Memorize Scripture',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -19,11 +20,3 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}
