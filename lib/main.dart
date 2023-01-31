@@ -17,6 +17,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Memorize Scripture',
       routerConfig: _router,
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Colors.lightBlue.shade800,
+        textTheme: TextTheme(
+          bodyMedium: TextStyle(fontSize: 14),
+          labelSmall: TextStyle(color: Theme.of(context).disabledColor),
+        ),
+      ),
     );
   }
 }

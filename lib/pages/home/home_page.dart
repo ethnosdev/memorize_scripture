@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:memorize_scripture/common/drawer.dart';
 import 'package:memorize_scripture/pages/home/home_page_manager.dart';
 
 class HomePage extends StatelessWidget {
@@ -11,27 +12,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Memorize Scripture'),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Memorize Scripture'),
-            ),
-            ListTile(
-              title: const Text('Settings'),
-              onTap: () {},
-            ),
-            ListTile(
-              title: const Text('About'),
-              onTap: () {},
-            ),
-          ],
-        ),
-      ),
+      drawer: const MenuDrawer(),
       body: const BodyWidget(),
     );
   }
