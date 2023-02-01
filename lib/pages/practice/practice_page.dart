@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
 import 'package:memorize_scripture/service_locator.dart';
 
@@ -28,6 +29,25 @@ class _PracticePageState extends State<PracticePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.collection),
+        actions: [
+          IconButton(
+              onPressed: () {
+                context.goNamed(
+                  'add',
+                  params: {'collection': widget.collection},
+                );
+              },
+              icon: Icon(Icons.add)),
+          PopupMenuButton(
+            itemBuilder: (context) => const [
+              PopupMenuItem(child: Text('Edit'), value: 1),
+              PopupMenuItem(child: Text('View all'), value: 2),
+            ],
+            onSelected: (value) {
+              print(value);
+            },
+          ),
+        ],
       ),
       //drawer: const MenuDrawer(),
       body: Stack(

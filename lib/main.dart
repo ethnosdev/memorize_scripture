@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:memorize_scripture/pages/add_verse/add_verse_page.dart';
 import 'package:memorize_scripture/pages/home/home_page.dart';
 import 'package:memorize_scripture/pages/practice/practice_page.dart';
 import 'package:memorize_scripture/service_locator.dart';
@@ -43,6 +44,15 @@ final GoRouter _router = GoRouter(
           builder: (context, state) => PracticePage(
             collection: state.params['collection']!,
           ),
+          routes: [
+            GoRoute(
+              name: 'add',
+              path: 'add/:collection',
+              builder: (context, state) => AddVersePage(
+                collection: state.params['collection']!,
+              ),
+            ),
+          ],
         ),
       ],
     ),
