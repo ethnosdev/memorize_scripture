@@ -6,5 +6,5 @@ final getIt = GetIt.instance;
 
 void setupServiceLocator() {
   getIt.registerLazySingleton<DataRepository>(() => FakeData());
-  getIt.registerLazySingleton<PracticePageManager>(() => PracticePageManager());
+  getIt.registerFactory<PracticePageManager>(() => PracticePageManager());
 }

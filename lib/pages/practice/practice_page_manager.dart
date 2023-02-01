@@ -4,7 +4,7 @@ import 'package:memorize_scripture/services/data_repository.dart';
 
 class PracticePageManager {
   final answerNotifier = ValueNotifier<TextSpan>(const TextSpan());
-  final displayNotifier = ValueNotifier<Display>(Display.initial);
+  final isShownNotifier = ValueNotifier<bool>(false);
 
   final dataRepo = getIt<DataRepository>();
   String _verseText = '';
@@ -14,7 +14,11 @@ class PracticePageManager {
   }
 
   void show() {
-    displayNotifier.value = Display.showingAnswer;
+    isShownNotifier.value = true;
+    answerNotifier.value = TextSpan(
+      text: _verseText,
+      style: const TextStyle(color: Colors.black),
+    );
   }
 
   int _numberHintWordsShowing = 0;
@@ -27,30 +31,47 @@ class PracticePageManager {
     _numberHintWordsShowing++;
   }
 
-  void showFirstLettersHint() {}
+  void showFirstLettersHint() {
+    final latinChar = RegExp(r'\w');
+    final result = StringBuffer();
+    bool isWordStart = true;
+    for (int i = 0; i < _verseText.length; i++) {
+      final character = _verseText[i];
+      final isWordChar = character.contains(latinChar);
+      if (!isWordChar || isWordStart) {
+        result.write(character);
+        isWordStart = !isWordChar;
+      }
+    }
+    answerNotifier.value = TextSpan(
+      text: result.toString(),
+      style: const TextStyle(color: Colors.black),
+    );
+  }
 
   TextSpan _formatForNumberOfWords(int number, String verseText) {
-    final wordBoundary = RegExp(r'\b\w', unicode: true);
-    int start = 1;
+    if (verseText.isEmpty) return const TextSpan(text: '');
 
-    for (int i = 0; i <= number; i++) {
-      start = verseText.indexOf(wordBoundary, start);
-      if (start == -1) {
-        return TextSpan(
-          text: verseText,
-          style: const TextStyle(color: Colors.black),
-        );
+    final parts = verseText.split(' ');
+    final before = StringBuffer();
+    for (int i = 0; i < parts.length; i++) {
+      before.write(parts[i]);
+      before.write(' ');
+      if (_numberHintWordsShowing == i) {
+        break;
       }
-      start++;
     }
 
-    start--;
+    final String after;
+    if (before.length >= verseText.length) {
+      after = '';
+    } else {
+      after = verseText.substring(before.length);
+    }
 
-    final before = verseText.substring(0, start);
-    final after = verseText.substring(start);
     final textSpan = TextSpan(children: [
       TextSpan(
-        text: before,
+        text: before.toString(),
         style: const TextStyle(color: Colors.black),
       ),
       TextSpan(
@@ -58,13 +79,12 @@ class PracticePageManager {
         style: const TextStyle(color: Colors.transparent),
       ),
     ]);
-    // print(${textSpan.children});
 
     return textSpan;
   }
 }
 
-enum Display {
-  initial,
-  showingAnswer,
-}
+// enum Display {
+//   initial,
+//   showingAnswer,
+// }

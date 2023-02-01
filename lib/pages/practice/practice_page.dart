@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:memorize_scripture/common/drawer.dart';
 import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
 import 'package:memorize_scripture/service_locator.dart';
 
@@ -16,10 +15,12 @@ class PracticePage extends StatefulWidget {
 }
 
 class _PracticePageState extends State<PracticePage> {
+  final manager = getIt<PracticePageManager>();
+
   @override
   void initState() {
     super.initState();
-    getIt<PracticePageManager>().init();
+    manager.init();
   }
 
   @override
@@ -28,7 +29,7 @@ class _PracticePageState extends State<PracticePage> {
       appBar: AppBar(
         title: Text(widget.collection),
       ),
-      drawer: const MenuDrawer(),
+      //drawer: const MenuDrawer(),
       body: Stack(
         children: [
           const Text('12'),
@@ -38,9 +39,9 @@ class _PracticePageState extends State<PracticePage> {
                 SizedBox(height: 20),
                 Prompt(),
                 SizedBox(height: 20),
-                HintBox(),
+                HintBox(manager: manager),
                 ValueListenableBuilder<TextSpan>(
-                  valueListenable: getIt<PracticePageManager>().answerNotifier,
+                  valueListenable: manager.answerNotifier,
                   builder: (context, answer, child) {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -54,8 +55,92 @@ class _PracticePageState extends State<PracticePage> {
               ],
             ),
           ),
-          const ShowButton(),
+
+          ValueListenableBuilder<bool>(
+              valueListenable: manager.isShownNotifier,
+              builder: (context, isShowingAnswer, child) {
+                if (isShowingAnswer) {
+                  return ButtonPanel(manager: manager);
+                } else {
+                  return ShowButton(manager: manager);
+                }
+              }),
+          //ShowButton(manager: manager),
         ],
+      ),
+    );
+  }
+}
+
+class ButtonPanel extends StatelessWidget {
+  const ButtonPanel({
+    super.key,
+    required this.manager,
+  });
+
+  final PracticePageManager manager;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        height: 48,
+        width: double.infinity,
+        margin: const EdgeInsets.all(8),
+        child: Row(
+          children: [
+            Expanded(
+              child: SizedBox(
+                height: 48,
+                child: OutlinedButton(
+                  onPressed: () {},
+                  child: const Text('1'),
+                ),
+              ),
+            ),
+            const SizedBox(width: 5),
+            Expanded(
+              child: SizedBox(
+                height: 48,
+                child: OutlinedButton(
+                  onPressed: () {},
+                  child: const Text('2'),
+                ),
+              ),
+            ),
+            const SizedBox(width: 5),
+            Expanded(
+              child: SizedBox(
+                height: 48,
+                child: OutlinedButton(
+                  onPressed: () {},
+                  child: const Text('3'),
+                ),
+              ),
+            ),
+            const SizedBox(width: 5),
+            Expanded(
+              child: SizedBox(
+                height: 48,
+                child: OutlinedButton(
+                  onPressed: () {},
+                  child: const Text('4'),
+                ),
+              ),
+            ),
+            const SizedBox(width: 5),
+            Expanded(
+              child: SizedBox(
+                height: 48,
+                child: OutlinedButton(
+                  onPressed: () {},
+                  child: const Text('5'),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -64,7 +149,10 @@ class _PracticePageState extends State<PracticePage> {
 class ShowButton extends StatelessWidget {
   const ShowButton({
     super.key,
+    required this.manager,
   });
+
+  final PracticePageManager manager;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +164,7 @@ class ShowButton extends StatelessWidget {
         margin: const EdgeInsets.all(8),
         child: OutlinedButton(
           onPressed: () {
-            getIt<PracticePageManager>().show();
+            manager.show();
           },
           child: const Text('Show'),
         ),
@@ -101,7 +189,10 @@ class Prompt extends StatelessWidget {
 class HintBox extends StatelessWidget {
   const HintBox({
     super.key,
+    required this.manager,
   });
+
+  final PracticePageManager manager;
 
   @override
   Widget build(BuildContext context) {
@@ -118,23 +209,28 @@ class HintBox extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                OutlinedButton(
-                  onPressed: () {},
-                  child: const Text('Letters'),
-                ),
-                const SizedBox(width: 20),
-                OutlinedButton(
-                  onPressed: () {
-                    getIt<PracticePageManager>().showNextWordHint();
-                  },
-                  child: const Text('Word'),
-                ),
-              ],
-            ),
+            child: ValueListenableBuilder<bool>(
+                valueListenable: manager.isShownNotifier,
+                builder: (context, isShowingAnswer, child) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      OutlinedButton(
+                        onPressed: (isShowingAnswer)
+                            ? null
+                            : manager.showFirstLettersHint,
+                        child: const Text('Letters'),
+                      ),
+                      const SizedBox(width: 20),
+                      OutlinedButton(
+                        onPressed:
+                            (isShowingAnswer) ? null : manager.showNextWordHint,
+                        child: const Text('Word'),
+                      ),
+                    ],
+                  );
+                }),
           ),
         ),
         Positioned(
