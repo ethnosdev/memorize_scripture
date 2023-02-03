@@ -47,7 +47,7 @@ final GoRouter _router = GoRouter(
           routes: [
             GoRoute(
               name: 'add',
-              path: 'add/:collection',
+              path: 'add',
               builder: (context, state) => AddVersePage(
                 collection: state.params['collection']!,
               ),

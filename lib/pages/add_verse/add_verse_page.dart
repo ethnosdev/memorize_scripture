@@ -11,7 +11,57 @@ class AddVersePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text(collection),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: OutlinedButton(
+                  onPressed: () {},
+                  child: const Text('Import'),
+                ),
+              ),
+            ),
+            const TextField(
+              autofocus: true,
+              maxLines: 5,
+              decoration: InputDecoration(
+                labelText: 'Prompt',
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 8,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            const TextField(
+              maxLines: 5,
+              decoration: InputDecoration(
+                labelText: 'Answer',
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 8,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            OutlinedButton(
+              onPressed: () {},
+              child: const Text('Add'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
