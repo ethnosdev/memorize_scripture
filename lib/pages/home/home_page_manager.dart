@@ -9,4 +9,10 @@ class HomePageManager {
   Future<void> init() async {
     collectionNotifier.value = await dataRepository.fetchCollectionNames();
   }
+
+  void addCollection(String name) {
+    final list = collectionNotifier.value.toList();
+    list.add(name);
+    collectionNotifier.value = list;
+  }
 }

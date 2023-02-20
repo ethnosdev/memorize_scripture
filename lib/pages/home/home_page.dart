@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/common/drawer.dart';
 import 'package:memorize_scripture/pages/home/home_page_manager.dart';
@@ -45,7 +46,7 @@ class _BodyWidgetState extends State<BodyWidget> {
               valueListenable: manager.collectionNotifier,
               builder: (context, collectionNames, child) {
                 return ListView.builder(
-                  itemCount: 3,
+                  itemCount: collectionNames.length,
                   itemBuilder: (context, index) {
                     final name = collectionNames[index];
                     return Card(
@@ -64,11 +65,43 @@ class _BodyWidgetState extends State<BodyWidget> {
               }),
         ),
         OutlinedButton(
-          onPressed: () {},
+          onPressed: () async {
+            final name = await _showNewCollectionDialog();
+            print(name);
+          },
           child: const Text('Add Collection'),
         ),
         const SizedBox(height: 20),
       ],
+    );
+  }
+
+  Future<String?> _showNewCollectionDialog() async {
+    final controller = TextEditingController();
+    Widget continueButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop(controller.text);
+        manager.addCollection(controller.text);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Name"),
+      content: TextField(
+        autofocus: true,
+        controller: controller,
+      ),
+      actions: [continueButton],
+    );
+
+    // show the dialog
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }
