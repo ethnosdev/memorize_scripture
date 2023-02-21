@@ -45,11 +45,13 @@ class _BodyWidgetState extends State<BodyWidget> {
           child: ValueListenableBuilder<List<String>>(
               valueListenable: manager.collectionNotifier,
               builder: (context, collectionNames, child) {
-                return ListView.builder(
+                return ReorderableListView.builder(
+                  buildDefaultDragHandles: true,
                   itemCount: collectionNames.length,
                   itemBuilder: (context, index) {
                     final name = collectionNames[index];
                     return Card(
+                      key: ValueKey(name),
                       child: ListTile(
                         title: Text(name),
                         onTap: () {
@@ -60,6 +62,9 @@ class _BodyWidgetState extends State<BodyWidget> {
                         },
                       ),
                     );
+                  },
+                  onReorder: (int oldIndex, int newIndex) {
+                    manager.onCollectionItemReordered(oldIndex, newIndex);
                   },
                 );
               }),
