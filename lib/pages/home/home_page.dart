@@ -62,6 +62,9 @@ class _BodyWidgetState extends State<BodyWidget> {
                               params: {'collection': name},
                             );
                           },
+                          onLongPress: () {
+                            _showCollectionOptionsDialog(index);
+                          },
                         ),
                       ),
                     );
@@ -74,8 +77,8 @@ class _BodyWidgetState extends State<BodyWidget> {
         ),
         OutlinedButton(
           onPressed: () async {
-            final name = await _showNewCollectionDialog();
-            print(name);
+            final name = await _showEditNameDialog();
+            manager.addCollection(name);
           },
           child: const Text('Add Collection'),
         ),
@@ -84,24 +87,88 @@ class _BodyWidgetState extends State<BodyWidget> {
     );
   }
 
-  Future<String?> _showNewCollectionDialog() async {
-    final controller = TextEditingController();
-    Widget continueButton = TextButton(
-      child: Text("OK"),
+  Future<String?> _showEditNameDialog({String? oldName}) async {
+    final controller = TextEditingController(text: oldName);
+    Widget okButton = TextButton(
+      child: const Text("OK"),
       onPressed: () {
         Navigator.of(context).pop(controller.text);
-        manager.addCollection(controller.text);
       },
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Name"),
+      title: const Text("Name"),
       content: TextField(
         autofocus: true,
         controller: controller,
       ),
-      actions: [continueButton],
+      actions: [okButton],
+    );
+
+    // show the dialog
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  Future<String?> _showCollectionOptionsDialog(int index) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              ListTile(
+                title: const Text('Rename'),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  final oldName = manager.collectionNameAt(index);
+                  final newName = await _showEditNameDialog(oldName: oldName);
+                  manager.renameCollection(index: index, newName: newName);
+                },
+              ),
+              ListTile(
+                title: const Text('Delete'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _showVerifyDeleteDialog(index: index);
+                },
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<String?> _showVerifyDeleteDialog({required int index}) async {
+    Widget cancelButton = TextButton(
+      child: const Text("Cancel"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    Widget deleteButton = TextButton(
+      child: const Text(
+        "Delete",
+        style: TextStyle(color: Colors.red),
+      ),
+      onPressed: () {
+        Navigator.of(context).pop();
+        manager.deleteCollection(index);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      content: const Text('Are you sure you want to delete this collection?'),
+      actions: [cancelButton, deleteButton],
     );
 
     // show the dialog

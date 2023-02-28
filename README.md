@@ -1,16 +1,16 @@
 # memorize_scripture
 
-A new Flutter project.
+A scripture memory app.
 
-## Getting Started
+## Tasks for testers
 
-This project is a starting point for a Flutter application.
+How would you:
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Add a new collection?
+- Rename a collection?
+- Delete a collection?
+- Put the collections in a different order?
+- Add a new verse?
+- Practice the verses in a collection?
+- Play all of the verses in all of the collections?
+- Play only the verses in a single collection?

@@ -14,18 +14,34 @@ class HomePageManager {
     collectionNotifier.value = await dataRepository.fetchCollectionNames();
   }
 
-  void addCollection(String name) {
-    if (name.isEmpty) return;
+  void addCollection(String? name) {
+    if (name == null || name.isEmpty) return;
     final list = collectionNotifier.value.toList();
     list.add(name);
     collectionNotifier.value = list;
   }
 
   void onCollectionItemReordered(int oldIndex, int newIndex) {
-    print('item $oldIndex moved to $newIndex');
     final list = collectionNotifier.value.toList();
     list.move(oldIndex, newIndex);
     collectionNotifier.value = list;
+  }
+
+  void renameCollection({required int index, String? newName}) {
+    if (newName == null || newName.isEmpty) return;
+    final list = collectionNotifier.value.toList();
+    list[index] = newName;
+    collectionNotifier.value = list;
+  }
+
+  void deleteCollection(int index) {
+    final list = collectionNotifier.value.toList();
+    list.removeAt(index);
+    collectionNotifier.value = list;
+  }
+
+  String collectionNameAt(int index) {
+    return collectionNotifier.value[index];
   }
 }
 

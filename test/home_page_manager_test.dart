@@ -25,6 +25,41 @@ void main() {
     expect(list.first, 'name');
   });
 
+  test('renameCollection', () async {
+    final manager = HomePageManager(dataRepository: EmptyDataRepo());
+    await manager.init();
+    manager.addCollection('name');
+
+    manager.renameCollection(index: 0, newName: 'new name');
+
+    final list = manager.collectionNotifier.value;
+    expect(list.length, 1);
+    expect(list.first, 'new name');
+  });
+
+  test('deleteCollection', () async {
+    final manager = HomePageManager(dataRepository: EmptyDataRepo());
+    await manager.init();
+    manager.addCollection('name');
+
+    manager.deleteCollection(0);
+
+    final list = manager.collectionNotifier.value;
+    expect(list.length, 0);
+  });
+
+  test('collectionNameAt', () async {
+    final manager = HomePageManager(dataRepository: EmptyDataRepo());
+    await manager.init();
+    manager.addCollection('name');
+
+    final name = manager.collectionNameAt(0);
+
+    final list = manager.collectionNotifier.value;
+    expect(list.length, 1);
+    expect(list.first, 'name');
+  });
+
   test('onCollectionItemReordered', () async {
     final manager = HomePageManager(dataRepository: EmptyDataRepo());
     await manager.init();
