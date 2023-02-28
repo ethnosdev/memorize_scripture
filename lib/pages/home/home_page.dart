@@ -46,20 +46,23 @@ class _BodyWidgetState extends State<BodyWidget> {
               valueListenable: manager.collectionNotifier,
               builder: (context, collectionNames, child) {
                 return ReorderableListView.builder(
-                  buildDefaultDragHandles: true,
+                  buildDefaultDragHandles: false,
                   itemCount: collectionNames.length,
                   itemBuilder: (context, index) {
                     final name = collectionNames[index];
                     return Card(
                       key: ValueKey(name),
-                      child: ListTile(
-                        title: Text(name),
-                        onTap: () {
-                          context.goNamed(
-                            'practice',
-                            params: {'collection': name},
-                          );
-                        },
+                      child: ReorderableDragStartListener(
+                        index: index,
+                        child: ListTile(
+                          title: Text(name),
+                          onTap: () {
+                            context.goNamed(
+                              'practice',
+                              params: {'collection': name},
+                            );
+                          },
+                        ),
                       ),
                     );
                   },
