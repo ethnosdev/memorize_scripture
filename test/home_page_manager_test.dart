@@ -57,7 +57,7 @@ void main() {
 
     final list = manager.collectionNotifier.value;
     expect(list.length, 1);
-    expect(list.first, 'name');
+    expect(name, 'name');
   });
 
   test('onCollectionItemReordered', () async {

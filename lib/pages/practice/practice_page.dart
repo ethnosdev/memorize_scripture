@@ -37,14 +37,14 @@ class _PracticePageState extends State<PracticePage> {
                   params: {'collection': widget.collection},
                 );
               },
-              icon: Icon(Icons.add)),
+              icon: const Icon(Icons.add)),
           PopupMenuButton(
             itemBuilder: (context) => const [
-              PopupMenuItem(child: Text('Edit'), value: 1),
-              PopupMenuItem(child: Text('View all'), value: 2),
+              PopupMenuItem(value: 1, child: Text('Edit')),
+              PopupMenuItem(value: 2, child: Text('View all')),
             ],
             onSelected: (value) {
-              print(value);
+              debugPrint(value.toString());
             },
           ),
         ],
@@ -56,9 +56,9 @@ class _PracticePageState extends State<PracticePage> {
           Center(
             child: Column(
               children: [
-                SizedBox(height: 20),
-                Prompt(),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
+                const Prompt(),
+                const SizedBox(height: 20),
                 HintBox(manager: manager),
                 ValueListenableBuilder<TextSpan>(
                   valueListenable: manager.answerNotifier,

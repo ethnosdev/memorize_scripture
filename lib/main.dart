@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         primaryColor: Colors.lightBlue.shade800,
         textTheme: TextTheme(
-          bodyMedium: TextStyle(fontSize: 14),
+          bodyMedium: const TextStyle(fontSize: 14),
           labelSmall: TextStyle(color: Theme.of(context).disabledColor),
         ),
       ),
