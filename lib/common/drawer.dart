@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:memorize_scripture/service_locator.dart';
+import 'package:memorize_scripture/theme_manager.dart';
 
 class MenuDrawer extends StatelessWidget {
   const MenuDrawer({
@@ -8,15 +10,37 @@ class MenuDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final manager = getIt<ThemeManager>();
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
+          DrawerHeader(
+            decoration: const BoxDecoration(
               color: Colors.blue,
             ),
-            child: Text('Memorize Scripture'),
+            child: Column(
+              children: [
+                const Text('Memorize Scripture'),
+                const Spacer(),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: manager.isDarkListener,
+                    builder: (context, isDarkMode, child) {
+                      return IconButton(
+                        onPressed: () {
+                          manager.toggleTheme();
+                        },
+                        icon: (isDarkMode)
+                            ? const Icon(Icons.light_mode)
+                            : const Icon(Icons.dark_mode),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
           ListTile(
             title: const Text('Settings'),
@@ -24,7 +48,10 @@ class MenuDrawer extends StatelessWidget {
           ),
           ListTile(
             title: const Text('About'),
-            onTap: () => context.goNamed('about'),
+            onTap: () {
+              Navigator.pop(context);
+              context.goNamed('about');
+            },
           ),
         ],
       ),

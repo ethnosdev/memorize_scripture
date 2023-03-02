@@ -5,29 +5,35 @@ import 'package:memorize_scripture/pages/add_verse/add_verse_page.dart';
 import 'package:memorize_scripture/pages/home/home_page.dart';
 import 'package:memorize_scripture/pages/practice/practice_page.dart';
 import 'package:memorize_scripture/service_locator.dart';
+import 'package:memorize_scripture/theme_manager.dart';
 
 Future<void> main() async {
   setupServiceLocator();
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final manager = getIt<ThemeManager>();
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      title: 'Memorize Scripture',
-      routerConfig: _router,
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: Colors.lightBlue.shade800,
-        textTheme: TextTheme(
-          bodyMedium: const TextStyle(fontSize: 14),
-          labelSmall: TextStyle(color: Theme.of(context).disabledColor),
-        ),
-      ),
+    return ValueListenableBuilder<ThemeData>(
+      valueListenable: manager.themeListener,
+      builder: (context, theme, child) {
+        return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          title: 'Memorize Scripture',
+          routerConfig: _router,
+          theme: theme,
+        );
+      },
     );
   }
 }
