@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:memorize_scripture/pages/about/about_page.dart';
 import 'package:memorize_scripture/pages/add_verse/add_verse_page.dart';
 import 'package:memorize_scripture/pages/home/home_page.dart';
 import 'package:memorize_scripture/pages/practice/practice_page.dart';
@@ -53,6 +54,11 @@ final GoRouter _router = GoRouter(
               ),
             ),
           ],
+        ),
+        GoRoute(
+          name: 'about',
+          path: 'about',
+          builder: (context, state) => AboutPage(),
         ),
       ],
     ),

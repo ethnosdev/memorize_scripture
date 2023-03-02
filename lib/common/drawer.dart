@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MenuDrawer extends StatelessWidget {
   const MenuDrawer({
@@ -23,7 +24,7 @@ class MenuDrawer extends StatelessWidget {
           ),
           ListTile(
             title: const Text('About'),
-            onTap: () {},
+            onTap: () => context.goNamed('about'),
           ),
         ],
       ),
