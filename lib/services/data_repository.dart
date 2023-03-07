@@ -1,21 +1,29 @@
-abstract class DataRepository {
-  Future<List<String>> fetchCollectionNames();
+import 'package:memorize_scripture/common/collection.dart';
+import 'package:memorize_scripture/common/verse.dart';
 
-  Future<String> fetchVerse();
+abstract class DataRepository {
+  Future<List<CollectionMetadata>> fetchCollectionMetadata();
+  Future<List<Verse>> fetchVerses(String collectionId);
 }
 
 class FakeData implements DataRepository {
   @override
-  Future<List<String>> fetchCollectionNames() async {
+  Future<List<CollectionMetadata>> fetchCollectionMetadata() async {
     return [
-      'Navigator verse pack',
-      'Proverbs 3',
-      'John 15',
+      CollectionMetadata(id: '001', name: 'Navigator verse pack'),
+      CollectionMetadata(id: '002', name: 'Proverbs 3'),
+      CollectionMetadata(id: '003', name: 'John 15'),
     ];
   }
 
   @override
-  Future<String> fetchVerse() async {
-    return 'I am the true vine and my father is the vinedresser. (ESV)';
+  Future<List<Verse>> fetchVerses(String collectionId) async {
+    return [
+      Verse(
+        translation: 'ESV',
+        prompt: 'John 15:1',
+        answer: 'I am the true vine and my father is the vinedresser. (ESV)',
+      ),
+    ];
   }
 }

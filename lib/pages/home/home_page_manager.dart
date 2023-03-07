@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/data_repository.dart';
 
@@ -9,9 +10,11 @@ class HomePageManager {
   late final DataRepository dataRepository;
 
   final collectionNotifier = ValueNotifier<List<String>>([]);
+  List<CollectionMetadata> _collections = [];
 
   Future<void> init() async {
-    collectionNotifier.value = await dataRepository.fetchCollectionNames();
+    _collections = await dataRepository.fetchCollectionMetadata();
+    collectionNotifier.value = _collections.map((c) => c.name).toList();
   }
 
   void addCollection(String? name) {

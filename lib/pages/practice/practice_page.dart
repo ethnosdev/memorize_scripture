@@ -21,7 +21,7 @@ class _PracticePageState extends State<PracticePage> {
   @override
   void initState() {
     super.initState();
-    manager.init();
+    manager.init(widget.collection);
   }
 
   @override
@@ -49,7 +49,6 @@ class _PracticePageState extends State<PracticePage> {
           ),
         ],
       ),
-      //drawer: const MenuDrawer(),
       body: Stack(
         children: [
           const Text('12'),
@@ -75,7 +74,6 @@ class _PracticePageState extends State<PracticePage> {
               ],
             ),
           ),
-
           ValueListenableBuilder<bool>(
               valueListenable: manager.isShownNotifier,
               builder: (context, isShowingAnswer, child) {
@@ -85,7 +83,6 @@ class _PracticePageState extends State<PracticePage> {
                   return ShowButton(manager: manager);
                 }
               }),
-          //ShowButton(manager: manager),
         ],
       ),
     );
@@ -114,8 +111,10 @@ class ButtonPanel extends StatelessWidget {
               child: SizedBox(
                 height: 48,
                 child: OutlinedButton(
-                  onPressed: () {},
-                  child: const Text('1'),
+                  onPressed: () {
+                    manager.onResponse(Difficulty.easy);
+                  },
+                  child: const Text('Today'),
                 ),
               ),
             ),
@@ -124,8 +123,10 @@ class ButtonPanel extends StatelessWidget {
               child: SizedBox(
                 height: 48,
                 child: OutlinedButton(
-                  onPressed: () {},
-                  child: const Text('2'),
+                  onPressed: () {
+                    manager.onResponse(Difficulty.ok);
+                  },
+                  child: const Text('Tomorrow'),
                 ),
               ),
             ),
@@ -134,28 +135,10 @@ class ButtonPanel extends StatelessWidget {
               child: SizedBox(
                 height: 48,
                 child: OutlinedButton(
-                  onPressed: () {},
-                  child: const Text('3'),
-                ),
-              ),
-            ),
-            const SizedBox(width: 5),
-            Expanded(
-              child: SizedBox(
-                height: 48,
-                child: OutlinedButton(
-                  onPressed: () {},
-                  child: const Text('4'),
-                ),
-              ),
-            ),
-            const SizedBox(width: 5),
-            Expanded(
-              child: SizedBox(
-                height: 48,
-                child: OutlinedButton(
-                  onPressed: () {},
-                  child: const Text('5'),
+                  onPressed: () {
+                    manager.onResponse(Difficulty.hard);
+                  },
+                  child: const Text('4 days'),
                 ),
               ),
             ),

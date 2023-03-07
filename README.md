@@ -23,6 +23,7 @@ How would you:
     "date": "2023-03-01T12:54:54.179",
     "collections": [
         {
+            "id": "001",
             "title": "Proverbs 3",
             "verses": [
                 {
@@ -38,6 +39,7 @@ How would you:
             ]
         },
         {
+            "id": "002",
             "title": "John 15",
             "verses": [
                 {

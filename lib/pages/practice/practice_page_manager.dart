@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/data_repository.dart';
 
@@ -7,16 +8,16 @@ class PracticePageManager {
   final isShownNotifier = ValueNotifier<bool>(false);
 
   final dataRepo = getIt<DataRepository>();
-  String _verseText = '';
+  List<Verse> _verses = [];
 
-  Future<void> init() async {
-    _verseText = await dataRepo.fetchVerse();
+  Future<void> init(String collectionId) async {
+    _verses = await dataRepo.fetchVerses(collectionId);
   }
 
   void show() {
     isShownNotifier.value = true;
     answerNotifier.value = TextSpan(
-      text: _verseText,
+      text: _verses[0].answer,
       style: const TextStyle(color: Colors.black),
     );
   }
@@ -26,7 +27,7 @@ class PracticePageManager {
   void showNextWordHint() {
     answerNotifier.value = _formatForNumberOfWords(
       _numberHintWordsShowing,
-      _verseText,
+      _verses[0].answer,
     );
     _numberHintWordsShowing++;
   }
@@ -35,8 +36,9 @@ class PracticePageManager {
     final latinChar = RegExp(r'\w');
     final result = StringBuffer();
     bool isWordStart = true;
-    for (int i = 0; i < _verseText.length; i++) {
-      final character = _verseText[i];
+    final text = _verses[0].answer;
+    for (int i = 0; i < text.length; i++) {
+      final character = text[i];
       final isWordChar = character.contains(latinChar);
       if (!isWordChar || isWordStart) {
         result.write(character);
@@ -82,7 +84,11 @@ class PracticePageManager {
 
     return textSpan;
   }
+
+  void onResponse(Difficulty response) {}
 }
+
+enum Difficulty { hard, ok, easy }
 
 // enum Display {
 //   initial,
