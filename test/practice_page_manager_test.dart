@@ -8,7 +8,7 @@ void main() {
   test('init on empty collection', () async {
     final manager = PracticePageManager(dataRepository: EmptyDataRepo());
 
-    await manager.init('whatever');
+    await manager.init('whatever', () {});
 
     expect(manager.answerNotifier.value, const TextSpan());
     expect(manager.isShownNotifier.value, false);
@@ -17,7 +17,7 @@ void main() {
   test('init with collection', () async {
     final manager = PracticePageManager(dataRepository: MockDataRepo());
 
-    await manager.init('whatever');
+    await manager.init('whatever', () {});
 
     expect(manager.answerNotifier.value, const TextSpan());
     expect(manager.isShownNotifier.value, false);
@@ -25,7 +25,7 @@ void main() {
 
   test('showNextWordHint', () async {
     final manager = PracticePageManager(dataRepository: MockDataRepo());
-    await manager.init('whatever');
+    await manager.init('whatever', () {});
 
     manager.showNextWordHint();
 
@@ -51,7 +51,7 @@ void main() {
 
   test('showFirstLettersHint', () async {
     final manager = PracticePageManager(dataRepository: MockDataRepo());
-    await manager.init('whatever');
+    await manager.init('whatever', () {});
 
     manager.showFirstLettersHint();
 
@@ -62,7 +62,7 @@ void main() {
   test('show', () async {
     final manager = PracticePageManager(dataRepository: MockDataRepo());
 
-    await manager.init('whatever');
+    await manager.init('whatever', () {});
     manager.show();
 
     final text = manager.answerNotifier.value.text;
@@ -74,7 +74,7 @@ void main() {
     // There are two verses
 
     final manager = PracticePageManager(dataRepository: MockDataRepo());
-    await manager.init('whatever');
+    await manager.init('whatever', () {});
 
     // mark the first one as hard
     // it should go to the end of the list

@@ -13,10 +13,15 @@ class PracticePageManager {
   final answerNotifier = ValueNotifier<TextSpan>(const TextSpan());
   final isShownNotifier = ValueNotifier<bool>(false);
 
-  List<Verse> _verses = [];
+  late void Function() _onFinished;
+  late List<Verse> _verses;
 
-  Future<void> init(String collectionId) async {
+  Future<void> init(
+    String collectionId,
+    void Function() onFinished,
+  ) async {
     _verses = await dataRepository.fetchVerses(collectionId);
+    _onFinished = onFinished;
     promptNotifier.value = _verses[0].prompt;
   }
 
@@ -98,7 +103,12 @@ class PracticePageManager {
     if (response == Difficulty.hard) {
       _verses.add(verse);
     }
-    promptNotifier.value = (_verses.isEmpty) ? '' : _verses[0].prompt;
+    if (_verses.isEmpty) {
+      promptNotifier.value = '';
+      _onFinished();
+    } else {
+      promptNotifier.value = _verses[0].prompt;
+    }
   }
 }
 

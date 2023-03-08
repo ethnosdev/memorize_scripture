@@ -21,7 +21,7 @@ class _PracticePageState extends State<PracticePage> {
   @override
   void initState() {
     super.initState();
-    manager.init(widget.collection);
+    manager.init(widget.collection, _onFinished);
   }
 
   @override
@@ -87,6 +87,10 @@ class _PracticePageState extends State<PracticePage> {
       ),
     );
   }
+
+  void _onFinished() {
+    Navigator.of(context).pop();
+  }
 }
 
 class ButtonPanel extends StatelessWidget {
@@ -111,7 +115,7 @@ class ButtonPanel extends StatelessWidget {
               child: SizedBox(
                 height: 48,
                 child: OutlinedButton(
-                  onPressed: () => manager.onResponse(Difficulty.easy),
+                  onPressed: () => manager.onResponse(Difficulty.hard),
                   child: const Text('Today'),
                 ),
               ),
@@ -131,7 +135,7 @@ class ButtonPanel extends StatelessWidget {
               child: SizedBox(
                 height: 48,
                 child: OutlinedButton(
-                  onPressed: () => manager.onResponse(Difficulty.hard),
+                  onPressed: () => manager.onResponse(Difficulty.easy),
                   child: const Text('4 days'),
                 ),
               ),
