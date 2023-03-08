@@ -56,7 +56,7 @@ class _PracticePageState extends State<PracticePage> {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                const Prompt(),
+                Prompt(manager: manager),
                 const SizedBox(height: 20),
                 HintBox(manager: manager),
                 ValueListenableBuilder<TextSpan>(
@@ -111,9 +111,7 @@ class ButtonPanel extends StatelessWidget {
               child: SizedBox(
                 height: 48,
                 child: OutlinedButton(
-                  onPressed: () {
-                    manager.onResponse(Difficulty.easy);
-                  },
+                  onPressed: () => manager.onResponse(Difficulty.easy),
                   child: const Text('Today'),
                 ),
               ),
@@ -123,9 +121,7 @@ class ButtonPanel extends StatelessWidget {
               child: SizedBox(
                 height: 48,
                 child: OutlinedButton(
-                  onPressed: () {
-                    manager.onResponse(Difficulty.ok);
-                  },
+                  onPressed: () => manager.onResponse(Difficulty.ok),
                   child: const Text('Tomorrow'),
                 ),
               ),
@@ -135,9 +131,7 @@ class ButtonPanel extends StatelessWidget {
               child: SizedBox(
                 height: 48,
                 child: OutlinedButton(
-                  onPressed: () {
-                    manager.onResponse(Difficulty.hard);
-                  },
+                  onPressed: () => manager.onResponse(Difficulty.hard),
                   child: const Text('4 days'),
                 ),
               ),
@@ -179,12 +173,18 @@ class ShowButton extends StatelessWidget {
 class Prompt extends StatelessWidget {
   const Prompt({
     super.key,
+    required this.manager,
   });
+
+  final PracticePageManager manager;
 
   @override
   Widget build(BuildContext context) {
-    return const Text(
-      'John 15:1',
+    return ValueListenableBuilder<String>(
+      valueListenable: manager.promptNotifier,
+      builder: (context, text, child) {
+        return Text(text);
+      },
     );
   }
 }

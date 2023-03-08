@@ -4,14 +4,20 @@ import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/data_repository.dart';
 
 class PracticePageManager {
+  PracticePageManager({DataRepository? dataRepository}) {
+    this.dataRepository = dataRepository ?? getIt<DataRepository>();
+  }
+  late final DataRepository dataRepository;
+
+  final promptNotifier = ValueNotifier<String>('');
   final answerNotifier = ValueNotifier<TextSpan>(const TextSpan());
   final isShownNotifier = ValueNotifier<bool>(false);
 
-  final dataRepo = getIt<DataRepository>();
   List<Verse> _verses = [];
 
   Future<void> init(String collectionId) async {
-    _verses = await dataRepo.fetchVerses(collectionId);
+    _verses = await dataRepository.fetchVerses(collectionId);
+    promptNotifier.value = _verses[0].prompt;
   }
 
   void show() {
@@ -85,12 +91,15 @@ class PracticePageManager {
     return textSpan;
   }
 
-  void onResponse(Difficulty response) {}
+  void onResponse(Difficulty response) {
+    isShownNotifier.value = false;
+    answerNotifier.value = const TextSpan();
+    final verse = _verses.removeAt(0);
+    if (response == Difficulty.hard) {
+      _verses.add(verse);
+    }
+    promptNotifier.value = (_verses.isEmpty) ? '' : _verses[0].prompt;
+  }
 }
 
 enum Difficulty { hard, ok, easy }
-
-// enum Display {
-//   initial,
-//   showingAnswer,
-// }
