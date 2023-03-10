@@ -11,7 +11,7 @@ late final starterVersesWeb = [
     translation: 'WEB',
     prompt: 'Matthew 28:19-20',
     answer:
-        'Go and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit, 20 teaching them to observe all things that I commanded you. Behold, I am with you always, even to the end of the age.',
+        'Go and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit, teaching them to observe all things that I commanded you. Behold, I am with you always, even to the end of the age.',
   ),
   Verse(
     translation: 'WEB',
