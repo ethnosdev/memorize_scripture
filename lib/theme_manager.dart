@@ -5,10 +5,6 @@ class ThemeManager {
 
   var isDarkListener = ValueNotifier<bool>(false);
 
-  // get isDark => _isDark;
-
-  // bool _isDark = false;
-
   void toggleTheme() {
     final isDark = isDarkListener.value;
     themeListener.value = (isDark) ? _lightTheme : _darkTheme;
@@ -18,7 +14,7 @@ class ThemeManager {
 
 final _lightTheme = ThemeData(
   brightness: Brightness.light,
-  primaryColor: Colors.lightBlue.shade800,
+  primarySwatch: Colors.green,
   textTheme: TextTheme(
     bodyMedium: const TextStyle(fontSize: 14),
     labelSmall: TextStyle(color: ThemeData.light().disabledColor),
@@ -27,7 +23,6 @@ final _lightTheme = ThemeData(
 
 final _darkTheme = ThemeData(
   brightness: Brightness.dark,
-  primaryColor: Colors.lightBlue.shade800,
   textTheme: TextTheme(
     bodyMedium: const TextStyle(fontSize: 14),
     labelSmall: TextStyle(color: ThemeData.dark().disabledColor),
