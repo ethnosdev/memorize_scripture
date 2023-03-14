@@ -10,52 +10,34 @@ class MenuDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: const BoxDecoration(
-              color: Colors.blue,
+    return SizedBox(
+      width: 200,
+      child: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+              ),
+              child: const Text('Memorize Scripture'),
             ),
-            child: Column(
-              children: [
-                const Text('Memorize Scripture'),
-                // const Spacer(),
-                // Align(
-                //   alignment: Alignment.bottomRight,
-                //   child: ValueListenableBuilder<bool>(
-                //     valueListenable: manager.isDarkListener,
-                //     builder: (context, isDarkMode, child) {
-                //       return IconButton(
-                //         onPressed: () {
-                //           manager.toggleTheme();
-                //         },
-                //         icon: (isDarkMode)
-                //             ? const Icon(Icons.light_mode)
-                //             : const Icon(Icons.dark_mode),
-                //       );
-                //     },
-                //   ),
-                // ),
-              ],
+            ListTile(
+              title: const Text('Settings'),
+              onTap: () {
+                Navigator.pop(context);
+                context.goNamed('settings');
+              },
             ),
-          ),
-          ListTile(
-            title: const Text('Settings'),
-            onTap: () {
-              Navigator.pop(context);
-              context.goNamed('settings');
-            },
-          ),
-          ListTile(
-            title: const Text('About'),
-            onTap: () {
-              Navigator.pop(context);
-              context.goNamed('about');
-            },
-          ),
-        ],
+            ListTile(
+              title: const Text('About'),
+              onTap: () {
+                Navigator.pop(context);
+                context.goNamed('about');
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
