@@ -4,6 +4,7 @@ import 'package:memorize_scripture/pages/about/about_page.dart';
 import 'package:memorize_scripture/pages/add_verse/add_verse_page.dart';
 import 'package:memorize_scripture/pages/home/home_page.dart';
 import 'package:memorize_scripture/pages/practice/practice_page.dart';
+import 'package:memorize_scripture/pages/settings/settings_page.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/theme_manager.dart';
 
@@ -64,7 +65,12 @@ final GoRouter _router = GoRouter(
         GoRoute(
           name: 'about',
           path: 'about',
-          builder: (context, state) => AboutPage(),
+          builder: (context, state) => const AboutPage(),
+        ),
+        GoRoute(
+          name: 'settings',
+          path: 'settings',
+          builder: (context, state) => const SettingsPage(),
         ),
       ],
     ),

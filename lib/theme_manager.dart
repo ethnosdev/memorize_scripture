@@ -3,12 +3,8 @@ import 'package:flutter/material.dart';
 class ThemeManager {
   final themeListener = ValueNotifier<ThemeData>(_lightTheme);
 
-  var isDarkListener = ValueNotifier<bool>(false);
-
-  void toggleTheme() {
-    final isDark = isDarkListener.value;
-    themeListener.value = (isDark) ? _lightTheme : _darkTheme;
-    isDarkListener.value = !isDark;
+  void setDarkTheme(bool isDark) {
+    themeListener.value = (isDark) ? _darkTheme : _lightTheme;
   }
 }
 

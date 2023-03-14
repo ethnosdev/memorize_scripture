@@ -10,7 +10,6 @@ class MenuDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final manager = getIt<ThemeManager>();
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -22,29 +21,32 @@ class MenuDrawer extends StatelessWidget {
             child: Column(
               children: [
                 const Text('Memorize Scripture'),
-                const Spacer(),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: ValueListenableBuilder<bool>(
-                    valueListenable: manager.isDarkListener,
-                    builder: (context, isDarkMode, child) {
-                      return IconButton(
-                        onPressed: () {
-                          manager.toggleTheme();
-                        },
-                        icon: (isDarkMode)
-                            ? const Icon(Icons.light_mode)
-                            : const Icon(Icons.dark_mode),
-                      );
-                    },
-                  ),
-                ),
+                // const Spacer(),
+                // Align(
+                //   alignment: Alignment.bottomRight,
+                //   child: ValueListenableBuilder<bool>(
+                //     valueListenable: manager.isDarkListener,
+                //     builder: (context, isDarkMode, child) {
+                //       return IconButton(
+                //         onPressed: () {
+                //           manager.toggleTheme();
+                //         },
+                //         icon: (isDarkMode)
+                //             ? const Icon(Icons.light_mode)
+                //             : const Icon(Icons.dark_mode),
+                //       );
+                //     },
+                //   ),
+                // ),
               ],
             ),
           ),
           ListTile(
             title: const Text('Settings'),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              context.goNamed('settings');
+            },
           ),
           ListTile(
             title: const Text('About'),
