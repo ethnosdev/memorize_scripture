@@ -51,7 +51,15 @@ class _PracticePageState extends State<PracticePage> {
       ),
       body: Stack(
         children: [
-          const Text('12'),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ValueListenableBuilder<String>(
+              valueListenable: manager.countNotifier,
+              builder: (context, count, child) {
+                return Text(count);
+              },
+            ),
+          ),
           Center(
             child: Column(
               children: [
@@ -75,14 +83,15 @@ class _PracticePageState extends State<PracticePage> {
             ),
           ),
           ValueListenableBuilder<bool>(
-              valueListenable: manager.isShownNotifier,
-              builder: (context, isShowingAnswer, child) {
-                if (isShowingAnswer) {
-                  return ButtonPanel(manager: manager);
-                } else {
-                  return ShowButton(manager: manager);
-                }
-              }),
+            valueListenable: manager.isShowingAnswerNotifier,
+            builder: (context, isShowingAnswer, child) {
+              if (isShowingAnswer) {
+                return ButtonPanel(manager: manager);
+              } else {
+                return ShowButton(manager: manager);
+              }
+            },
+          ),
         ],
       ),
     );
@@ -111,36 +120,45 @@ class ButtonPanel extends StatelessWidget {
         margin: const EdgeInsets.all(8),
         child: Row(
           children: [
-            Expanded(
-              child: SizedBox(
-                height: 48,
-                child: OutlinedButton(
-                  onPressed: () => manager.onResponse(Difficulty.hard),
-                  child: const Text('Today'),
-                ),
-              ),
+            ResponseButton(
+              title: 'Today',
+              onPressed: () => manager.onResponse(Difficulty.hard),
             ),
             const SizedBox(width: 5),
-            Expanded(
-              child: SizedBox(
-                height: 48,
-                child: OutlinedButton(
-                  onPressed: () => manager.onResponse(Difficulty.ok),
-                  child: const Text('Tomorrow'),
-                ),
-              ),
+            ResponseButton(
+              title: 'Tomorrow',
+              onPressed: () => manager.onResponse(Difficulty.ok),
             ),
             const SizedBox(width: 5),
-            Expanded(
-              child: SizedBox(
-                height: 48,
-                child: OutlinedButton(
-                  onPressed: () => manager.onResponse(Difficulty.easy),
-                  child: const Text('4 days'),
-                ),
-              ),
+            ResponseButton(
+              title: '4 days',
+              onPressed: () => manager.onResponse(Difficulty.easy),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class ResponseButton extends StatelessWidget {
+  const ResponseButton({
+    super.key,
+    required this.title,
+    required this.onPressed,
+  });
+
+  final String title;
+  final void Function() onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: SizedBox(
+        height: 48,
+        child: OutlinedButton(
+          onPressed: onPressed,
+          child: Text(title),
         ),
       ),
     );
@@ -217,7 +235,7 @@ class HintBox extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: ValueListenableBuilder<bool>(
-                valueListenable: manager.isShownNotifier,
+                valueListenable: manager.isShowingAnswerNotifier,
                 builder: (context, isShowingAnswer, child) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,

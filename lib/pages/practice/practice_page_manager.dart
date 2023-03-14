@@ -9,9 +9,10 @@ class PracticePageManager {
   }
   late final DataRepository dataRepository;
 
+  final countNotifier = ValueNotifier<String>('');
   final promptNotifier = ValueNotifier<String>('');
   final answerNotifier = ValueNotifier<TextSpan>(const TextSpan());
-  final isShownNotifier = ValueNotifier<bool>(false);
+  final isShowingAnswerNotifier = ValueNotifier<bool>(false);
 
   late void Function() _onFinished;
   late List<Verse> _verses;
@@ -23,10 +24,11 @@ class PracticePageManager {
     _verses = await dataRepository.fetchVerses(collectionId);
     _onFinished = onFinished;
     promptNotifier.value = _verses[0].prompt;
+    countNotifier.value = _verses.length.toString();
   }
 
   void show() {
-    isShownNotifier.value = true;
+    isShowingAnswerNotifier.value = true;
     answerNotifier.value = TextSpan(
       text: _verses[0].answer,
       style: const TextStyle(color: Colors.black),
@@ -97,7 +99,7 @@ class PracticePageManager {
   }
 
   void onResponse(Difficulty response) {
-    isShownNotifier.value = false;
+    isShowingAnswerNotifier.value = false;
     answerNotifier.value = const TextSpan();
     final verse = _verses.removeAt(0);
     if (response == Difficulty.hard) {
@@ -109,6 +111,7 @@ class PracticePageManager {
     } else {
       promptNotifier.value = _verses[0].prompt;
     }
+    countNotifier.value = _verses.length.toString();
   }
 }
 

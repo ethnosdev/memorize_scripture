@@ -11,7 +11,7 @@ void main() {
     await manager.init('whatever', () {});
 
     expect(manager.answerNotifier.value, const TextSpan());
-    expect(manager.isShownNotifier.value, false);
+    expect(manager.isShowingAnswerNotifier.value, false);
   });
 
   test('init with collection', () async {
@@ -20,7 +20,7 @@ void main() {
     await manager.init('whatever', () {});
 
     expect(manager.answerNotifier.value, const TextSpan());
-    expect(manager.isShownNotifier.value, false);
+    expect(manager.isShowingAnswerNotifier.value, false);
   });
 
   test('showNextWordHint', () async {
@@ -67,7 +67,7 @@ void main() {
 
     final text = manager.answerNotifier.value.text;
     expect(text, 'one two three');
-    expect(manager.isShownNotifier.value, true);
+    expect(manager.isShowingAnswerNotifier.value, true);
   });
 
   test('onResponse', () async {
@@ -84,7 +84,7 @@ void main() {
     var answer = manager.answerNotifier.value.text;
     expect(prompt, 'a 1');
     expect(answer, 'one two three');
-    expect(manager.isShownNotifier.value, true);
+    expect(manager.isShowingAnswerNotifier.value, true);
 
     manager.onResponse(Difficulty.hard);
 
@@ -92,7 +92,7 @@ void main() {
     answer = manager.answerNotifier.value.text;
     expect(prompt, 'a 2');
     expect(answer, null);
-    expect(manager.isShownNotifier.value, false);
+    expect(manager.isShowingAnswerNotifier.value, false);
 
     // mark the next one as easy
     // it should be removed from the list
@@ -102,7 +102,7 @@ void main() {
     answer = manager.answerNotifier.value.text;
     expect(prompt, 'a 2');
     expect(answer, 'four five six');
-    expect(manager.isShownNotifier.value, true);
+    expect(manager.isShowingAnswerNotifier.value, true);
 
     manager.onResponse(Difficulty.easy);
 
@@ -110,7 +110,7 @@ void main() {
     answer = manager.answerNotifier.value.text;
     expect(prompt, 'a 1');
     expect(answer, null);
-    expect(manager.isShownNotifier.value, false);
+    expect(manager.isShowingAnswerNotifier.value, false);
 
     // mark the remaining one as hard
 
@@ -119,7 +119,7 @@ void main() {
     answer = manager.answerNotifier.value.text;
     expect(prompt, 'a 1');
     expect(answer, 'one two three');
-    expect(manager.isShownNotifier.value, true);
+    expect(manager.isShowingAnswerNotifier.value, true);
 
     manager.onResponse(Difficulty.hard);
 
@@ -127,7 +127,7 @@ void main() {
     answer = manager.answerNotifier.value.text;
     expect(prompt, 'a 1');
     expect(answer, null);
-    expect(manager.isShownNotifier.value, false);
+    expect(manager.isShowingAnswerNotifier.value, false);
 
     // since it was marked hard, it's still there
 
@@ -136,7 +136,7 @@ void main() {
     answer = manager.answerNotifier.value.text;
     expect(prompt, 'a 1');
     expect(answer, 'one two three');
-    expect(manager.isShownNotifier.value, true);
+    expect(manager.isShowingAnswerNotifier.value, true);
 
     // mark it as ok now. This finishes the collection.
 
@@ -146,6 +146,6 @@ void main() {
     answer = manager.answerNotifier.value.text;
     expect(prompt, '');
     expect(answer, null);
-    expect(manager.isShownNotifier.value, false);
+    expect(manager.isShowingAnswerNotifier.value, false);
   });
 }

@@ -1,6 +1,6 @@
 import 'package:memorize_scripture/common/verse.dart';
 
-late final starterVersesWeb = [
+final starterVersesWeb = [
   Verse(
     translation: 'WEB',
     prompt: 'John 3:16',
