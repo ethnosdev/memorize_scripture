@@ -2,17 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/data_repository.dart';
+import 'package:memorize_scripture/services/user_settings.dart';
 
 class PracticePageManager {
-  PracticePageManager({DataRepository? dataRepository}) {
+  PracticePageManager({
+    DataRepository? dataRepository,
+    UserSettings? userSettings,
+  }) {
     this.dataRepository = dataRepository ?? getIt<DataRepository>();
+    this.userSettings = userSettings ?? getIt<UserSettings>();
   }
   late final DataRepository dataRepository;
+  late final UserSettings userSettings;
 
   final countNotifier = ValueNotifier<String>('');
   final promptNotifier = ValueNotifier<String>('');
   final answerNotifier = ValueNotifier<TextSpan>(const TextSpan());
   final isShowingAnswerNotifier = ValueNotifier<bool>(false);
+  final showHintsNotifier = ValueNotifier<bool>(true);
 
   late void Function() _onFinished;
   late List<Verse> _verses;
@@ -25,6 +32,8 @@ class PracticePageManager {
     _onFinished = onFinished;
     promptNotifier.value = _verses[0].prompt;
     countNotifier.value = _verses.length.toString();
+    final showHints = await userSettings.getShowHints();
+    showHintsNotifier.value = showHints;
   }
 
   void show() {
