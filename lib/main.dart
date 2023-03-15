@@ -6,11 +6,21 @@ import 'package:memorize_scripture/pages/home/home_page.dart';
 import 'package:memorize_scripture/pages/practice/practice_page.dart';
 import 'package:memorize_scripture/pages/settings/settings_page.dart';
 import 'package:memorize_scripture/service_locator.dart';
+import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:memorize_scripture/theme_manager.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   setupServiceLocator();
+  await _setDarkLightTheme();
   runApp(const MyApp());
+}
+
+Future<void> _setDarkLightTheme() async {
+  final userSettings = getIt<UserSettings>();
+  final isDarkTheme = await userSettings.getDarkMode();
+  final themeManager = getIt<ThemeManager>();
+  themeManager.setDarkTheme(isDarkTheme);
 }
 
 class MyApp extends StatefulWidget {

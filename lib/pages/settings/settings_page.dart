@@ -13,6 +13,12 @@ class _SettingsPageState extends State<SettingsPage> {
   final manager = SettingsPageManager();
 
   @override
+  void initState() {
+    super.initState();
+    manager.init();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

@@ -13,6 +13,7 @@ dependencies:
   go_router: ^6.0.2
   package_info_plus: ^3.0.3
   settings_ui: ^2.0.2
+  shared_preferences: ^2.0.18
 
 dev_dependencies:
   flutter_test:
