@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/theme_manager.dart';
+import 'package:memorize_scripture/app_manager.dart';
 
 class MenuDrawer extends StatelessWidget {
   const MenuDrawer({

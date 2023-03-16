@@ -10,7 +10,7 @@ class HomePageManager {
   late final DataRepository dataRepository;
 
   final collectionNotifier = ValueNotifier<List<String>>([]);
-  List<CollectionMetadata> _collections = [];
+  List<Collection> _collections = [];
 
   Future<void> init() async {
     _collections = await dataRepository.fetchCollectionMetadata();

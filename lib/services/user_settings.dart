@@ -5,11 +5,14 @@ abstract class UserSettings {
   Future<void> setShowHints(bool value);
   Future<bool> getDarkMode();
   Future<void> setDarkMode(bool value);
+  Future<int?> getBuildNumber();
+  Future<void> setBuildNumber(int buildNumber);
 }
 
 class SharedPreferencesLocalStorage extends UserSettings {
   static const String _showHintsKey = 'showHints';
   static const String _darkModeKey = 'darkMode';
+  static const String _buildNumberKey = 'buildNumber';
 
   @override
   Future<bool> getShowHints() async {
@@ -33,5 +36,17 @@ class SharedPreferencesLocalStorage extends UserSettings {
   Future<void> setDarkMode(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_darkModeKey, value);
+  }
+
+  @override
+  Future<int?> getBuildNumber() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(_buildNumberKey);
+  }
+
+  @override
+  Future<void> setBuildNumber(int buildNumber) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_buildNumberKey, buildNumber);
   }
 }

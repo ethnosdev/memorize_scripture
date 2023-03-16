@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
-import 'package:memorize_scripture/theme_manager.dart';
+import 'package:memorize_scripture/app_manager.dart';
 
 class SettingsPageManager extends ChangeNotifier {
-  final themeManager = getIt<ThemeManager>();
+  final themeManager = getIt<AppManager>();
   final userSettings = getIt<UserSettings>();
 
   bool get shouldShowHints => _shouldShowHints;
