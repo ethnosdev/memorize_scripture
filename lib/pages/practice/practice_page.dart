@@ -25,6 +25,12 @@ class _PracticePageState extends State<PracticePage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    manager.textThemeColor = Theme.of(context).textTheme.displaySmall?.color;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -79,8 +85,8 @@ class _PracticePageState extends State<PracticePage> {
                   builder: (context, answer, child) {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: RichText(
-                        text: answer,
+                      child: Text.rich(
+                        answer,
                         textAlign: TextAlign.center,
                       ),
                     );

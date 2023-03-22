@@ -24,6 +24,9 @@ class PracticePageManager {
   late void Function() _onFinished;
   late List<Verse> _verses;
 
+  Color _textThemeColor = Colors.black;
+  set textThemeColor(Color? value) => _textThemeColor = value ?? Colors.black;
+
   Future<void> init(
     String collectionId,
     void Function() onFinished,
@@ -40,7 +43,7 @@ class PracticePageManager {
     isShowingAnswerNotifier.value = true;
     answerNotifier.value = TextSpan(
       text: _verses[0].answer,
-      style: const TextStyle(color: Colors.black),
+      style: TextStyle(color: _textThemeColor),
     );
   }
 
@@ -96,7 +99,7 @@ class PracticePageManager {
     final textSpan = TextSpan(children: [
       TextSpan(
         text: before.toString(),
-        style: const TextStyle(color: Colors.black),
+        style: TextStyle(color: _textThemeColor),
       ),
       TextSpan(
         text: after,
