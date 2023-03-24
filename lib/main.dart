@@ -5,6 +5,7 @@ import 'package:memorize_scripture/pages/add_verse/add_verse_page.dart';
 import 'package:memorize_scripture/pages/home/home_page.dart';
 import 'package:memorize_scripture/pages/practice/practice_page.dart';
 import 'package:memorize_scripture/pages/settings/settings_page.dart';
+import 'package:memorize_scripture/pages/verse_browser/verse_browser.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/app_manager.dart';
 
@@ -59,6 +60,13 @@ final GoRouter _router = GoRouter(
               name: 'add',
               path: 'add',
               builder: (context, state) => AddVersePage(
+                collection: state.params['collection']!,
+              ),
+            ),
+            GoRoute(
+              name: 'verse_browser',
+              path: 'verse_browser',
+              builder: (context, state) => VerseBrowser(
                 collection: state.params['collection']!,
               ),
             ),
