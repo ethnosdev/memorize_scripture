@@ -4,6 +4,7 @@
 - added browse verses page
 - added edit verse page
 - remove show hints settings option
+- new verse frequency item in settings
 
 ## 0.1.0
 
