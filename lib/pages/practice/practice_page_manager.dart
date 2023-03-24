@@ -72,7 +72,7 @@ class PracticePageManager {
     }
     answerNotifier.value = TextSpan(
       text: result.toString(),
-      style: const TextStyle(color: Colors.black),
+      style: TextStyle(color: _textThemeColor),
     );
   }
 

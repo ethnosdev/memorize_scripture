@@ -54,7 +54,7 @@ class AppManager {
 
 final _lightTheme = ThemeData(
   brightness: Brightness.light,
-  primarySwatch: Colors.green,
+  primarySwatch: Colors.deepPurple,
   textTheme: TextTheme(
     bodyMedium: const TextStyle(fontSize: 14),
     labelSmall: TextStyle(color: ThemeData.light().disabledColor),
