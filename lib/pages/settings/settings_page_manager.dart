@@ -7,21 +7,11 @@ class SettingsPageManager extends ChangeNotifier {
   final themeManager = getIt<AppManager>();
   final userSettings = getIt<UserSettings>();
 
-  bool get shouldShowHints => _shouldShowHints;
-  bool _shouldShowHints = true;
-
   bool get isDarkMode => _isDarkMode;
   bool _isDarkMode = false;
 
   Future<void> init() async {
-    _shouldShowHints = await userSettings.getShowHints();
     _isDarkMode = await userSettings.getDarkMode();
-    notifyListeners();
-  }
-
-  void setShowHints(bool value) {
-    _shouldShowHints = value;
-    userSettings.setShowHints(value);
     notifyListeners();
   }
 

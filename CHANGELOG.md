@@ -2,6 +2,8 @@
 
 - purple theme
 - added browse verses page
+- added edit verse page
+- remove show hints settings option
 
 ## 0.1.0
 

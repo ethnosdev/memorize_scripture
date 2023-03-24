@@ -32,11 +32,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 SettingsSection(
                   tiles: [
                     SettingsTile.switchTile(
-                      title: const Text('Show hints'),
-                      initialValue: manager.shouldShowHints,
-                      onToggle: manager.setShowHints,
-                    ),
-                    SettingsTile.switchTile(
                       title: const Text('Dark mode'),
                       initialValue: manager.isDarkMode,
                       onToggle: manager.setDarkMode,

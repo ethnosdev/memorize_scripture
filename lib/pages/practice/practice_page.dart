@@ -86,14 +86,7 @@ class _PracticePageState extends State<PracticePage> {
                 const SizedBox(height: 20),
                 Prompt(manager: manager),
                 const SizedBox(height: 20),
-                ValueListenableBuilder<bool>(
-                  valueListenable: manager.showHintsNotifier,
-                  builder: (context, showHints, child) {
-                    return (showHints)
-                        ? HintBox(manager: manager)
-                        : const SizedBox();
-                  },
-                ),
+                HintBox(manager: manager),
                 ValueListenableBuilder<TextSpan>(
                   valueListenable: manager.answerNotifier,
                   builder: (context, answer, child) {
