@@ -10,6 +10,12 @@ abstract class DataRepository {
   /// Returns verses in a collection
   Future<List<Verse>> fetchVerses(String collectionId);
 
+  /// Returns a single verse from a collection
+  Future<Verse> fetchVerse({
+    required String collectionId,
+    required String verseId,
+  });
+
   /// Updates a verse in the collection
   ///
   /// If the verse already exists (based on the verse id), then it will
@@ -63,6 +69,14 @@ class FakeData implements DataRepository {
   @override
   Future<List<Verse>> fetchVerses(String collectionId) async {
     return starterVersesWeb;
+  }
+
+  @override
+  Future<Verse> fetchVerse({
+    required String collectionId,
+    required String verseId,
+  }) async {
+    return starterVersesWeb.first;
   }
 
   @override

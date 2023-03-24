@@ -18,6 +18,14 @@ class EmptyDataRepo implements DataRepository {
   Future<void> batchUpdateVerses(Collection collection) {
     throw UnimplementedError();
   }
+
+  @override
+  Future<Verse> fetchVerse({
+    required String collectionId,
+    required String verseId,
+  }) {
+    throw UnimplementedError();
+  }
 }
 
 class MockDataRepo implements DataRepository {
@@ -28,8 +36,16 @@ class MockDataRepo implements DataRepository {
 
   @override
   Future<List<Verse>> fetchVerses(String collectionId) async => [
-        Verse(translation: 'ABC', prompt: 'a 1', answer: 'one two three'),
-        Verse(translation: 'ABC', prompt: 'a 2', answer: 'four five six'),
+        Verse(
+          id: '0',
+          prompt: 'a 1',
+          answer: 'one two three',
+        ),
+        Verse(
+          id: '1',
+          prompt: 'a 2',
+          answer: 'four five six',
+        ),
       ];
 
   @override
@@ -39,6 +55,14 @@ class MockDataRepo implements DataRepository {
 
   @override
   Future<void> batchUpdateVerses(Collection collection) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Verse> fetchVerse({
+    required String collectionId,
+    required String verseId,
+  }) {
     throw UnimplementedError();
   }
 }

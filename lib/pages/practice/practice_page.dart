@@ -27,7 +27,7 @@ class _PracticePageState extends State<PracticePage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    manager.textThemeColor = Theme.of(context).textTheme.displaySmall?.color;
+    manager.textThemeColor = Theme.of(context).textTheme.bodySmall?.color;
   }
 
   @override
@@ -51,7 +51,15 @@ class _PracticePageState extends State<PracticePage> {
             ],
             onSelected: (value) {
               debugPrint(value.toString());
-              if (value == 2) {
+              if (value == 1) {
+                context.goNamed(
+                  'edit',
+                  params: {
+                    'collection': widget.collection,
+                    'verse': manager.currentVerseId,
+                  },
+                );
+              } else if (value == 2) {
                 context.goNamed(
                   'verse_browser',
                   params: {'collection': widget.collection},
@@ -140,7 +148,7 @@ class ButtonPanel extends StatelessWidget {
         child: Row(
           children: [
             ResponseButton(
-              title: 'Today',
+              title: 'Again',
               onPressed: () => manager.onResponse(Difficulty.hard),
             ),
             const SizedBox(width: 5),

@@ -24,6 +24,8 @@ class PracticePageManager {
   late void Function() _onFinished;
   late List<Verse> _verses;
 
+  String get currentVerseId => _verses.first.id;
+
   Color _textThemeColor = Colors.black;
   set textThemeColor(Color? value) => _textThemeColor = value ?? Colors.black;
 

@@ -1,6 +1,7 @@
 ## 0.2.0
 
 - purple theme
+- added browse verses page
 
 ## 0.1.0
 

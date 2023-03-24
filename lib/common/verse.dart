@@ -1,10 +1,10 @@
 class Verse {
   Verse({
-    required this.translation,
+    required this.id,
     required this.prompt,
     required this.answer,
   });
-  final String translation;
+  final String id;
   final String prompt;
   final String answer;
 }

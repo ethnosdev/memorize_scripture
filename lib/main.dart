@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/pages/about/about_page.dart';
 import 'package:memorize_scripture/pages/add_verse/add_verse_page.dart';
+import 'package:memorize_scripture/pages/edit_verse/edit_verse.dart';
 import 'package:memorize_scripture/pages/home/home_page.dart';
 import 'package:memorize_scripture/pages/practice/practice_page.dart';
 import 'package:memorize_scripture/pages/settings/settings_page.dart';
@@ -61,6 +62,14 @@ final GoRouter _router = GoRouter(
               path: 'add',
               builder: (context, state) => AddVersePage(
                 collection: state.params['collection']!,
+              ),
+            ),
+            GoRoute(
+              name: 'edit',
+              path: 'edit/:verse',
+              builder: (context, state) => EditVersePage(
+                collectionId: state.params['collection']!,
+                verseId: state.params['verse']!,
               ),
             ),
             GoRoute(
