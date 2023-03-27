@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/data_repository.dart';
+import 'package:memorize_scripture/services/data_repository/data_repository.dart';
 
 class HomePageManager {
   HomePageManager({DataRepository? dataRepository}) {

@@ -1,8 +1,11 @@
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/common/collection.dart';
-import 'package:memorize_scripture/services/data_repository.dart';
+import 'package:memorize_scripture/services/data_repository/data_repository.dart';
 
 class EmptyDataRepo implements DataRepository {
+  @override
+  Future<void> init() async {}
+
   @override
   Future<List<Collection>> fetchCollectionMetadata() async => [];
 
@@ -29,6 +32,9 @@ class EmptyDataRepo implements DataRepository {
 }
 
 class MockDataRepo implements DataRepository {
+  @override
+  Future<void> init() async {}
+
   @override
   Future<List<Collection>> fetchCollectionMetadata() async => [
         Collection(id: 'id', name: 'name'),

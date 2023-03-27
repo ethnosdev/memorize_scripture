@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/data_repository.dart';
+import 'package:memorize_scripture/services/data_repository/data_repository.dart';
 
 class EditVersePageManager {
   final verseNotifier = ValueNotifier<Verse?>(null);

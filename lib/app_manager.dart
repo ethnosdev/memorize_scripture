@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/data_repository.dart';
+import 'package:memorize_scripture/services/data_repository/data_repository.dart';
 import 'package:memorize_scripture/services/sample_verses.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:package_info_plus/package_info_plus.dart';

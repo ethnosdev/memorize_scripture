@@ -14,6 +14,7 @@ dependencies:
   package_info_plus: ^3.0.3
   settings_ui: ^2.0.2
   shared_preferences: ^2.0.18
+  realm: ^1.0.2
 
 dev_dependencies:
   flutter_test:
