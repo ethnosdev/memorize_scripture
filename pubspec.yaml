@@ -12,9 +12,11 @@ dependencies:
   get_it: ^7.2.0
   go_router: ^6.0.2
   package_info_plus: ^3.0.3
+  path: ^1.8.2
   settings_ui: ^2.0.2
   shared_preferences: ^2.0.18
-  realm: ^1.0.2
+  sqflite: ^2.2.6
+  uuid: ^3.0.7
 
 dev_dependencies:
   flutter_test:

@@ -8,7 +8,7 @@ class VerseBrowserManager {
   final listNotifier = ValueNotifier<List<Verse>>([]);
 
   Future<void> init(String collectionId) async {
-    final list = await dataRepo.fetchVerses(collectionId) ?? [];
+    final list = await dataRepo.fetchAllVerses(collectionId);
     listNotifier.value = list;
   }
 }

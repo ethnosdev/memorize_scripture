@@ -13,7 +13,7 @@ class HomePageManager {
   List<Collection> _collections = [];
 
   Future<void> init() async {
-    _collections = await dataRepository.fetchCollectionMetadata();
+    _collections = await dataRepository.fetchCollections();
     collectionNotifier.value = _collections.map((c) => c.name).toList();
   }
 

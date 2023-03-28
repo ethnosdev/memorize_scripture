@@ -40,7 +40,7 @@ class AppManager {
 
   Future<void> _copySampleCollection() async {
     final dataRepo = getIt<DataRepository>();
-    await dataRepo.batchUpdateVerses(Collection(
+    await dataRepo.batchInsertVerses(Collection(
       id: 'sample',
       name: 'Sample pack',
       verses: starterVersesWeb,

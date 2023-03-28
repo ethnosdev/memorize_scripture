@@ -32,7 +32,7 @@ class PracticePageManager {
     String collectionId,
     void Function() onFinished,
   ) async {
-    _verses = await dataRepository.fetchVerses(collectionId);
+    _verses = await dataRepository.fetchAllVerses(collectionId);
     _onFinished = onFinished;
     promptNotifier.value = _verses[0].prompt;
     countNotifier.value = _verses.length.toString();

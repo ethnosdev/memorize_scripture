@@ -7,18 +7,18 @@ class EmptyDataRepo implements DataRepository {
   Future<void> init() async {}
 
   @override
-  Future<List<Collection>> fetchCollectionMetadata() async => [];
+  Future<List<Collection>> fetchCollections() async => [];
 
   @override
-  Future<List<Verse>> fetchVerses(String collectionId) async => [];
+  Future<List<Verse>> fetchAllVerses(String collectionId) async => [];
 
   @override
-  Future<void> updateVerse(String collectionId, Verse verse) {
+  Future<void> upsertVerse(String collectionId, Verse verse) {
     throw UnimplementedError();
   }
 
   @override
-  Future<void> batchUpdateVerses(Collection collection) {
+  Future<void> batchInsertVerses(Collection collection) {
     throw UnimplementedError();
   }
 
@@ -36,12 +36,12 @@ class MockDataRepo implements DataRepository {
   Future<void> init() async {}
 
   @override
-  Future<List<Collection>> fetchCollectionMetadata() async => [
+  Future<List<Collection>> fetchCollections() async => [
         Collection(id: 'id', name: 'name'),
       ];
 
   @override
-  Future<List<Verse>> fetchVerses(String collectionId) async => [
+  Future<List<Verse>> fetchAllVerses(String collectionId) async => [
         Verse(
           id: '0',
           prompt: 'a 1',
@@ -55,12 +55,12 @@ class MockDataRepo implements DataRepository {
       ];
 
   @override
-  Future<void> updateVerse(String collectionId, Verse verse) {
+  Future<void> upsertVerse(String collectionId, Verse verse) {
     throw UnimplementedError();
   }
 
   @override
-  Future<void> batchUpdateVerses(Collection collection) {
+  Future<void> batchInsertVerses(Collection collection) {
     throw UnimplementedError();
   }
 
