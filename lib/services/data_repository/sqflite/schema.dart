@@ -3,13 +3,13 @@ class VerseEntry {
   static const String verseTable = "verses";
 
   // Column names
-  static const String id = "_id";
-  static const String collectionId = "collection_id";
-  static const String prompt = "prompt";
-  static const String answer = "answer";
-  static const String nextDueDate = "next_due_date";
-  static const String consecutiveCorrect = "consecutive_correct";
-  static const String easinessFactor = "easiness_factor";
+  static const String id = '_id';
+  static const String collectionId = 'collection_id';
+  static const String prompt = 'prompt';
+  static const String answer = 'answer';
+  static const String nextDueDate = 'next_due_date';
+  static const String consecutiveCorrect = 'consecutive_correct';
+  static const String easinessFactor = 'easiness_factor';
 
   // SQL statements
   static const String createVocabTable = '''
@@ -31,13 +31,15 @@ class CollectionEntry {
   static const String collectionTable = "collection";
 
   // Column names
-  static const String id = "_id";
-  static const String name = "name";
+  static const String id = '_id';
+  static const String name = 'name';
+  static const String sequence = 'sequence';
 
   // SQL statements
   static const String createCollectionTable = '''
 CREATE TABLE $collectionTable (
   $id TEXT PRIMARY KEY,
-  $name TEXT NOT NULL UNIQUE)
+  $name TEXT NOT NULL UNIQUE,
+  $sequence INTEGER NOT NULL)
 ''';
 }

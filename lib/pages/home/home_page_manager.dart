@@ -26,8 +26,9 @@ class HomePageManager {
   }
 
   void onCollectionItemReordered(int oldIndex, int newIndex) {
-    final list = collectionNotifier.value.toList();
+    final list = collectionNotifier.value;
     list.move(oldIndex, newIndex);
+    dataRepository.moveCollection(oldIndex, newIndex);
     collectionNotifier.value = list;
   }
 
@@ -42,7 +43,9 @@ class HomePageManager {
 
   void deleteCollection(int index) {
     final list = collectionNotifier.value.toList();
+    final collection = list[index];
     list.removeAt(index);
+    dataRepository.deleteCollection(collectionId: collection.id!);
     collectionNotifier.value = list;
   }
 

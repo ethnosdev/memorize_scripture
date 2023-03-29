@@ -37,6 +37,9 @@ class EmptyDataRepo implements DataRepository {
 
   @override
   Future<void> upsertVerse(String collectionId, Verse verse) async {}
+
+  @override
+  Future<void> moveCollection(int oldIndex, int newIndex) async {}
 }
 
 class MockDataRepo implements DataRepository {
@@ -99,6 +102,12 @@ class MockDataRepo implements DataRepository {
   @override
   Future<void> upsertCollection(Collection collection) {
     // TODO: implement upsertCollection
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> moveCollection(int oldIndex, int newIndex) {
+    // TODO: implement moveCollection
     throw UnimplementedError();
   }
 }

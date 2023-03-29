@@ -1,6 +1,5 @@
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/verse.dart';
-import 'package:memorize_scripture/services/sample_verses.dart';
 
 abstract class DataRepository {
   Future<void> init();
@@ -46,44 +45,7 @@ abstract class DataRepository {
 
   /// Deletes a collection
   Future<void> deleteCollection({required String collectionId});
+
+  /// Move sequence location where the collection appears in the list
+  Future<void> moveCollection(int oldIndex, int newIndex);
 }
-
-// class FakeData implements DataRepository {
-//   @override
-//   Future<void> init() async {
-//     // do nothing
-//   }
-
-//   @override
-//   Future<List<Collection>> fetchCollections() async {
-//     return [
-//       Collection(id: '001', name: 'Starter pack'),
-//     ];
-//   }
-
-//   @override
-//   Future<List<Verse>> fetchAllVerses(String collectionId) async {
-//     return starterVersesWeb;
-//   }
-
-//   @override
-//   Future<Verse> fetchVerse({
-//     required String collectionId,
-//     required String verseId,
-//   }) async {
-//     return starterVersesWeb.first;
-//   }
-
-//   @override
-//   Future<void> upsertVerse(
-//     String collectionId,
-//     Verse verse,
-//   ) async {
-//     // ignore
-//   }
-
-//   @override
-//   Future<void> batchInsertVerses(Collection collection) async {
-//     // ignore
-//   }
-// }
