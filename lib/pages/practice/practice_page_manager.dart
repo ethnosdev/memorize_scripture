@@ -23,7 +23,7 @@ class PracticePageManager {
   late void Function() _onFinished;
   late List<Verse> _verses;
 
-  String get currentVerseId => _verses.first.id;
+  String get currentVerseId => _verses.first.id!;
 
   Color _textThemeColor = Colors.black;
   set textThemeColor(Color? value) => _textThemeColor = value ?? Colors.black;
@@ -34,6 +34,10 @@ class PracticePageManager {
   ) async {
     _verses = await dataRepository.fetchAllVerses(collectionId);
     _onFinished = onFinished;
+    if (_verses.isEmpty) {
+      _onFinished();
+      return;
+    }
     promptNotifier.value = _verses[0].prompt;
     countNotifier.value = _verses.length.toString();
   }

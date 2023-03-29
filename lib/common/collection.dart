@@ -1,6 +1,6 @@
 class Collection {
   Collection({
-    required this.id,
+    this.id,
     required this.name,
   });
   final String? id;

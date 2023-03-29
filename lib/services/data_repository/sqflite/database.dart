@@ -35,7 +35,7 @@ class LocalStorage implements DataRepository {
   }
 
   @override
-  Future<List<Verse>> fetchAllVerses({String? collectionId}) async {
+  Future<List<Verse>> fetchAllVerses([String? collectionId]) async {
     List<Map<String, dynamic>> verseMaps;
     if (collectionId != null) {
       verseMaps = await _database.query(

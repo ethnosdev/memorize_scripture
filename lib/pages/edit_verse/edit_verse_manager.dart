@@ -17,10 +17,7 @@ class EditVersePageManager {
     _collectionId = collectionId;
     _verseId = verseId;
 
-    verseNotifier.value = await dataRepo.fetchVerse(
-      collectionId: collectionId,
-      verseId: verseId,
-    );
+    verseNotifier.value = await dataRepo.fetchVerse(verseId: verseId);
   }
 
   Future<void> saveVerse({

@@ -3,10 +3,14 @@ import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
 import 'package:test/test.dart';
 
 import 'mocks/data_repo_mocks.dart';
+import 'mocks/user_settings_mock.dart';
 
 void main() {
   test('init on empty collection', () async {
-    final manager = PracticePageManager(dataRepository: EmptyDataRepo());
+    final manager = PracticePageManager(
+      dataRepository: EmptyDataRepo(),
+      userSettings: MockUserSettings(),
+    );
 
     await manager.init('whatever', () {});
 
@@ -15,7 +19,10 @@ void main() {
   });
 
   test('init with collection', () async {
-    final manager = PracticePageManager(dataRepository: MockDataRepo());
+    final manager = PracticePageManager(
+      dataRepository: MockDataRepo(),
+      userSettings: MockUserSettings(),
+    );
 
     await manager.init('whatever', () {});
 
@@ -24,7 +31,10 @@ void main() {
   });
 
   test('showNextWordHint', () async {
-    final manager = PracticePageManager(dataRepository: MockDataRepo());
+    final manager = PracticePageManager(
+      dataRepository: MockDataRepo(),
+      userSettings: MockUserSettings(),
+    );
     await manager.init('whatever', () {});
 
     manager.showNextWordHint();
@@ -50,7 +60,10 @@ void main() {
   });
 
   test('showFirstLettersHint', () async {
-    final manager = PracticePageManager(dataRepository: MockDataRepo());
+    final manager = PracticePageManager(
+      dataRepository: MockDataRepo(),
+      userSettings: MockUserSettings(),
+    );
     await manager.init('whatever', () {});
 
     manager.showFirstLettersHint();
@@ -60,7 +73,10 @@ void main() {
   });
 
   test('show', () async {
-    final manager = PracticePageManager(dataRepository: MockDataRepo());
+    final manager = PracticePageManager(
+      dataRepository: MockDataRepo(),
+      userSettings: MockUserSettings(),
+    );
 
     await manager.init('whatever', () {});
     manager.show();
@@ -73,7 +89,10 @@ void main() {
   test('onResponse', () async {
     // There are two verses
 
-    final manager = PracticePageManager(dataRepository: MockDataRepo());
+    final manager = PracticePageManager(
+      dataRepository: MockDataRepo(),
+      userSettings: MockUserSettings(),
+    );
     await manager.init('whatever', () {});
 
     // mark the first one as hard
