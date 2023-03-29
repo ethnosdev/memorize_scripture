@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
 import 'package:memorize_scripture/service_locator.dart';
 
@@ -9,7 +10,7 @@ class PracticePage extends StatefulWidget {
     required this.collection,
   });
 
-  final String collection;
+  final Collection collection;
 
   @override
   State<PracticePage> createState() => _PracticePageState();
@@ -21,7 +22,7 @@ class _PracticePageState extends State<PracticePage> {
   @override
   void initState() {
     super.initState();
-    manager.init(widget.collection, _onFinished);
+    manager.init(widget.collection.id!, _onFinished);
   }
 
   @override
@@ -34,13 +35,13 @@ class _PracticePageState extends State<PracticePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.collection),
+        title: Text(widget.collection.name),
         actions: [
           IconButton(
               onPressed: () {
                 context.goNamed(
                   'add',
-                  params: {'collection': widget.collection},
+                  extra: widget.collection,
                 );
               },
               icon: const Icon(Icons.add)),
@@ -55,14 +56,14 @@ class _PracticePageState extends State<PracticePage> {
                 context.goNamed(
                   'edit',
                   params: {
-                    'collection': widget.collection,
                     'verse': manager.currentVerseId,
                   },
+                  extra: widget.collection,
                 );
               } else if (value == 2) {
                 context.goNamed(
                   'verse_browser',
-                  params: {'collection': widget.collection},
+                  extra: widget.collection,
                 );
               }
             },

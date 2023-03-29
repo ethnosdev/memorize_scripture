@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/pages/about/about_page.dart';
 import 'package:memorize_scripture/pages/add_verse/add_verse_page.dart';
 import 'package:memorize_scripture/pages/edit_verse/edit_verse.dart';
@@ -52,23 +53,25 @@ final GoRouter _router = GoRouter(
       routes: [
         GoRoute(
           name: 'practice',
-          path: "practice/:collection",
-          builder: (context, state) => PracticePage(
-            collection: state.params['collection']!,
-          ),
+          path: "practice",
+          builder: (context, state) {
+            return PracticePage(
+              collection: state.extra as Collection,
+            );
+          },
           routes: [
             GoRoute(
               name: 'add',
               path: 'add',
               builder: (context, state) => AddVersePage(
-                collection: state.params['collection']!,
+                collection: state.extra as Collection,
               ),
             ),
             GoRoute(
               name: 'edit',
               path: 'edit/:verse',
               builder: (context, state) => EditVersePage(
-                collectionId: state.params['collection']!,
+                collection: state.extra as Collection,
                 verseId: state.params['verse']!,
               ),
             ),
@@ -76,7 +79,7 @@ final GoRouter _router = GoRouter(
               name: 'verse_browser',
               path: 'verse_browser',
               builder: (context, state) => VerseBrowser(
-                collection: state.params['collection']!,
+                collection: state.extra as Collection,
               ),
             ),
           ],

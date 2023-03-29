@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/drawer.dart';
 import 'package:memorize_scripture/pages/home/home_page_manager.dart';
 
@@ -103,24 +104,24 @@ class _BodyWidgetState extends State<BodyWidget> {
     return Column(
       children: [
         Expanded(
-          child: ValueListenableBuilder<List<String>>(
+          child: ValueListenableBuilder<List<Collection>>(
               valueListenable: manager.collectionNotifier,
-              builder: (context, collectionNames, child) {
+              builder: (context, collections, child) {
                 return ReorderableListView.builder(
                   buildDefaultDragHandles: false,
-                  itemCount: collectionNames.length,
+                  itemCount: collections.length,
                   itemBuilder: (context, index) {
-                    final name = collectionNames[index];
+                    final collection = collections[index];
                     return Card(
-                      key: ValueKey(name),
+                      key: ValueKey(collection.name),
                       child: ReorderableDragStartListener(
                         index: index,
                         child: ListTile(
-                          title: Text(name),
+                          title: Text(collection.name),
                           onTap: () {
                             context.goNamed(
                               'practice',
-                              params: {'collection': name},
+                              extra: collection,
                             );
                           },
                           onLongPress: () {

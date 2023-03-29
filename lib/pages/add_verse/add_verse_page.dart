@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memorize_scripture/common/collection.dart';
 
 class AddVersePage extends StatelessWidget {
   const AddVersePage({
@@ -6,13 +7,13 @@ class AddVersePage extends StatelessWidget {
     required this.collection,
   });
 
-  final String collection;
+  final Collection collection;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(collection),
+        title: Text(collection.name),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

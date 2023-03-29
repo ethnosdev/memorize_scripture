@@ -67,7 +67,8 @@ class LocalStorage implements DataRepository {
     } else {
       verses = await _database.query(VerseEntry.verseTable);
     }
-    print('fetchAllVerses');
+    print('fetchAllVerses: ${verses.length}');
+    print('collectionId: $collectionId');
     return List.generate(verses.length, (i) {
       return Verse(
         id: verses[i][VerseEntry.id] as String,

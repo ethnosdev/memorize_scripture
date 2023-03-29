@@ -9,19 +9,20 @@ class HomePageManager {
   }
   late final DataRepository dataRepository;
 
-  final collectionNotifier = ValueNotifier<List<String>>([]);
-  List<Collection> _collections = [];
+  final collectionNotifier = ValueNotifier<List<Collection>>([]);
+  //List<Collection> _collections = [];
 
   Future<void> init() async {
-    _collections = await dataRepository.fetchCollections();
-    collectionNotifier.value = _collections.map((c) => c.name).toList();
+    final collections = await dataRepository.fetchCollections();
+    collectionNotifier.value = collections;
   }
 
-  void addCollection(String? name) {
+  Future<void> addCollection(String? name) async {
     if (name == null || name.isEmpty) return;
-    final list = collectionNotifier.value.toList();
-    list.add(name);
-    collectionNotifier.value = list;
+    final collection = Collection(name: name);
+    await dataRepository.upsertCollection(collection);
+    final collections = await dataRepository.fetchCollections();
+    collectionNotifier.value = collections;
   }
 
   void onCollectionItemReordered(int oldIndex, int newIndex) {
@@ -30,11 +31,13 @@ class HomePageManager {
     collectionNotifier.value = list;
   }
 
-  void renameCollection({required int index, String? newName}) {
+  Future<void> renameCollection({required int index, String? newName}) async {
     if (newName == null || newName.isEmpty) return;
-    final list = collectionNotifier.value.toList();
-    list[index] = newName;
-    collectionNotifier.value = list;
+    final oldCollection = collectionNotifier.value[index];
+    await dataRepository.upsertCollection(
+      oldCollection.copyWith(name: newName),
+    );
+    collectionNotifier.value = await dataRepository.fetchCollections();
   }
 
   void deleteCollection(int index) {
@@ -44,7 +47,7 @@ class HomePageManager {
   }
 
   String collectionNameAt(int index) {
-    return collectionNotifier.value[index];
+    return collectionNotifier.value[index].name;
   }
 }
 
