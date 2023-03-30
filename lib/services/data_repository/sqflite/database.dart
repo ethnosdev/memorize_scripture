@@ -14,14 +14,16 @@ class LocalStorage implements DataRepository {
 
   @override
   Future<void> init() async {
-    print('init');
+    final path = join(await getDatabasesPath(), _databaseName);
+    print('init: $path');
     _database = await openDatabase(
-      join(await getDatabasesPath(), _databaseName),
+      path,
       onCreate: (db, version) async {
         print('creating database: ${db.path}');
         await db.execute(CollectionEntry.createCollectionTable);
         await db.execute(VerseEntry.createVocabTable);
         await _insertInitialData(db);
+        print('finished creating');
       },
       version: _databaseVersion,
     );
@@ -109,7 +111,7 @@ class LocalStorage implements DataRepository {
         limit: limit,
       );
     }
-    print('fetchTodaysVerses: ${verses.length}');
+    print('fetchTodaysVerses: $verses');
     return List.generate(verses.length, (i) {
       return Verse(
         id: verses[i][VerseEntry.id] as String,
@@ -131,7 +133,7 @@ class LocalStorage implements DataRepository {
     );
     if (results.isEmpty) return null;
     final verse = results.first;
-    print('fetchVerse: ${verse[VerseEntry.prompt]}');
+    print('fetchVerse: $verse');
     return Verse(
       id: verse[VerseEntry.id] as String,
       prompt: verse[VerseEntry.prompt] as String,
@@ -155,7 +157,7 @@ class LocalStorage implements DataRepository {
   }
 
   Future<void> _insert(String collectionId, Verse verse) async {
-    print('_insert');
+    print('_insert verse');
     await _database.insert(
       VerseEntry.verseTable,
       {
@@ -171,7 +173,7 @@ class LocalStorage implements DataRepository {
   }
 
   Future<void> _update(String collectionId, Verse verse) async {
-    print('_update');
+    print('_update verse');
     await _database.update(
       VerseEntry.verseTable,
       {
@@ -243,6 +245,20 @@ class LocalStorage implements DataRepository {
   @override
   Future<void> upsertCollection(Collection collection) async {
     print('upsertCollection');
+
+    // Check if another collection has the same name
+    final results = await _database.query(
+      CollectionEntry.collectionTable,
+      where: '${CollectionEntry.name} = ?',
+      whereArgs: [collection.name],
+    );
+    if (results.isNotEmpty &&
+        results.first[CollectionEntry.id] != collection.id) {
+      // Don't allow duplicate collection names
+      print('Dont allow duplicate collection names');
+      return;
+    }
+
     // Get the current max sequence value
     final result = await _database.rawQuery(
       'SELECT MAX(${CollectionEntry.sequence}) as max_sequence '
@@ -262,7 +278,11 @@ class LocalStorage implements DataRepository {
         whereArgs: [collection.id],
       );
       sequence = existingCollection.first[CollectionEntry.sequence] as int;
+      print(
+          'id: ${existingCollection.first[CollectionEntry.id]}, name: ${existingCollection.first[CollectionEntry.name]}');
     }
+
+    print('id: ${collection.id}, name: ${collection.name}');
 
     // Insert or replace the collection
     await _database.insert(
