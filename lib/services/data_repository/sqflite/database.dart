@@ -250,7 +250,7 @@ class LocalStorage implements DataRepository {
     final results = await _database.query(
       CollectionEntry.collectionTable,
       where: '${CollectionEntry.name} = ?',
-      whereArgs: [collection.name],
+      whereArgs: [collection.name.trim()],
     );
     if (results.isNotEmpty &&
         results.first[CollectionEntry.id] != collection.id) {
@@ -289,7 +289,7 @@ class LocalStorage implements DataRepository {
       CollectionEntry.collectionTable,
       {
         CollectionEntry.id: collection.id ?? const Uuid().v4(),
-        CollectionEntry.name: collection.name,
+        CollectionEntry.name: collection.name.trim(),
         CollectionEntry.sequence: sequence,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
