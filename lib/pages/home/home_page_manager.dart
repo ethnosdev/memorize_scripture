@@ -25,13 +25,6 @@ class HomePageManager {
     collectionNotifier.value = collections;
   }
 
-  void onCollectionItemReordered(int oldIndex, int newIndex) {
-    final list = collectionNotifier.value;
-    list.move(oldIndex, newIndex);
-    dataRepository.moveCollection(oldIndex, newIndex);
-    collectionNotifier.value = list;
-  }
-
   Future<void> renameCollection({required int index, String? newName}) async {
     if (newName == null || newName.isEmpty) return;
     final oldCollection = collectionNotifier.value[index];

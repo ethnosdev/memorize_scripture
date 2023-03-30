@@ -107,8 +107,7 @@ class _BodyWidgetState extends State<BodyWidget> {
           child: ValueListenableBuilder<List<Collection>>(
               valueListenable: manager.collectionNotifier,
               builder: (context, collections, child) {
-                return ReorderableListView.builder(
-                  buildDefaultDragHandles: false,
+                return ListView.builder(
                   itemCount: collections.length,
                   itemBuilder: (context, index) {
                     final collection = collections[index];
@@ -130,9 +129,6 @@ class _BodyWidgetState extends State<BodyWidget> {
                         ),
                       ),
                     );
-                  },
-                  onReorder: (int oldIndex, int newIndex) {
-                    manager.onCollectionItemReordered(oldIndex, newIndex);
                   },
                 );
               }),

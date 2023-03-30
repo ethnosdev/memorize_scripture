@@ -33,13 +33,11 @@ class CollectionEntry {
   // Column names
   static const String id = '_id';
   static const String name = 'name';
-  static const String sequence = 'sequence';
 
   // SQL statements
   static const String createCollectionTable = '''
 CREATE TABLE $collectionTable (
   $id TEXT PRIMARY KEY,
-  $name TEXT NOT NULL UNIQUE,
-  $sequence INTEGER NOT NULL)
+  $name TEXT NOT NULL UNIQUE)
 ''';
 }

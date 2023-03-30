@@ -37,7 +37,6 @@ class LocalStorage implements DataRepository {
     await db.insert(CollectionEntry.collectionTable, {
       CollectionEntry.id: collection.id,
       CollectionEntry.name: collection.name,
-      CollectionEntry.sequence: 0,
     });
     await batchInsertVerses(
       database: db,
@@ -50,7 +49,7 @@ class LocalStorage implements DataRepository {
   Future<List<Collection>> fetchCollections() async {
     final collections = await _database.query(
       CollectionEntry.collectionTable,
-      orderBy: CollectionEntry.sequence,
+      orderBy: 'LOWER(${CollectionEntry.name}) ASC',
     );
     print('fetchCollections: $collections');
     return List.generate(collections.length, (i) {
@@ -259,29 +258,6 @@ class LocalStorage implements DataRepository {
       return;
     }
 
-    // Get the current max sequence value
-    final result = await _database.rawQuery(
-      'SELECT MAX(${CollectionEntry.sequence}) as max_sequence '
-      'FROM ${CollectionEntry.collectionTable}',
-    );
-    final maxSequence = result.first['max_sequence'] as int? ?? 0;
-
-    // If the collection exists, use the existing sequence,
-    // otherwise use the next sequence value
-    int sequence;
-    if (collection.id == null) {
-      sequence = maxSequence + 1;
-    } else {
-      final existingCollection = await _database.query(
-        CollectionEntry.collectionTable,
-        where: '${CollectionEntry.id} = ?',
-        whereArgs: [collection.id],
-      );
-      sequence = existingCollection.first[CollectionEntry.sequence] as int;
-      print(
-          'id: ${existingCollection.first[CollectionEntry.id]}, name: ${existingCollection.first[CollectionEntry.name]}');
-    }
-
     print('id: ${collection.id}, name: ${collection.name}');
 
     // Insert or replace the collection
@@ -290,7 +266,6 @@ class LocalStorage implements DataRepository {
       {
         CollectionEntry.id: collection.id ?? const Uuid().v4(),
         CollectionEntry.name: collection.name.trim(),
-        CollectionEntry.sequence: sequence,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -299,66 +274,10 @@ class LocalStorage implements DataRepository {
   @override
   Future<void> deleteCollection({required String collectionId}) async {
     print('deleteCollection');
-
-    // Get the sequence of the collection to be deleted
-    final collection = await _database.query(
-      CollectionEntry.collectionTable,
-      where: '${CollectionEntry.id} = ?',
-      whereArgs: [collectionId],
-    );
-    if (collection.isEmpty) return;
-    final sequence = collection.first[CollectionEntry.sequence] as int;
-
-    // Delete the collection
     await _database.delete(
       CollectionEntry.collectionTable,
       where: '${CollectionEntry.id} = ?',
       whereArgs: [collectionId],
     );
-
-    // Update the sequence values of the remaining collections
-    await _database.rawUpdate(
-      'UPDATE ${CollectionEntry.collectionTable} '
-      'SET ${CollectionEntry.sequence} = ${CollectionEntry.sequence} - 1 '
-      'WHERE ${CollectionEntry.sequence} > ?',
-      [sequence],
-    );
-  }
-
-  @override
-  Future<void> moveCollection(int oldIndex, int newIndex) async {
-    if (oldIndex == newIndex) return;
-    print('moveCollection');
-
-    await _database.transaction((txn) async {
-      // Get the collection at the oldIndex
-      final collection = await txn.query(
-        CollectionEntry.collectionTable,
-        where: '${CollectionEntry.sequence} = ?',
-        whereArgs: [oldIndex],
-      );
-      if (collection.isEmpty) return;
-
-      // Determine the range and direction of the sequence update
-      final int start = oldIndex < newIndex ? oldIndex + 1 : newIndex;
-      final int end = oldIndex < newIndex ? newIndex : oldIndex - 1;
-      final int direction = oldIndex < newIndex ? -1 : 1;
-
-      // Update the sequence values of collections between oldIndex and newIndex
-      await txn.rawUpdate(
-        'UPDATE ${CollectionEntry.collectionTable} '
-        'SET ${CollectionEntry.sequence} = ${CollectionEntry.sequence} + ? '
-        'WHERE ${CollectionEntry.sequence} BETWEEN ? AND ?',
-        [direction, start, end],
-      );
-
-      // Update the sequence value of the collection at the oldIndex to newIndex
-      await txn.update(
-        CollectionEntry.collectionTable,
-        {CollectionEntry.sequence: newIndex},
-        where: '${CollectionEntry.id} = ?',
-        whereArgs: [collection.first[CollectionEntry.id]],
-      );
-    });
   }
 }

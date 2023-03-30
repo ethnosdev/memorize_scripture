@@ -35,7 +35,7 @@ class PracticePageManager {
     _verses = await dataRepository.fetchAllVerses(collectionId);
     _onFinished = onFinished;
     if (_verses.isEmpty) {
-      _onFinished();
+      // _onFinished();
       return;
     }
     promptNotifier.value = _verses[0].prompt;

@@ -45,7 +45,4 @@ abstract class DataRepository {
 
   /// Deletes a collection
   Future<void> deleteCollection({required String collectionId});
-
-  /// Move sequence location where the collection appears in the list
-  Future<void> moveCollection(int oldIndex, int newIndex);
 }
