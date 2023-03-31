@@ -22,104 +22,176 @@ class _PracticePageState extends State<PracticePage> {
   @override
   void initState() {
     super.initState();
-    manager.init(widget.collection.id!, _onFinished);
+    manager.init(
+      collectionId: widget.collection.id!,
+    );
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    manager.textThemeColor = Theme.of(context).textTheme.bodySmall?.color;
+    manager.textThemeColor = Theme.of(context).textTheme.bodyMedium?.color;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.collection.name),
-        actions: [
-          IconButton(
-              onPressed: () {
-                context.goNamed(
-                  'add',
-                  extra: widget.collection,
-                );
-              },
-              icon: const Icon(Icons.add)),
-          PopupMenuButton(
-            itemBuilder: (context) => const [
-              PopupMenuItem(value: 1, child: Text('Edit')),
-              PopupMenuItem(value: 2, child: Text('View all')),
-            ],
-            onSelected: (value) {
-              debugPrint(value.toString());
-              if (value == 1) {
-                context.goNamed(
-                  'edit',
-                  params: {
-                    'verse': manager.currentVerseId,
-                  },
-                  extra: widget.collection,
-                );
-              } else if (value == 2) {
-                context.goNamed(
-                  'verse_browser',
-                  extra: widget.collection,
-                );
-              }
-            },
-          ),
-        ],
+      appBar: MyAppBar(
+        collection: widget.collection,
+        manager: manager,
       ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ValueListenableBuilder<String>(
-              valueListenable: manager.countNotifier,
-              builder: (context, count, child) {
-                return Text(count);
-              },
-            ),
-          ),
-          Center(
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                Prompt(manager: manager),
-                const SizedBox(height: 20),
-                HintBox(manager: manager),
-                ValueListenableBuilder<TextSpan>(
-                  valueListenable: manager.answerNotifier,
-                  builder: (context, answer, child) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text.rich(
-                        answer,
-                        textAlign: TextAlign.center,
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-          ValueListenableBuilder<bool>(
-            valueListenable: manager.isShowingAnswerNotifier,
-            builder: (context, isShowingAnswer, child) {
-              if (isShowingAnswer) {
-                return ButtonPanel(manager: manager);
-              } else {
-                return ShowButton(manager: manager);
-              }
-            },
-          ),
-        ],
+      body: ValueListenableBuilder<PracticeState>(
+        valueListenable: manager.uiNotifier,
+        builder: (context, value, child) {
+          switch (value) {
+            case PracticeState.loading:
+              return const LoadingIndicator();
+            case PracticeState.emptyCollection:
+              return const EmptyCollection();
+            case PracticeState.practicing:
+              return PromptAnswerLayout(manager: manager);
+            case PracticeState.finishedWithMoreRemaining:
+              return Placeholder();
+            case PracticeState.finished:
+              return Placeholder();
+          }
+        },
       ),
     );
   }
+}
 
-  void _onFinished() {
-    Navigator.of(context).pop();
+class EmptyCollection extends StatelessWidget {
+  const EmptyCollection({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('Press the + button to add a verse.'),
+    );
+  }
+}
+
+class LoadingIndicator extends StatelessWidget {
+  const LoadingIndicator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const LinearProgressIndicator(minHeight: 2);
+  }
+}
+
+class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const MyAppBar({
+    super.key,
+    required this.collection,
+    required this.manager,
+  });
+
+  final Collection collection;
+  final PracticePageManager manager;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: Text(collection.name),
+      actions: [
+        IconButton(
+            onPressed: () {
+              context.goNamed(
+                'add',
+                extra: collection,
+              );
+            },
+            icon: const Icon(Icons.add)),
+        PopupMenuButton(
+          itemBuilder: (context) => const [
+            PopupMenuItem(value: 1, child: Text('Edit')),
+            PopupMenuItem(value: 2, child: Text('View all')),
+          ],
+          onSelected: (value) {
+            debugPrint(value.toString());
+            if (value == 1) {
+              context.goNamed(
+                'edit',
+                params: {
+                  'verse': manager.currentVerseId,
+                },
+                extra: collection,
+              );
+            } else if (value == 2) {
+              context.goNamed(
+                'verse_browser',
+                extra: collection,
+              );
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+class PromptAnswerLayout extends StatelessWidget {
+  const PromptAnswerLayout({
+    super.key,
+    required this.manager,
+  });
+
+  final PracticePageManager manager;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ValueListenableBuilder<String>(
+            valueListenable: manager.countNotifier,
+            builder: (context, count, child) {
+              return Text(count);
+            },
+          ),
+        ),
+        Center(
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              Prompt(manager: manager),
+              const SizedBox(height: 20),
+              HintBox(manager: manager),
+              ValueListenableBuilder<TextSpan>(
+                valueListenable: manager.answerNotifier,
+                builder: (context, answer, child) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text.rich(
+                      answer,
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        ValueListenableBuilder<bool>(
+          valueListenable: manager.isShowingAnswerNotifier,
+          builder: (context, isShowingAnswer, child) {
+            if (isShowingAnswer) {
+              return ButtonPanel(manager: manager);
+            } else {
+              return ShowButton(manager: manager);
+            }
+          },
+        ),
+      ],
+    );
   }
 }
 

@@ -12,7 +12,7 @@ void main() {
       userSettings: MockUserSettings(),
     );
 
-    await manager.init('whatever', () {});
+    await manager.init(collectionId: 'whatever');
 
     expect(manager.answerNotifier.value, const TextSpan());
     expect(manager.isShowingAnswerNotifier.value, false);
@@ -24,7 +24,7 @@ void main() {
       userSettings: MockUserSettings(),
     );
 
-    await manager.init('whatever', () {});
+    await manager.init(collectionId: 'whatever');
 
     expect(manager.answerNotifier.value, const TextSpan());
     expect(manager.isShowingAnswerNotifier.value, false);
@@ -35,7 +35,7 @@ void main() {
       dataRepository: MockDataRepo(),
       userSettings: MockUserSettings(),
     );
-    await manager.init('whatever', () {});
+    await manager.init(collectionId: 'whatever');
 
     manager.showNextWordHint();
 
@@ -64,7 +64,7 @@ void main() {
       dataRepository: MockDataRepo(),
       userSettings: MockUserSettings(),
     );
-    await manager.init('whatever', () {});
+    await manager.init(collectionId: 'whatever');
 
     manager.showFirstLettersHint();
 
@@ -78,7 +78,7 @@ void main() {
       userSettings: MockUserSettings(),
     );
 
-    await manager.init('whatever', () {});
+    await manager.init(collectionId: 'whatever');
     manager.show();
 
     final text = manager.answerNotifier.value.text;
@@ -93,7 +93,7 @@ void main() {
       dataRepository: MockDataRepo(),
       userSettings: MockUserSettings(),
     );
-    await manager.init('whatever', () {});
+    await manager.init(collectionId: 'whatever');
 
     // mark the first one as hard
     // it should go to the end of the list
