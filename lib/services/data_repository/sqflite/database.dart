@@ -280,4 +280,15 @@ class LocalStorage implements DataRepository {
       whereArgs: [collectionId],
     );
   }
+
+  @override
+  Future<bool> promptExists(String prompt) async {
+    print('promptExists: $prompt');
+    final results = await _database.query(
+      VerseEntry.verseTable,
+      where: '${VerseEntry.prompt} = ?',
+      whereArgs: [prompt],
+    );
+    return results.isNotEmpty;
+  }
 }

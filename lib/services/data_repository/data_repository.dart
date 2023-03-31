@@ -45,4 +45,7 @@ abstract class DataRepository {
 
   /// Deletes a collection
   Future<void> deleteCollection({required String collectionId});
+
+  /// Check whether the prompt exists
+  Future<bool> promptExists(String prompt);
 }
