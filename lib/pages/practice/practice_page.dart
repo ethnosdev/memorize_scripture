@@ -50,10 +50,8 @@ class _PracticePageState extends State<PracticePage> {
               return const EmptyCollection();
             case PracticeState.practicing:
               return PromptAnswerLayout(manager: manager);
-            case PracticeState.finishedWithMoreRemaining:
-              return Placeholder();
             case PracticeState.finished:
-              return Placeholder();
+              return const Finished();
           }
         },
       ),
@@ -70,6 +68,19 @@ class EmptyCollection extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Text('Press the + button to add a verse.'),
+    );
+  }
+}
+
+class Finished extends StatelessWidget {
+  const Finished({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('Congratulations! You\'re finished for today!'),
     );
   }
 }
@@ -107,9 +118,10 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
             },
             icon: const Icon(Icons.add)),
         PopupMenuButton(
-          itemBuilder: (context) => const [
-            PopupMenuItem(value: 1, child: Text('Edit')),
-            PopupMenuItem(value: 2, child: Text('View all')),
+          itemBuilder: (context) => [
+            if (manager.currentVerseId != null)
+              const PopupMenuItem(value: 1, child: Text('Edit')),
+            const PopupMenuItem(value: 2, child: Text('View all')),
           ],
           onSelected: (value) {
             debugPrint(value.toString());
@@ -117,7 +129,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
               context.goNamed(
                 'edit',
                 params: {
-                  'verse': manager.currentVerseId,
+                  'verse': manager.currentVerseId!,
                 },
                 extra: collection,
               );

@@ -14,12 +14,8 @@ enum PracticeState {
   /// There are verses due to practice
   practicing,
 
-  /// The verses for the day are finished and there are no new verses to learn
+  /// The verses for the day are finished
   finished,
-
-  /// The verses for the day are finished but there are still more new verses
-  /// that the user could choose to work on.
-  finishedWithMoreRemaining,
 }
 
 class PracticePageManager {
@@ -41,7 +37,10 @@ class PracticePageManager {
 
   late List<Verse> _verses;
 
-  String get currentVerseId => _verses.first.id!;
+  String? get currentVerseId {
+    if (_verses.isEmpty) return null;
+    return _verses.first.id;
+  }
 
   Color _textThemeColor = Colors.black;
   set textThemeColor(Color? value) => _textThemeColor = value ?? Colors.black;
@@ -140,7 +139,7 @@ class PracticePageManager {
     }
     if (_verses.isEmpty) {
       promptNotifier.value = '';
-      // _onFinished();
+      uiNotifier.value = PracticeState.finished;
     } else {
       promptNotifier.value = _verses[0].prompt;
     }
