@@ -45,10 +45,13 @@ class PracticePageManager {
   Color _textThemeColor = Colors.black;
   set textThemeColor(Color? value) => _textThemeColor = value ?? Colors.black;
 
+  late String _collectionId;
+
   Future<void> init({
     required String collectionId,
   }) async {
     uiNotifier.value = PracticeState.loading;
+    _collectionId = collectionId;
     _verses = await dataRepository.fetchAllVerses(collectionId);
     if (_verses.isEmpty) {
       uiNotifier.value = PracticeState.emptyCollection;
@@ -131,11 +134,14 @@ class PracticePageManager {
   }
 
   void onResponse(Difficulty response) {
+    final verse = _verses.removeAt(0);
+    final updatedVerse = _adjustStats(verse, response);
+    dataRepository.upsertVerse(_collectionId, updatedVerse);
+
     isShowingAnswerNotifier.value = false;
     answerNotifier.value = const TextSpan();
-    final verse = _verses.removeAt(0);
     if (response == Difficulty.hard) {
-      _verses.add(verse);
+      _verses.add(updatedVerse);
     }
     if (_verses.isEmpty) {
       promptNotifier.value = '';
@@ -144,6 +150,54 @@ class PracticePageManager {
       promptNotifier.value = _verses[0].prompt;
     }
     countNotifier.value = _verses.length.toString();
+  }
+
+  Verse _adjustStats(Verse verse, Difficulty difficulty) {
+    // if hard, do it today
+    // if ok, do it one day later than last time: x + 1
+    // interval 0 days: 1 day
+    // interval 1 days: 2 days
+    // interval 2 days: 3 days
+    // interval 3 days: 4 days
+    // if easy, double the intervals: max(2(x + 1), 4)
+    // interval 0: 4 days
+    // interval 1: 4 days
+    // interval 2: 6 days
+    // interval 3: 8 days
+    // example buttons
+    // always pressing easy
+    // Again (1 min), 1 day, 4 days
+    // Again (1 min), 5 days, 10 days
+    // Again (1 min), 11 days, 22 days
+    // Again (1 min), 23 days, 46 days
+    // Again (1 min), 47 days, 94 days
+    // Again (1 min), 95 days, 6 months (190 days)
+    // always pressing ok
+    // Again (1 min), 1 day, 4 days
+    // Again (1 min), 2 days, 4 days
+    // Again (1 min), 3 days, 6 days
+    // Again (1 min), 4 days, 8 days
+    // Again (1 min), 5 days, 10 days
+    // pressing difficult
+    // Again (1 min), 1 day, 4 days
+    // Again (1 min), Today (10 min), 4 days
+    // Again (1 min), Today (10 min), 4 days
+    // Again (1 min), 1 day, 4 days (after pressing ok)
+
+    DateTime nextDueDate;
+    Duration interval;
+    switch (difficulty) {
+      case Difficulty.hard:
+        break;
+      case Difficulty.ok:
+        break;
+      case Difficulty.easy:
+        break;
+    }
+    return verse.copyWith(
+      nextDueDate: nextDueDate,
+      interval: interval,
+    );
   }
 }
 

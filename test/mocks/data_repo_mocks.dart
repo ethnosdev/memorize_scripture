@@ -37,6 +37,9 @@ class EmptyDataRepo implements DataRepository {
 
   @override
   Future<void> upsertVerse(String collectionId, Verse verse) async {}
+
+  @override
+  Future<bool> promptExists(String prompt) async => false;
 }
 
 class MockDataRepo implements DataRepository {
@@ -99,6 +102,12 @@ class MockDataRepo implements DataRepository {
   @override
   Future<void> upsertCollection(Collection collection) {
     // TODO: implement upsertCollection
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> promptExists(String prompt) {
+    // TODO: implement promptExists
     throw UnimplementedError();
   }
 }

@@ -7,9 +7,10 @@ class VerseEntry {
   static const String collectionId = 'collection_id';
   static const String prompt = 'prompt';
   static const String answer = 'answer';
+  // seconds since epoch
   static const String nextDueDate = 'next_due_date';
-  static const String consecutiveCorrect = 'consecutive_correct';
-  static const String easinessFactor = 'easiness_factor';
+  // interval in days
+  static const String interval = 'interval';
 
   // SQL statements
   static const String createVocabTable = '''
@@ -19,8 +20,7 @@ CREATE TABLE $verseTable (
   $prompt TEXT NOT NULL UNIQUE,
   $answer TEXT,
   $nextDueDate INTEGER DEFAULT 0,
-  $consecutiveCorrect INTEGER DEFAULT 0,
-  $easinessFactor REAL DEFAULT 2.5,
+  $interval INTEGER DEFAULT 0,
   FOREIGN KEY($collectionId) 
   REFERENCES ${CollectionEntry.collectionTable} (${CollectionEntry.id}))
 ''';

@@ -75,15 +75,25 @@ class LocalStorage implements DataRepository {
     print('fetchAllVerses: ${verses.length}');
     print('collectionId: $collectionId');
     return List.generate(verses.length, (i) {
+      final verse = verses[i];
       return Verse(
-        id: verses[i][VerseEntry.id] as String,
-        prompt: verses[i][VerseEntry.prompt] as String,
-        answer: verses[i][VerseEntry.answer] as String,
-        nextDueDate: verses[i][VerseEntry.nextDueDate] as int,
-        consecutiveCorrect: verses[i][VerseEntry.consecutiveCorrect] as int,
-        easinessFactor: verses[i][VerseEntry.easinessFactor] as double,
+        id: verse[VerseEntry.id] as String,
+        prompt: verse[VerseEntry.prompt] as String,
+        answer: verse[VerseEntry.answer] as String,
+        nextDueDate: _dbVerseToDate(verse),
+        interval: _dbVerseToInterval(verse),
       );
     });
+  }
+
+  DateTime _dbVerseToDate(Map<String, Object?> verse) {
+    final timestamp = verse[VerseEntry.nextDueDate] as int;
+    return DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+  }
+
+  Duration _dbVerseToInterval(Map<String, Object?> verse) {
+    final days = verse[VerseEntry.interval] as int;
+    return Duration(days: days);
   }
 
   @override
@@ -112,13 +122,13 @@ class LocalStorage implements DataRepository {
     }
     print('fetchTodaysVerses: $verses');
     return List.generate(verses.length, (i) {
+      final verse = verses[i];
       return Verse(
-        id: verses[i][VerseEntry.id] as String,
-        prompt: verses[i][VerseEntry.prompt] as String,
-        answer: verses[i][VerseEntry.answer] as String,
-        nextDueDate: verses[i][VerseEntry.nextDueDate] as int,
-        consecutiveCorrect: verses[i][VerseEntry.consecutiveCorrect] as int,
-        easinessFactor: verses[i][VerseEntry.easinessFactor] as double,
+        id: verse[VerseEntry.id] as String,
+        prompt: verse[VerseEntry.prompt] as String,
+        answer: verse[VerseEntry.answer] as String,
+        nextDueDate: _dbVerseToDate(verse),
+        interval: _dbVerseToInterval(verse),
       );
     });
   }
@@ -137,9 +147,8 @@ class LocalStorage implements DataRepository {
       id: verse[VerseEntry.id] as String,
       prompt: verse[VerseEntry.prompt] as String,
       answer: verse[VerseEntry.answer] as String,
-      nextDueDate: verse[VerseEntry.nextDueDate] as int,
-      consecutiveCorrect: verse[VerseEntry.consecutiveCorrect] as int,
-      easinessFactor: verse[VerseEntry.easinessFactor] as double,
+      nextDueDate: _dbVerseToDate(verse),
+      interval: _dbVerseToInterval(verse),
     );
   }
 
@@ -164,11 +173,15 @@ class LocalStorage implements DataRepository {
         VerseEntry.collectionId: collectionId,
         VerseEntry.prompt: verse.prompt,
         VerseEntry.answer: verse.answer,
-        VerseEntry.nextDueDate: verse.nextDueDate,
-        VerseEntry.consecutiveCorrect: verse.consecutiveCorrect,
-        VerseEntry.easinessFactor: verse.easinessFactor,
+        VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
+        VerseEntry.interval: verse.interval.inDays,
       },
     );
+  }
+
+  int _dateToSecondsSinceEpoch(DateTime? date) {
+    if (date == null) return 0;
+    return date.millisecondsSinceEpoch ~/ 1000;
   }
 
   Future<void> _update(String collectionId, Verse verse) async {
@@ -179,9 +192,8 @@ class LocalStorage implements DataRepository {
         VerseEntry.collectionId: collectionId,
         VerseEntry.prompt: verse.prompt,
         VerseEntry.answer: verse.answer,
-        VerseEntry.nextDueDate: verse.nextDueDate,
-        VerseEntry.consecutiveCorrect: verse.consecutiveCorrect,
-        VerseEntry.easinessFactor: verse.easinessFactor,
+        VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
+        VerseEntry.interval: verse.interval.inDays,
       },
       where: '${VerseEntry.id} = ?',
       whereArgs: [verse.id],
@@ -206,9 +218,8 @@ class LocalStorage implements DataRepository {
             VerseEntry.collectionId: collection.id,
             VerseEntry.prompt: verse.prompt,
             VerseEntry.answer: verse.answer,
-            VerseEntry.nextDueDate: verse.nextDueDate,
-            VerseEntry.consecutiveCorrect: verse.consecutiveCorrect,
-            VerseEntry.easinessFactor: verse.easinessFactor,
+            VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
+            VerseEntry.interval: verse.interval.inDays,
           },
         );
       } else {
@@ -218,9 +229,8 @@ class LocalStorage implements DataRepository {
             VerseEntry.collectionId: collection.id,
             VerseEntry.prompt: verse.prompt,
             VerseEntry.answer: verse.answer,
-            VerseEntry.nextDueDate: verse.nextDueDate,
-            VerseEntry.consecutiveCorrect: verse.consecutiveCorrect,
-            VerseEntry.easinessFactor: verse.easinessFactor,
+            VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
+            VerseEntry.interval: verse.interval.inDays,
           },
           where: '${VerseEntry.id} = ?',
           whereArgs: [verse.id],
