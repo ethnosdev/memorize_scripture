@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/service_locator.dart';
@@ -183,20 +185,23 @@ class PracticePageManager {
     // Again (1 min), Today (10 min), 4 days
     // Again (1 min), Today (10 min), 4 days
     // Again (1 min), 1 day, 4 days (after pressing ok)
-
-    DateTime nextDueDate;
-    Duration interval;
+    int days = verse.interval.inDays;
     switch (difficulty) {
       case Difficulty.hard:
+        days = 0;
         break;
       case Difficulty.ok:
+        days++;
         break;
       case Difficulty.easy:
+        days = max(2 * (days + 1), 4);
         break;
     }
+    final now = DateTime.now();
+    final nextDueDate = DateTime(now.year, now.month, now.day + days);
     return verse.copyWith(
       nextDueDate: nextDueDate,
-      interval: interval,
+      interval: Duration(days: days),
     );
   }
 }
