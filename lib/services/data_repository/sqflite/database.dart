@@ -240,13 +240,13 @@ class LocalStorage implements DataRepository {
   @override
   Future<void> insertCollection(Collection collection) async {
     print('insertCollection');
-    _upsertCollection(collection);
+    await _upsertCollection(collection);
   }
 
   @override
   Future<void> updateCollection(Collection collection) async {
     print('updateCollection');
-    _upsertCollection(collection);
+    await _upsertCollection(collection);
   }
 
   Future<void> _upsertCollection(Collection collection) async {

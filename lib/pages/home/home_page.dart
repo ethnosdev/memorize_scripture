@@ -113,20 +113,17 @@ class _BodyWidgetState extends State<BodyWidget> {
                     final collection = collections[index];
                     return Card(
                       key: ValueKey(collection.name),
-                      child: ReorderableDragStartListener(
-                        index: index,
-                        child: ListTile(
-                          title: Text(collection.name),
-                          onTap: () {
-                            context.goNamed(
-                              'practice',
-                              extra: collection,
-                            );
-                          },
-                          onLongPress: () {
-                            _showCollectionOptionsDialog(index);
-                          },
-                        ),
+                      child: ListTile(
+                        title: Text(collection.name),
+                        onTap: () {
+                          context.goNamed(
+                            'practice',
+                            extra: collection,
+                          );
+                        },
+                        onLongPress: () {
+                          _showCollectionOptionsDialog(index);
+                        },
                       ),
                     );
                   },
@@ -187,7 +184,11 @@ class _BodyWidgetState extends State<BodyWidget> {
                   Navigator.of(context).pop();
                   final oldName = manager.collectionNameAt(index);
                   final newName = await _showEditNameDialog(oldName: oldName);
-                  manager.renameCollection(index: index, newName: newName);
+                  print('oldName: $oldName, newName: $newName');
+                  await manager.renameCollection(
+                    index: index,
+                    newName: newName,
+                  );
                 },
               ),
               ListTile(
