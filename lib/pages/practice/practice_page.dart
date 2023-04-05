@@ -226,17 +226,17 @@ class ButtonPanel extends StatelessWidget {
         child: Row(
           children: [
             ResponseButton(
-              title: 'Again',
+              title: manager.hardTitle,
               onPressed: () => manager.onResponse(Difficulty.hard),
             ),
             const SizedBox(width: 5),
             ResponseButton(
-              title: 'Tomorrow',
+              title: manager.okTitle,
               onPressed: () => manager.onResponse(Difficulty.ok),
             ),
             const SizedBox(width: 5),
             ResponseButton(
-              title: '4 days',
+              title: manager.easyTitle,
               onPressed: () => manager.onResponse(Difficulty.easy),
             ),
           ],

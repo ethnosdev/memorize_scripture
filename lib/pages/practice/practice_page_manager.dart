@@ -47,6 +47,11 @@ class PracticePageManager {
   Color _textThemeColor = Colors.black;
   set textThemeColor(Color? value) => _textThemeColor = value ?? Colors.black;
 
+  // Response button titles
+  String hardTitle = '';
+  String okTitle = '';
+  String easyTitle = '';
+
   late String _collectionId;
 
   Future<void> init({
@@ -65,11 +70,29 @@ class PracticePageManager {
   }
 
   void show() {
+    _setResponseButtonTitles();
     isShowingAnswerNotifier.value = true;
     answerNotifier.value = TextSpan(
       text: _verses[0].answer,
       style: TextStyle(color: _textThemeColor),
     );
+  }
+
+  void _setResponseButtonTitles() {
+    final verse = _verses.first;
+    final days = verse.interval.inDays;
+
+    if (verse.isNew) {
+      hardTitle = 'Again';
+      okTitle = 'Today';
+      easyTitle = '${_nextIntervalInDays(verse, Difficulty.easy)} days';
+    } else {
+      final okDays = _nextIntervalInDays(verse, Difficulty.ok);
+      final s = (okDays == 1) ? '' : 's';
+      hardTitle = 'Again';
+      okTitle = '$okDays day$s';
+      easyTitle = '${_nextIntervalInDays(verse, Difficulty.easy)} days';
+    }
   }
 
   int _numberHintWordsShowing = 0;
@@ -216,6 +239,17 @@ class PracticePageManager {
     // Again (1 min), 1 day, 4 days
     // Again (1 min), 1 day, 4 days
     // Again (1 min), 1 day, 4 days
+
+    final days = _nextIntervalInDays(verse, difficulty);
+    final now = DateTime.now();
+    final nextDueDate = DateTime(now.year, now.month, now.day + days);
+    return verse.copyWith(
+      nextDueDate: nextDueDate,
+      interval: Duration(days: days),
+    );
+  }
+
+  int _nextIntervalInDays(Verse verse, Difficulty difficulty) {
     int days = verse.interval.inDays;
     switch (difficulty) {
       case Difficulty.hard:
@@ -228,12 +262,7 @@ class PracticePageManager {
         days = max(2 * (days + 1), 4);
         break;
     }
-    final now = DateTime.now();
-    final nextDueDate = DateTime(now.year, now.month, now.day + days);
-    return verse.copyWith(
-      nextDueDate: nextDueDate,
-      interval: Duration(days: days),
-    );
+    return days;
   }
 
   void _resetUi() {
