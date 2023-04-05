@@ -1,9 +1,9 @@
 class Collection {
   Collection({
-    this.id,
+    required this.id,
     required this.name,
   });
-  final String? id;
+  final String id;
   final String name;
 
   Collection copyWith({

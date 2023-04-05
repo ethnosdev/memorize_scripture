@@ -24,7 +24,7 @@ class EditVersePageManager {
     required String prompt,
     required String answer,
   }) async {
-    await dataRepo.upsertVerse(
+    await dataRepo.updateVerse(
       _collectionId,
       Verse(
         id: _verseId,

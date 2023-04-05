@@ -1,9 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/data_repository/data_repository.dart';
+import 'package:uuid/uuid.dart';
 
 class AddVersePageManager {
   final canAddNotifier = ValueNotifier<bool>(false);
@@ -35,9 +34,27 @@ class AddVersePageManager {
     required String answer,
   }) async {
     print('adding');
-    dataRepo.upsertVerse(
+    dataRepo.insertVerse(
       collectionId,
       Verse(
+        id: const Uuid().v4(),
+        prompt: prompt,
+        answer: answer,
+      ),
+    );
+  }
+
+  Future<void> updateVerse({
+    required String collectionId,
+    required String verseId,
+    required String prompt,
+    required String answer,
+  }) async {
+    print('adding');
+    dataRepo.updateVerse(
+      collectionId,
+      Verse(
+        id: verseId,
         prompt: prompt,
         answer: answer,
       ),

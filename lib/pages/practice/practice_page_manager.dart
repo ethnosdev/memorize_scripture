@@ -136,22 +136,53 @@ class PracticePageManager {
   }
 
   void onResponse(Difficulty response) {
-    final verse = _verses.removeAt(0);
-    final updatedVerse = _adjustStats(verse, response);
-    dataRepository.upsertVerse(_collectionId, updatedVerse);
+    _updateVerses(response);
+    _resetUi();
+  }
 
-    isShowingAnswerNotifier.value = false;
-    answerNotifier.value = const TextSpan();
+  void _updateVerses(Difficulty response) {
+    final verse = _verses.removeAt(0);
+    if (verse.isNew) {
+      _handleNewVerse(verse, response);
+    } else {
+      _handleReviewVerse(verse, response);
+    }
+  }
+
+  void _handleNewVerse(Verse verse, Difficulty response) {
+    switch (response) {
+      case Difficulty.hard:
+        // The user needs to practice a new verse again soon,
+        // so put it third in line (unless there aren't enough)
+        if (_verses.length > 2) {
+          _verses.insert(2, verse);
+        } else {
+          _verses.add(verse);
+        }
+        break;
+      case Difficulty.ok:
+        // Giving it a due date will make it no longer new.
+        // However, we won't save it to the data repo yet.
+        // Just put it at the back of today's list.
+        final updated = verse.copyWith(nextDueDate: DateTime.now());
+        _verses.add(updated);
+        break;
+      case Difficulty.easy:
+        final update = _adjustStats(verse, response);
+        dataRepository.updateVerse(_collectionId, update);
+        break;
+      default:
+    }
+  }
+
+  void _handleReviewVerse(Verse verse, Difficulty response) {
+    final updatedVerse = _adjustStats(verse, response);
+    dataRepository.updateVerse(_collectionId, updatedVerse);
+    // Keep practicing hard verses until they are ok.
+    // Add the verse to the end of the list.
     if (response == Difficulty.hard) {
       _verses.add(updatedVerse);
     }
-    if (_verses.isEmpty) {
-      promptNotifier.value = '';
-      uiNotifier.value = PracticeState.finished;
-    } else {
-      promptNotifier.value = _verses[0].prompt;
-    }
-    countNotifier.value = _verses.length.toString();
   }
 
   Verse _adjustStats(Verse verse, Difficulty difficulty) {
@@ -182,9 +213,9 @@ class PracticePageManager {
     // Again (1 min), 5 days, 10 days
     // pressing difficult
     // Again (1 min), 1 day, 4 days
-    // Again (1 min), Today (10 min), 4 days
-    // Again (1 min), Today (10 min), 4 days
-    // Again (1 min), 1 day, 4 days (after pressing ok)
+    // Again (1 min), 1 day, 4 days
+    // Again (1 min), 1 day, 4 days
+    // Again (1 min), 1 day, 4 days
     int days = verse.interval.inDays;
     switch (difficulty) {
       case Difficulty.hard:
@@ -203,6 +234,17 @@ class PracticePageManager {
       nextDueDate: nextDueDate,
       interval: Duration(days: days),
     );
+  }
+
+  void _resetUi() {
+    if (_verses.isEmpty) {
+      uiNotifier.value = PracticeState.finished;
+    } else {
+      isShowingAnswerNotifier.value = false;
+      answerNotifier.value = const TextSpan();
+      promptNotifier.value = _verses.first.prompt;
+      countNotifier.value = _verses.length.toString();
+    }
   }
 }
 

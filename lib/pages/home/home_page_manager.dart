@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/data_repository/data_repository.dart';
+import 'package:uuid/uuid.dart';
 
 class HomePageManager {
   HomePageManager({DataRepository? dataRepository}) {
@@ -19,7 +20,10 @@ class HomePageManager {
 
   Future<void> addCollection(String? name) async {
     if (name == null || name.isEmpty) return;
-    final collection = Collection(name: name);
+    final collection = Collection(
+      id: const Uuid().v4(),
+      name: name,
+    );
     await dataRepository.upsertCollection(collection);
     final collections = await dataRepository.fetchCollections();
     collectionNotifier.value = collections;

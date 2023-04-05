@@ -86,8 +86,9 @@ class LocalStorage implements DataRepository {
     });
   }
 
-  DateTime _dbVerseToDate(Map<String, Object?> verse) {
-    final timestamp = verse[VerseEntry.nextDueDate] as int;
+  DateTime? _dbVerseToDate(Map<String, Object?> verse) {
+    final timestamp = verse[VerseEntry.nextDueDate] as int?;
+    if (timestamp == null) return null;
     return DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
   }
 
@@ -97,30 +98,16 @@ class LocalStorage implements DataRepository {
   }
 
   @override
-  Future<List<Verse>> fetchTodaysVerses(
-      {String? collectionId, int? limit}) async {
-    final int today = DateTime.now().millisecondsSinceEpoch;
-    List<Map<String, Object?>> verses;
+  Future<List<Verse>> fetchTodaysVerses({
+    required String collectionId,
+    int? limit,
+  }) async {
+    final newVerses = await _fetchNewVerses(collectionId, limit);
+    final reviewVerses = await _fetchReviewVerses(collectionId);
 
-    if (collectionId != null) {
-      verses = await _database.query(
-        VerseEntry.verseTable,
-        where:
-            '${VerseEntry.collectionId} = ? AND ${VerseEntry.nextDueDate} <= ?',
-        whereArgs: [collectionId, today],
-        orderBy: '${VerseEntry.nextDueDate} ASC',
-        limit: limit,
-      );
-    } else {
-      verses = await _database.query(
-        VerseEntry.verseTable,
-        where: '${VerseEntry.nextDueDate} <= ?',
-        whereArgs: [today],
-        orderBy: '${VerseEntry.nextDueDate} ASC',
-        limit: limit,
-      );
-    }
-    print('fetchTodaysVerses: $verses');
+    print('_fetchNewVerses: $newVerses');
+    print('_fetchReviewVerses: $reviewVerses');
+    final verses = [...newVerses, ...reviewVerses];
     return List.generate(verses.length, (i) {
       final verse = verses[i];
       return Verse(
@@ -131,6 +118,30 @@ class LocalStorage implements DataRepository {
         interval: _dbVerseToInterval(verse),
       );
     });
+  }
+
+  Future<List<Map<String, Object?>>> _fetchNewVerses(
+    String collectionId,
+    int? limit,
+  ) async {
+    return await _database.query(
+      VerseEntry.verseTable,
+      where:
+          '${VerseEntry.collectionId} = ? AND ${VerseEntry.nextDueDate} IS NULL',
+      whereArgs: [collectionId],
+      limit: limit,
+    );
+  }
+
+  Future<List<Map<String, Object?>>> _fetchReviewVerses(
+      String collectionId) async {
+    final today = _dateToSecondsSinceEpoch(DateTime.now());
+    return await _database.query(
+      VerseEntry.verseTable,
+      where: '${VerseEntry.nextDueDate} <= ?',
+      whereArgs: [today],
+      orderBy: '${VerseEntry.nextDueDate} ASC',
+    );
   }
 
   @override
@@ -153,23 +164,12 @@ class LocalStorage implements DataRepository {
   }
 
   @override
-  Future<void> upsertVerse(String collectionId, Verse verse) async {
-    if (verse.id == null) {
-      // TODO: catch cases when there is a unique constraint conflict
-      // for the prompt (ie, adding a new verse with the same prompt
-      // as another)
-      await _insert(collectionId, verse);
-    } else {
-      await _update(collectionId, verse);
-    }
-  }
-
-  Future<void> _insert(String collectionId, Verse verse) async {
-    print('_insert verse');
+  Future<void> insertVerse(String collectionId, Verse verse) async {
+    print('insert verse');
     await _database.insert(
       VerseEntry.verseTable,
       {
-        VerseEntry.id: const Uuid().v4(),
+        VerseEntry.id: verse.id,
         VerseEntry.collectionId: collectionId,
         VerseEntry.prompt: verse.prompt,
         VerseEntry.answer: verse.answer,
@@ -179,13 +179,9 @@ class LocalStorage implements DataRepository {
     );
   }
 
-  int _dateToSecondsSinceEpoch(DateTime? date) {
-    if (date == null) return 0;
-    return date.millisecondsSinceEpoch ~/ 1000;
-  }
-
-  Future<void> _update(String collectionId, Verse verse) async {
-    print('_update verse');
+  @override
+  Future<void> updateVerse(String collectionId, Verse verse) async {
+    print('update verse');
     await _database.update(
       VerseEntry.verseTable,
       {
@@ -198,6 +194,11 @@ class LocalStorage implements DataRepository {
       where: '${VerseEntry.id} = ?',
       whereArgs: [verse.id],
     );
+  }
+
+  int? _dateToSecondsSinceEpoch(DateTime? date) {
+    if (date == null) return null;
+    return date.millisecondsSinceEpoch ~/ 1000;
   }
 
   @override
@@ -214,7 +215,7 @@ class LocalStorage implements DataRepository {
         batch.insert(
           VerseEntry.verseTable,
           {
-            VerseEntry.id: const Uuid().v4(),
+            VerseEntry.id: verse.id,
             VerseEntry.collectionId: collection.id,
             VerseEntry.prompt: verse.prompt,
             VerseEntry.answer: verse.answer,
@@ -274,7 +275,7 @@ class LocalStorage implements DataRepository {
     await _database.insert(
       CollectionEntry.collectionTable,
       {
-        CollectionEntry.id: collection.id ?? const Uuid().v4(),
+        CollectionEntry.id: collection.id,
         CollectionEntry.name: collection.name.trim(),
       },
       conflictAlgorithm: ConflictAlgorithm.replace,

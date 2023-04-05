@@ -14,17 +14,23 @@ abstract class DataRepository {
 
   /// Returns verses that are due today
   ///
-  /// If `collectionId` is omitted then all verses are returned.
-  /// `limit` specifies the max number of verses to return.
-  Future<List<Verse>> fetchTodaysVerses({String? collectionId, int? limit});
+  /// `limit` specifies the max number of new verses to return. If null,
+  /// then all new verses in the collection are returned.
+  Future<List<Verse>> fetchTodaysVerses({
+    required String collectionId,
+    int? limit,
+  });
 
   /// Returns a single verse
   Future<Verse?> fetchVerse({required String verseId});
 
-  /// Updates or inserts a verse in the collection
+  /// Inserts a new verse in the collection
+  Future<void> insertVerse(String collectionId, Verse verse);
+
+  /// Updates a verse in the collection
   ///
-  /// If the verse id is null and the prompt is doesn't exist then inserts.
-  Future<void> upsertVerse(String collectionId, Verse verse);
+  /// The verse id is used to look up the verse.
+  Future<void> updateVerse(String collectionId, Verse verse);
 
   /// Inserts many verses at once
   ///
