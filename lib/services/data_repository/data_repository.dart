@@ -33,9 +33,6 @@ abstract class DataRepository {
   Future<void> updateVerse(String collectionId, Verse verse);
 
   /// Inserts many verses at once
-  ///
-  /// If a verse already exists (based on the verse id), then it will
-  /// perform an update. Otherwise, it will add it.
   Future<void> batchInsertVerses({
     required Collection collection,
     required List<Verse> verses,
@@ -44,10 +41,13 @@ abstract class DataRepository {
   /// Deletes a verse
   Future<void> deleteVerse({required String verseId});
 
-  /// Update or insert collection
+  /// Inserts a new collection
+  Future<void> insertCollection(Collection collection);
+
+  /// Updates the collection
   ///
-  /// If id is null and the name doesn't exist then inserts new collection
-  Future<void> upsertCollection(Collection collection);
+  /// The id is used to update the collection
+  Future<void> updateCollection(Collection collection);
 
   /// Deletes a collection
   Future<void> deleteCollection({required String collectionId});

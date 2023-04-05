@@ -211,32 +211,17 @@ class LocalStorage implements DataRepository {
     final db = database ?? _database;
     final batch = db.batch();
     for (Verse verse in verses) {
-      if (verse.id == null) {
-        batch.insert(
-          VerseEntry.verseTable,
-          {
-            VerseEntry.id: verse.id,
-            VerseEntry.collectionId: collection.id,
-            VerseEntry.prompt: verse.prompt,
-            VerseEntry.answer: verse.answer,
-            VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
-            VerseEntry.interval: verse.interval.inDays,
-          },
-        );
-      } else {
-        batch.update(
-          VerseEntry.verseTable,
-          {
-            VerseEntry.collectionId: collection.id,
-            VerseEntry.prompt: verse.prompt,
-            VerseEntry.answer: verse.answer,
-            VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
-            VerseEntry.interval: verse.interval.inDays,
-          },
-          where: '${VerseEntry.id} = ?',
-          whereArgs: [verse.id],
-        );
-      }
+      batch.insert(
+        VerseEntry.verseTable,
+        {
+          VerseEntry.id: verse.id,
+          VerseEntry.collectionId: collection.id,
+          VerseEntry.prompt: verse.prompt,
+          VerseEntry.answer: verse.answer,
+          VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
+          VerseEntry.interval: verse.interval.inDays,
+        },
+      );
     }
 
     await batch.commit(noResult: true);
@@ -253,9 +238,18 @@ class LocalStorage implements DataRepository {
   }
 
   @override
-  Future<void> upsertCollection(Collection collection) async {
-    print('upsertCollection');
+  Future<void> insertCollection(Collection collection) async {
+    print('insertCollection');
+    _upsertCollection(collection);
+  }
 
+  @override
+  Future<void> updateCollection(Collection collection) async {
+    print('updateCollection');
+    _upsertCollection(collection);
+  }
+
+  Future<void> _upsertCollection(Collection collection) async {
     // Check if another collection has the same name
     final results = await _database.query(
       CollectionEntry.collectionTable,
@@ -265,7 +259,7 @@ class LocalStorage implements DataRepository {
     if (results.isNotEmpty &&
         results.first[CollectionEntry.id] != collection.id) {
       // Don't allow duplicate collection names
-      print('Dont allow duplicate collection names');
+      print('Don\'t allow duplicate collection names');
       return;
     }
 

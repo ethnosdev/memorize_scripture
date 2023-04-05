@@ -33,10 +33,16 @@ class EmptyDataRepo implements DataRepository {
   Future<void> init() async {}
 
   @override
-  Future<void> upsertCollection(Collection collection) async {}
+  Future<void> insertCollection(Collection collection) async {}
 
   @override
-  Future<void> upsertVerse(String collectionId, Verse verse) async {}
+  Future<void> updateCollection(Collection collection) async {}
+
+  @override
+  Future<void> insertVerse(String collectionId, Verse verse) async {}
+
+  @override
+  Future<void> updateVerse(String collectionId, Verse verse) async {}
 
   @override
   Future<bool> promptExists(String prompt) async => false;
@@ -52,7 +58,12 @@ class MockDataRepo implements DataRepository {
       ];
 
   @override
-  Future<void> upsertVerse(String collectionId, Verse verse) {
+  Future<void> insertVerse(String collectionId, Verse verse) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateVerse(String collectionId, Verse verse) {
     throw UnimplementedError();
   }
 
@@ -78,10 +89,12 @@ class MockDataRepo implements DataRepository {
   @override
   Future<List<Verse>> fetchAllVerses([String? collectionId]) async => [
         Verse(
+          id: '0',
           prompt: 'a 1',
           answer: 'one two three',
         ),
         Verse(
+          id: '1',
           prompt: 'a 2',
           answer: 'four five six',
         ),
@@ -100,7 +113,13 @@ class MockDataRepo implements DataRepository {
   }
 
   @override
-  Future<void> upsertCollection(Collection collection) {
+  Future<void> insertCollection(Collection collection) {
+    // TODO: implement upsertCollection
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateCollection(Collection collection) {
     // TODO: implement upsertCollection
     throw UnimplementedError();
   }
