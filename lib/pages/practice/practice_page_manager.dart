@@ -59,7 +59,9 @@ class PracticePageManager {
   }) async {
     uiNotifier.value = PracticeState.loading;
     _collectionId = collectionId;
-    _verses = await dataRepository.fetchAllVerses(collectionId);
+    _verses = await dataRepository.fetchTodaysVerses(
+      collectionId: collectionId,
+    );
     if (_verses.isEmpty) {
       uiNotifier.value = PracticeState.emptyCollection;
       return;

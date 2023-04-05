@@ -35,7 +35,6 @@ class HomePageManager {
     await dataRepository.updateCollection(
       oldCollection.copyWith(name: newName),
     );
-    // await Future.delayed(Duration(milliseconds: 1));
     collectionNotifier.value = await dataRepository.fetchCollections();
   }
 
