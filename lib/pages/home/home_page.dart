@@ -118,7 +118,10 @@ class _BodyWidgetState extends State<BodyWidget> {
                         onTap: () {
                           context.goNamed(
                             'practice',
-                            extra: collection,
+                            queryParams: {
+                              'collectionId': collection.id,
+                              'collectionName': collection.name,
+                            },
                           );
                         },
                         onLongPress: () {

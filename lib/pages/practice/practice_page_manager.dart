@@ -275,7 +275,16 @@ class PracticePageManager {
       answerNotifier.value = const TextSpan();
       promptNotifier.value = _verses.first.prompt;
       countNotifier.value = _verses.length.toString();
+      _numberHintWordsShowing = 0;
     }
+  }
+
+  void onFinishedEditing(String? verseId) async {
+    if (verseId == null) return;
+    final verse = await dataRepository.fetchVerse(verseId: verseId);
+    if (verse == null) return;
+    _verses[0] = verse;
+    _resetUi();
   }
 }
 

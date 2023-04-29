@@ -8,8 +8,7 @@ import 'package:memorize_scripture/app_manager.dart';
 final getIt = GetIt.instance;
 
 void setupServiceLocator() {
-  getIt.registerLazySingleton<UserSettings>(
-      () => SharedPreferencesLocalStorage());
+  getIt.registerLazySingleton<UserSettings>(() => SharedPreferencesStorage());
   getIt.registerLazySingleton<DataRepository>(() => LocalStorage());
   getIt.registerFactory<PracticePageManager>(() => PracticePageManager());
   getIt.registerLazySingleton<AppManager>(() => AppManager());

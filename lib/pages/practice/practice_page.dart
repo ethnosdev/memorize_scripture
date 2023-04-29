@@ -7,10 +7,12 @@ import 'package:memorize_scripture/service_locator.dart';
 class PracticePage extends StatefulWidget {
   const PracticePage({
     super.key,
-    required this.collection,
+    required this.collectionId,
+    required this.collectionName,
   });
 
-  final Collection collection;
+  final String collectionId;
+  final String collectionName;
 
   @override
   State<PracticePage> createState() => _PracticePageState();
@@ -18,12 +20,17 @@ class PracticePage extends StatefulWidget {
 
 class _PracticePageState extends State<PracticePage> {
   final manager = getIt<PracticePageManager>();
+  late Collection collection;
 
   @override
   void initState() {
     super.initState();
+    collection = Collection(
+      id: widget.collectionId,
+      name: widget.collectionName,
+    );
     manager.init(
-      collectionId: widget.collection.id,
+      collectionId: collection.id,
     );
   }
 
@@ -37,7 +44,7 @@ class _PracticePageState extends State<PracticePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(
-        collection: widget.collection,
+        collection: collection,
         manager: manager,
       ),
       body: ValueListenableBuilder<PracticeState>(
@@ -128,10 +135,12 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
             if (value == 1) {
               context.goNamed(
                 'edit',
-                params: {
-                  'verse': manager.currentVerseId!,
+                queryParams: {
+                  'collectionId': collection.id,
+                  'collectionName': collection.name,
+                  'verseId': manager.currentVerseId!,
                 },
-                extra: collection,
+                extra: manager.onFinishedEditing,
               );
             } else if (value == 2) {
               context.goNamed(

@@ -9,7 +9,7 @@ abstract class UserSettings {
   Future<void> setNewVerseFrequency(int frequency);
 }
 
-class SharedPreferencesLocalStorage extends UserSettings {
+class SharedPreferencesStorage extends UserSettings {
   static const String _darkModeKey = 'darkMode';
   // static const String _buildNumberKey = 'buildNumber';
   static const String _newVerseFrequencyKey = 'newVerseFrequency';

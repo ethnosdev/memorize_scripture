@@ -1,13 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:memorize_scripture/common/collection.dart';
-import 'package:memorize_scripture/pages/about/about_page.dart';
-import 'package:memorize_scripture/pages/add_verse/add_verse_page.dart';
-import 'package:memorize_scripture/pages/edit_verse/edit_verse.dart';
-import 'package:memorize_scripture/pages/home/home_page.dart';
-import 'package:memorize_scripture/pages/practice/practice_page.dart';
-import 'package:memorize_scripture/pages/settings/settings_page.dart';
-import 'package:memorize_scripture/pages/verse_browser/verse_browser.dart';
+import 'package:memorize_scripture/go_router.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/app_manager.dart';
 
@@ -36,65 +28,10 @@ class _MyAppState extends State<MyApp> {
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
           title: 'Memorize Scripture',
-          routerConfig: _router,
+          routerConfig: router,
           theme: theme,
         );
       },
     );
   }
 }
-
-final GoRouter _router = GoRouter(
-  routes: [
-    GoRoute(
-      name: 'home',
-      path: "/",
-      builder: (context, state) => const HomePage(),
-      routes: [
-        GoRoute(
-          name: 'practice',
-          path: "practice",
-          builder: (context, state) {
-            return PracticePage(
-              collection: state.extra as Collection,
-            );
-          },
-          routes: [
-            GoRoute(
-              name: 'add',
-              path: 'add',
-              builder: (context, state) => AddVersePage(
-                collection: state.extra as Collection,
-              ),
-            ),
-            GoRoute(
-              name: 'edit',
-              path: 'edit/:verse',
-              builder: (context, state) => EditVersePage(
-                collection: state.extra as Collection,
-                verseId: state.params['verse']!,
-              ),
-            ),
-            GoRoute(
-              name: 'verse_browser',
-              path: 'verse_browser',
-              builder: (context, state) => VerseBrowser(
-                collection: state.extra as Collection,
-              ),
-            ),
-          ],
-        ),
-        GoRoute(
-          name: 'about',
-          path: 'about',
-          builder: (context, state) => const AboutPage(),
-        ),
-        GoRoute(
-          name: 'settings',
-          path: 'settings',
-          builder: (context, state) => const SettingsPage(),
-        ),
-      ],
-    ),
-  ],
-);

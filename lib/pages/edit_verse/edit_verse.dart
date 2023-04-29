@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/pages/edit_verse/edit_verse_manager.dart';
 
 class EditVersePage extends StatefulWidget {
   const EditVersePage({
     super.key,
-    required this.collection,
+    required this.collectionId,
+    required this.collectionName,
     required this.verseId,
+    this.onFinishedEditing,
   });
 
-  final Collection collection;
+  final String collectionId;
+  final String collectionName;
   final String verseId;
+  final void Function(String?)? onFinishedEditing;
 
   @override
   State<EditVersePage> createState() => _EditVersePageState();
@@ -26,7 +29,7 @@ class _EditVersePageState extends State<EditVersePage> {
   void initState() {
     super.initState();
     manager.init(
-      collectionId: widget.collection.id,
+      collectionId: widget.collectionId,
       verseId: widget.verseId,
     );
   }
@@ -35,7 +38,7 @@ class _EditVersePageState extends State<EditVersePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.collection.name),
+        title: Text(widget.collectionName),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -80,6 +83,7 @@ class _EditVersePageState extends State<EditVersePage> {
                       prompt: promptController.text,
                       answer: answerController.text,
                     );
+                    widget.onFinishedEditing?.call(widget.verseId);
                     Navigator.of(context).pop();
                   },
                   child: const Text('Save'),
