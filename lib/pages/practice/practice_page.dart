@@ -310,7 +310,10 @@ class Prompt extends StatelessWidget {
     return ValueListenableBuilder<String>(
       valueListenable: manager.promptNotifier,
       builder: (context, text, child) {
-        return Text(text);
+        return Text.rich(
+          TextSpan(text: text),
+          textAlign: TextAlign.center,
+        );
       },
     );
   }

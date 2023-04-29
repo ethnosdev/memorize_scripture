@@ -26,7 +26,7 @@ class _EditVersePageState extends State<EditVersePage> {
   void initState() {
     super.initState();
     manager.init(
-      collectionId: widget.collection.id!,
+      collectionId: widget.collection.id,
       verseId: widget.verseId,
     );
   }

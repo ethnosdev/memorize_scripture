@@ -38,17 +38,17 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ],
               ),
-              SettingsSection(
-                tiles: [
-                  SettingsTile(
-                    title: const Text('New verse frequency'),
-                    value: const Text('5 per day'),
-                    onPressed: (BuildContext context) {
-                      showCustomDialog(context);
-                    },
-                  ),
-                ],
-              ),
+              // SettingsSection(
+              //   tiles: [
+              //     SettingsTile(
+              //       title: const Text('New verse frequency'),
+              //       value: const Text('5 per day'),
+              //       onPressed: (BuildContext context) {
+              //         showCustomDialog(context);
+              //       },
+              //     ),
+              //   ],
+              // ),
             ],
           );
         },

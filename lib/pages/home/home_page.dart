@@ -12,43 +12,43 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Memorize Scripture'),
-        actions: [
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) => [
-              const PopupMenuItem(
-                value: 1,
-                child: IconTextRow(
-                  icon: Icons.play_arrow,
-                  text: 'Play all',
-                ),
-              ),
-              const PopupMenuItem(
-                value: 1,
-                child: IconTextRow(
-                  icon: Icons.sync,
-                  text: 'Sync',
-                ),
-              ),
-              const PopupMenuItem(
-                value: 1,
-                child: IconTextRow(
-                  icon: Icons.upload,
-                  text: 'Backup',
-                ),
-              ),
-              const PopupMenuItem(
-                value: 1,
-                child: IconTextRow(
-                  icon: Icons.download,
-                  text: 'Restore backup',
-                ),
-              ),
-            ],
-            onSelected: (value) {
-              // handle menu item selection
-            },
-          ),
-        ],
+        // actions: [
+        //   PopupMenuButton(
+        //     itemBuilder: (BuildContext context) => [
+        //       const PopupMenuItem(
+        //         value: 1,
+        //         child: IconTextRow(
+        //           icon: Icons.play_arrow,
+        //           text: 'Play all',
+        //         ),
+        //       ),
+        //       const PopupMenuItem(
+        //         value: 1,
+        //         child: IconTextRow(
+        //           icon: Icons.sync,
+        //           text: 'Sync',
+        //         ),
+        //       ),
+        //       const PopupMenuItem(
+        //         value: 1,
+        //         child: IconTextRow(
+        //           icon: Icons.upload,
+        //           text: 'Backup',
+        //         ),
+        //       ),
+        //       const PopupMenuItem(
+        //         value: 1,
+        //         child: IconTextRow(
+        //           icon: Icons.download,
+        //           text: 'Restore backup',
+        //         ),
+        //       ),
+        //     ],
+        //     onSelected: (value) {
+        //       // handle menu item selection
+        //     },
+        //   ),
+        // ],
       ),
       drawer: const MenuDrawer(),
       body: const BodyWidget(),
