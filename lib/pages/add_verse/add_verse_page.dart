@@ -73,7 +73,7 @@ class _AddVersePageState extends State<AddVersePage> {
                     onPressed: (canAdd)
                         ? () {
                             manager.addVerse(
-                              collectionId: widget.collection.id!,
+                              collectionId: widget.collection.id,
                               prompt: promptController.text,
                               answer: answerController.text,
                             );

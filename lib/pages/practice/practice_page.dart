@@ -23,7 +23,7 @@ class _PracticePageState extends State<PracticePage> {
   void initState() {
     super.initState();
     manager.init(
-      collectionId: widget.collection.id!,
+      collectionId: widget.collection.id,
     );
   }
 

@@ -20,7 +20,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
   @override
   void initState() {
     super.initState();
-    manager.init(widget.collection.id!);
+    manager.init(widget.collection.id);
   }
 
   @override
