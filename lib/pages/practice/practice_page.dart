@@ -4,6 +4,9 @@ import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
 import 'package:memorize_scripture/service_locator.dart';
 
+// use this to enlarge the text. Later allow the user to adjust this.
+const textScaleFactor = 1.2;
+
 class PracticePage extends StatefulWidget {
   const PracticePage({
     super.key,
@@ -29,9 +32,7 @@ class _PracticePageState extends State<PracticePage> {
       id: widget.collectionId,
       name: widget.collectionName,
     );
-    manager.init(
-      collectionId: collection.id,
-    );
+    manager.init(collectionId: collection.id);
   }
 
   @override
@@ -194,6 +195,7 @@ class PromptAnswerLayout extends StatelessWidget {
                     child: Text.rich(
                       answer,
                       textAlign: TextAlign.center,
+                      textScaleFactor: textScaleFactor,
                     ),
                   );
                 },
@@ -320,8 +322,11 @@ class Prompt extends StatelessWidget {
       valueListenable: manager.promptNotifier,
       builder: (context, text, child) {
         return Text.rich(
-          TextSpan(text: text),
+          TextSpan(
+            text: text,
+          ),
           textAlign: TextAlign.center,
+          textScaleFactor: textScaleFactor,
         );
       },
     );
