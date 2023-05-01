@@ -72,17 +72,20 @@ class PracticePageManager {
   }
 
   void show() {
-    _setResponseButtonTitles();
-    isShowingAnswerNotifier.value = true;
+    _showResponseButtons();
     answerNotifier.value = TextSpan(
       text: _verses[0].answer,
       style: TextStyle(color: _textThemeColor),
     );
   }
 
+  void _showResponseButtons() {
+    _setResponseButtonTitles();
+    isShowingAnswerNotifier.value = true;
+  }
+
   void _setResponseButtonTitles() {
     final verse = _verses.first;
-    final days = verse.interval.inDays;
 
     if (verse.isNew) {
       hardTitle = 'Again';
@@ -100,11 +103,11 @@ class PracticePageManager {
   int _numberHintWordsShowing = 0;
 
   void showNextWordHint() {
+    _numberHintWordsShowing++;
     answerNotifier.value = _formatForNumberOfWords(
       _numberHintWordsShowing,
       _verses[0].answer,
     );
-    _numberHintWordsShowing++;
   }
 
   void showFirstLettersHint() {
@@ -129,35 +132,29 @@ class PracticePageManager {
   TextSpan _formatForNumberOfWords(int number, String verseText) {
     if (verseText.isEmpty) return const TextSpan(text: '');
 
-    final parts = verseText.split(' ');
-    final before = StringBuffer();
-    for (int i = 0; i < parts.length; i++) {
-      before.write(parts[i]);
-      before.write(' ');
-      if (_numberHintWordsShowing == i) {
-        break;
-      }
-    }
+    final pattern = _upToNthSpacePattern(number);
+    final match = pattern.firstMatch(verseText);
 
-    final String after;
-    if (before.length >= verseText.length) {
-      after = '';
-    } else {
-      after = verseText.substring(before.length);
+    if (match == null) {
+      _showResponseButtons();
     }
 
     final textSpan = TextSpan(children: [
       TextSpan(
-        text: before.toString(),
+        text: match?.group(1) ?? verseText,
         style: TextStyle(color: _textThemeColor),
       ),
       TextSpan(
-        text: after,
+        text: match?.group(2),
         style: const TextStyle(color: Colors.transparent),
       ),
     ]);
 
     return textSpan;
+  }
+
+  RegExp _upToNthSpacePattern(int n) {
+    return RegExp(r'^((?:\S+\s){' + (n - 1).toString() + r'}\S+\s)(\S.*)');
   }
 
   void onResponse(Difficulty response) {
