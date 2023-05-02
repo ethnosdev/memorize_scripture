@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
 import 'package:memorize_scripture/service_locator.dart';
 
@@ -23,16 +22,16 @@ class PracticePage extends StatefulWidget {
 
 class _PracticePageState extends State<PracticePage> {
   final manager = getIt<PracticePageManager>();
-  late Collection collection;
+  //late Collection collection;
 
   @override
   void initState() {
     super.initState();
-    collection = Collection(
-      id: widget.collectionId,
-      name: widget.collectionName,
-    );
-    manager.init(collectionId: collection.id);
+    // collection = Collection(
+    //   id: widget.collectionId,
+    //   name: widget.collectionName,
+    // );
+    manager.init(collectionId: widget.collectionId);
   }
 
   @override
@@ -45,8 +44,9 @@ class _PracticePageState extends State<PracticePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(
-        collection: collection,
         manager: manager,
+        collectionId: widget.collectionId,
+        collectionName: widget.collectionName,
       ),
       body: ValueListenableBuilder<PracticeState>(
         valueListenable: manager.uiNotifier,
@@ -105,23 +105,28 @@ class LoadingIndicator extends StatelessWidget {
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   const MyAppBar({
     super.key,
-    required this.collection,
     required this.manager,
+    required this.collectionId,
+    required this.collectionName,
   });
 
-  final Collection collection;
   final PracticePageManager manager;
+  final String collectionId;
+  final String collectionName;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(collection.name),
+      title: Text(collectionName),
       actions: [
         IconButton(
             onPressed: () {
               context.goNamed(
                 'add',
-                extra: collection,
+                queryParams: {
+                  'collectionId': collectionId,
+                  'collectionName': collectionName,
+                },
               );
             },
             icon: const Icon(Icons.add)),
@@ -137,8 +142,8 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
               context.goNamed(
                 'edit',
                 queryParams: {
-                  'collectionId': collection.id,
-                  'collectionName': collection.name,
+                  'collectionId': collectionId,
+                  'collectionName': collectionName,
                   'verseId': manager.currentVerseId!,
                 },
                 extra: manager.onFinishedEditing,
@@ -146,7 +151,10 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
             } else if (value == 2) {
               context.goNamed(
                 'verse_browser',
-                extra: collection,
+                queryParams: {
+                  'collectionId': collectionId,
+                  'collectionName': collectionName,
+                },
               );
             }
           },

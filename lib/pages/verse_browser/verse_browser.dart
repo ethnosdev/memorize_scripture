@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/pages/verse_browser/verse_browser_manager.dart';
 
 class VerseBrowser extends StatefulWidget {
   const VerseBrowser({
     super.key,
-    required this.collection,
+    required this.collectionId,
+    required this.collectionName,
   });
 
-  final Collection collection;
+  final String collectionId;
+  final String collectionName;
 
   @override
   State<VerseBrowser> createState() => _VerseBrowserState();
@@ -20,14 +21,14 @@ class _VerseBrowserState extends State<VerseBrowser> {
   @override
   void initState() {
     super.initState();
-    manager.init(widget.collection.id);
+    manager.init(widget.collectionId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.collection.name),
+        title: Text(widget.collectionName),
       ),
       body: ValueListenableBuilder(
         valueListenable: manager.listNotifier,

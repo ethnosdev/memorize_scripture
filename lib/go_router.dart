@@ -8,8 +8,6 @@ import 'package:memorize_scripture/pages/practice/practice_page.dart';
 import 'package:memorize_scripture/pages/settings/settings_page.dart';
 import 'package:memorize_scripture/pages/verse_browser/verse_browser.dart';
 
-import 'common/verse.dart';
-
 final GoRouter router = GoRouter(
   routes: [
     GoRoute(
@@ -39,7 +37,8 @@ final GoRouter router = GoRouter(
               name: 'add',
               path: 'add',
               builder: (context, state) => AddVersePage(
-                collection: state.extra as Collection,
+                collectionId: state.queryParams['collectionId'] as String,
+                collectionName: state.queryParams['collectionName'] as String,
               ),
             ),
             GoRoute(
@@ -56,7 +55,8 @@ final GoRouter router = GoRouter(
               name: 'verse_browser',
               path: 'verse_browser',
               builder: (context, state) => VerseBrowser(
-                collection: state.extra as Collection,
+                collectionId: state.queryParams['collectionId'] as String,
+                collectionName: state.queryParams['collectionName'] as String,
               ),
             ),
           ],
