@@ -14,16 +14,16 @@ class VerseEntry {
 
   // SQL statements
   static const String createVocabTable = '''
-CREATE TABLE $verseTable (
-  $id TEXT PRIMARY KEY,
-  $collectionId TEXT NOT NULL,
-  $prompt TEXT NOT NULL UNIQUE,
-  $answer TEXT,
-  $nextDueDate INTEGER,
-  $interval INTEGER DEFAULT 0,
-  FOREIGN KEY($collectionId) 
-  REFERENCES ${CollectionEntry.collectionTable} (${CollectionEntry.id}))
-''';
+  CREATE TABLE $verseTable (
+    $id TEXT PRIMARY KEY,
+    $collectionId TEXT NOT NULL,
+    $prompt TEXT NOT NULL UNIQUE,
+    $answer TEXT,
+    $nextDueDate INTEGER,
+    $interval INTEGER DEFAULT 0,
+    FOREIGN KEY($collectionId) 
+    REFERENCES ${CollectionEntry.collectionTable} (${CollectionEntry.id}))
+  ''';
 }
 
 class CollectionEntry {
@@ -36,8 +36,8 @@ class CollectionEntry {
 
   // SQL statements
   static const String createCollectionTable = '''
-CREATE TABLE $collectionTable (
-  $id TEXT PRIMARY KEY,
-  $name TEXT NOT NULL UNIQUE)
-''';
+  CREATE TABLE $collectionTable (
+    $id TEXT PRIMARY KEY,
+    $name TEXT NOT NULL UNIQUE)
+  ''';
 }

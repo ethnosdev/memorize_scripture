@@ -105,6 +105,7 @@ class LocalStorage implements DataRepository {
     final newVerses = await _fetchNewVerses(collectionId, limit);
     final reviewVerses = await _fetchReviewVerses(collectionId);
 
+    print('collectionId: $collectionId');
     print('_fetchNewVerses: $newVerses');
     print('_fetchReviewVerses: $reviewVerses');
     final verses = [...newVerses, ...reviewVerses];
@@ -138,8 +139,9 @@ class LocalStorage implements DataRepository {
     final today = _dateToSecondsSinceEpoch(DateTime.now());
     return await _database.query(
       VerseEntry.verseTable,
-      where: '${VerseEntry.nextDueDate} <= ?',
-      whereArgs: [today],
+      where: '${VerseEntry.collectionId} = ? '
+          'AND ${VerseEntry.nextDueDate} <= ?',
+      whereArgs: [collectionId, today],
       orderBy: '${VerseEntry.nextDueDate} ASC',
     );
   }
