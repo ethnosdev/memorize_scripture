@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:memorize_scripture/pages/about/about_page_manager.dart';
 
 class AboutPage extends StatefulWidget {
@@ -25,21 +26,28 @@ class _AboutPageState extends State<AboutPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              color: Colors.blue,
-              width: 100,
-              height: 100,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: SvgPicture.asset(
+                'assets/logo.svg',
+                width: 100,
+                height: 100,
+              ),
             ),
+            const SizedBox(height: 20),
             Text(
               'Memorize Scripture',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
+            const SizedBox(height: 5),
             ValueListenableBuilder<String>(
               valueListenable: manager.versionNotifier,
               builder: (context, version, child) {
                 return Text('Version $version');
               },
             ),
+            const SizedBox(height: 5),
+            const SelectableText('contact@ethnos.dev'),
           ],
         ),
       ),
