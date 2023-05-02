@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 class MenuDrawer extends StatelessWidget {
@@ -18,7 +19,11 @@ class MenuDrawer extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
               ),
-              child: const Text('Memorize Scripture'),
+              child: SvgPicture.asset(
+                'assets/logo.svg',
+                width: 100,
+                height: 100,
+              ),
             ),
             ListTile(
               title: const Text('Settings'),
