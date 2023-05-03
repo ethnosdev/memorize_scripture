@@ -53,10 +53,10 @@ void main() {
     await manager.init();
     manager.addCollection('name');
 
-    final name = manager.collectionNameAt(0);
+    final collection = manager.collectionAt(0);
 
     final list = manager.collectionNotifier.value;
     expect(list.length, 1);
-    expect(name, 'name');
+    expect(collection.name, 'name');
   });
 }

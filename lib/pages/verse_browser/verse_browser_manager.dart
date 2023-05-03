@@ -7,7 +7,10 @@ class VerseBrowserManager {
   final dataRepo = getIt<DataRepository>();
   final listNotifier = ValueNotifier<List<Verse>>([]);
 
+  late String _collectionId;
+
   Future<void> init(String collectionId) async {
+    _collectionId = collectionId;
     final list = await dataRepo.fetchAllVerses(collectionId);
     listNotifier.value = list;
   }
@@ -18,5 +21,14 @@ class VerseBrowserManager {
     await dataRepo.deleteVerse(verseId: verse.id);
     list.removeAt(index);
     listNotifier.value = list;
+  }
+
+  Verse verseFor(int index) {
+    return listNotifier.value[index];
+  }
+
+  void onFinishedEditing(String? verseId) async {
+    if (verseId == null) return;
+    init(_collectionId);
   }
 }

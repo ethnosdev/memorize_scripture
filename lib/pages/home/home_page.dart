@@ -118,7 +118,7 @@ class _BodyWidgetState extends State<BodyWidget> {
                         title: Text(collection.name),
                         onTap: () {
                           context.goNamed(
-                            'practice',
+                            RouteName.practice,
                             queryParams: {
                               Params.colId: collection.id,
                               Params.colName: collection.name,
@@ -188,7 +188,7 @@ class _BodyWidgetState extends State<BodyWidget> {
                   Navigator.of(context).pop();
                   final collection = manager.collectionAt(index);
                   context.goNamed(
-                    'verse_browser',
+                    RouteName.verseBrowser,
                     queryParams: {
                       Params.colId: collection.id,
                       Params.colName: collection.name,

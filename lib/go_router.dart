@@ -13,15 +13,26 @@ class Params {
   static const verseId = 'verseId';
 }
 
+class RouteName {
+  static const home = 'home';
+  static const practice = 'practice';
+  static const add = 'add';
+  static const editPractice = 'edit_practice';
+  static const editBrowser = 'edit_browser';
+  static const verseBrowser = 'verse_browser';
+  static const about = 'about';
+  static const settings = 'settings';
+}
+
 final GoRouter router = GoRouter(
   routes: [
     GoRoute(
-      name: 'home',
+      name: RouteName.home,
       path: "/",
       builder: (context, state) => const HomePage(),
       routes: [
         GoRoute(
-          name: 'practice',
+          name: RouteName.practice,
           path: 'practice',
           builder: (context, state) {
             return PracticePage(
@@ -31,7 +42,7 @@ final GoRouter router = GoRouter(
           },
           routes: [
             GoRoute(
-              name: 'add',
+              name: RouteName.add,
               path: 'add',
               builder: (context, state) => AddVersePage(
                 collectionId: state.queryParams[Params.colId] as String,
@@ -39,11 +50,10 @@ final GoRouter router = GoRouter(
               ),
             ),
             GoRoute(
-              name: 'edit',
+              name: RouteName.editPractice,
               path: 'edit',
               builder: (context, state) => EditVersePage(
                 collectionId: state.queryParams[Params.colId] as String,
-                collectionName: state.queryParams[Params.colName] as String,
                 verseId: state.queryParams[Params.verseId] as String,
                 onFinishedEditing: state.extra as void Function(String?)?,
               ),
@@ -51,20 +61,31 @@ final GoRouter router = GoRouter(
           ],
         ),
         GoRoute(
-          name: 'verse_browser',
+          name: RouteName.verseBrowser,
           path: 'verse_browser',
           builder: (context, state) => VerseBrowser(
             collectionId: state.queryParams[Params.colId] as String,
             collectionName: state.queryParams[Params.colName] as String,
           ),
+          routes: [
+            GoRoute(
+              name: RouteName.editBrowser,
+              path: 'edit',
+              builder: (context, state) => EditVersePage(
+                collectionId: state.queryParams[Params.colId] as String,
+                verseId: state.queryParams[Params.verseId] as String,
+                onFinishedEditing: state.extra as void Function(String?)?,
+              ),
+            ),
+          ],
         ),
         GoRoute(
-          name: 'about',
+          name: RouteName.about,
           path: 'about',
           builder: (context, state) => const AboutPage(),
         ),
         GoRoute(
-          name: 'settings',
+          name: RouteName.settings,
           path: 'settings',
           builder: (context, state) => const SettingsPage(),
         ),

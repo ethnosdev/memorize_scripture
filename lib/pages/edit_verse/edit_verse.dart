@@ -6,13 +6,11 @@ class EditVersePage extends StatefulWidget {
   const EditVersePage({
     super.key,
     required this.collectionId,
-    required this.collectionName,
     required this.verseId,
     this.onFinishedEditing,
   });
 
   final String collectionId;
-  final String collectionName;
   final String verseId;
   final void Function(String?)? onFinishedEditing;
 
@@ -38,7 +36,7 @@ class _EditVersePageState extends State<EditVersePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.collectionName),
+        title: const Text('Edit'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

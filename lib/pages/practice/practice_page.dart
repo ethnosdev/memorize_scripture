@@ -23,15 +23,10 @@ class PracticePage extends StatefulWidget {
 
 class _PracticePageState extends State<PracticePage> {
   final manager = getIt<PracticePageManager>();
-  //late Collection collection;
 
   @override
   void initState() {
     super.initState();
-    // collection = Collection(
-    //   id: widget.collectionId,
-    //   name: widget.collectionName,
-    // );
     manager.init(collectionId: widget.collectionId);
   }
 
@@ -123,7 +118,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
             onPressed: () {
               context.goNamed(
-                'add',
+                RouteName.add,
                 queryParams: {
                   Params.colId: collectionId,
                   Params.colName: collectionName,
@@ -140,7 +135,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
             debugPrint(value.toString());
             if (value == 1) {
               context.goNamed(
-                'edit',
+                RouteName.editPractice,
                 queryParams: {
                   Params.colId: collectionId,
                   Params.colName: collectionName,

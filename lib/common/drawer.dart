@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:memorize_scripture/go_router.dart';
 
 class MenuDrawer extends StatelessWidget {
   const MenuDrawer({
@@ -29,14 +30,14 @@ class MenuDrawer extends StatelessWidget {
               title: const Text('Settings'),
               onTap: () {
                 Navigator.pop(context);
-                context.goNamed('settings');
+                context.goNamed(RouteName.settings);
               },
             ),
             ListTile(
               title: const Text('About'),
               onTap: () {
                 Navigator.pop(context);
-                context.goNamed('about');
+                context.goNamed(RouteName.about);
               },
             ),
           ],

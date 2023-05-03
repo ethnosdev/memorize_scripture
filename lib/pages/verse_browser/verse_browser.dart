@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:memorize_scripture/go_router.dart';
 import 'package:memorize_scripture/pages/verse_browser/verse_browser_manager.dart';
 
 class VerseBrowser extends StatefulWidget {
@@ -53,7 +55,18 @@ class _VerseBrowserState extends State<VerseBrowser> {
                     )),
                   ],
                 ),
-                onTap: () {},
+                onTap: () {
+                  final verse = manager.verseFor(index);
+                  context.goNamed(
+                    RouteName.editBrowser,
+                    queryParams: {
+                      Params.colId: widget.collectionId,
+                      Params.colName: widget.collectionName,
+                      Params.verseId: verse.id,
+                    },
+                    extra: manager.onFinishedEditing,
+                  );
+                },
                 onLongPress: () {
                   _showCollectionOptionsDialog(index);
                 },
