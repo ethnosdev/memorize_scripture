@@ -54,11 +54,68 @@ class _VerseBrowserState extends State<VerseBrowser> {
                   ],
                 ),
                 onTap: () {},
+                onLongPress: () {
+                  _showCollectionOptionsDialog(index);
+                },
               );
             },
           );
         },
       ),
+    );
+  }
+
+  Future<String?> _showCollectionOptionsDialog(int index) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              ListTile(
+                title: const Text('Delete'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _showVerifyDeleteDialog(index: index);
+                },
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<String?> _showVerifyDeleteDialog({required int index}) async {
+    Widget cancelButton = TextButton(
+      child: const Text("Cancel"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    Widget deleteButton = TextButton(
+      child: const Text(
+        "Delete",
+        style: TextStyle(color: Colors.red),
+      ),
+      onPressed: () {
+        Navigator.of(context).pop();
+        manager.deleteVerse(index);
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      content: const Text('Are you sure you want to delete this item?'),
+      actions: [cancelButton, deleteButton],
+    );
+
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }

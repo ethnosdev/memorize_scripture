@@ -202,7 +202,6 @@ class _BodyWidgetState extends State<BodyWidget> {
                   Navigator.of(context).pop();
                   final oldName = manager.collectionAt(index).name;
                   final newName = await _showEditNameDialog(oldName: oldName);
-                  print('oldName: $oldName, newName: $newName');
                   await manager.renameCollection(
                     index: index,
                     newName: newName,

@@ -11,4 +11,12 @@ class VerseBrowserManager {
     final list = await dataRepo.fetchAllVerses(collectionId);
     listNotifier.value = list;
   }
+
+  Future<void> deleteVerse(int index) async {
+    final list = listNotifier.value.toList();
+    final verse = list[index];
+    await dataRepo.deleteVerse(verseId: verse.id);
+    list.removeAt(index);
+    listNotifier.value = list;
+  }
 }
