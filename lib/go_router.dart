@@ -1,5 +1,4 @@
 import 'package:go_router/go_router.dart';
-import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/pages/about/about_page.dart';
 import 'package:memorize_scripture/pages/add_verse/add_verse_page.dart';
 import 'package:memorize_scripture/pages/edit_verse/edit_verse.dart';
@@ -7,6 +6,12 @@ import 'package:memorize_scripture/pages/home/home_page.dart';
 import 'package:memorize_scripture/pages/practice/practice_page.dart';
 import 'package:memorize_scripture/pages/settings/settings_page.dart';
 import 'package:memorize_scripture/pages/verse_browser/verse_browser.dart';
+
+class Params {
+  static const colId = 'collectionId';
+  static const colName = 'collectionName';
+  static const verseId = 'verseId';
+}
 
 final GoRouter router = GoRouter(
   routes: [
@@ -18,18 +23,10 @@ final GoRouter router = GoRouter(
         GoRoute(
           name: 'practice',
           path: 'practice',
-          // redirect: (context, state) {
-          //   if (state.queryParams['collectionId'] == null ||
-          //       state.queryParams['collectionName'] == null) {
-          //     return '/';
-          //   } else {
-          //     return null;
-          //   }
-          // },
           builder: (context, state) {
             return PracticePage(
-              collectionId: state.queryParams['collectionId'] as String,
-              collectionName: state.queryParams['collectionName'] as String,
+              collectionId: state.queryParams[Params.colId] as String,
+              collectionName: state.queryParams[Params.colName] as String,
             );
           },
           routes: [
@@ -37,29 +34,29 @@ final GoRouter router = GoRouter(
               name: 'add',
               path: 'add',
               builder: (context, state) => AddVersePage(
-                collectionId: state.queryParams['collectionId'] as String,
-                collectionName: state.queryParams['collectionName'] as String,
+                collectionId: state.queryParams[Params.colId] as String,
+                collectionName: state.queryParams[Params.colName] as String,
               ),
             ),
             GoRoute(
               name: 'edit',
               path: 'edit',
               builder: (context, state) => EditVersePage(
-                collectionId: state.queryParams['collectionId'] as String,
-                collectionName: state.queryParams['collectionName'] as String,
-                verseId: state.queryParams['verseId'] as String,
+                collectionId: state.queryParams[Params.colId] as String,
+                collectionName: state.queryParams[Params.colName] as String,
+                verseId: state.queryParams[Params.verseId] as String,
                 onFinishedEditing: state.extra as void Function(String?)?,
               ),
             ),
-            GoRoute(
-              name: 'verse_browser',
-              path: 'verse_browser',
-              builder: (context, state) => VerseBrowser(
-                collectionId: state.queryParams['collectionId'] as String,
-                collectionName: state.queryParams['collectionName'] as String,
-              ),
-            ),
           ],
+        ),
+        GoRoute(
+          name: 'verse_browser',
+          path: 'verse_browser',
+          builder: (context, state) => VerseBrowser(
+            collectionId: state.queryParams[Params.colId] as String,
+            collectionName: state.queryParams[Params.colName] as String,
+          ),
         ),
         GoRoute(
           name: 'about',

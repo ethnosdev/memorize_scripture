@@ -46,7 +46,7 @@ class HomePageManager {
     collectionNotifier.value = list;
   }
 
-  String collectionNameAt(int index) {
-    return collectionNotifier.value[index].name;
+  Collection collectionAt(int index) {
+    return collectionNotifier.value[index];
   }
 }

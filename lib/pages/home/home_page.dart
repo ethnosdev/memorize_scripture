@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/drawer.dart';
+import 'package:memorize_scripture/go_router.dart';
 import 'package:memorize_scripture/pages/home/home_page_manager.dart';
 
 class HomePage extends StatelessWidget {
@@ -119,8 +120,8 @@ class _BodyWidgetState extends State<BodyWidget> {
                           context.goNamed(
                             'practice',
                             queryParams: {
-                              'collectionId': collection.id,
-                              'collectionName': collection.name,
+                              Params.colId: collection.id,
+                              Params.colName: collection.name,
                             },
                           );
                         },
@@ -182,10 +183,24 @@ class _BodyWidgetState extends State<BodyWidget> {
             shrinkWrap: true,
             children: [
               ListTile(
+                title: const Text('View'),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  final collection = manager.collectionAt(index);
+                  context.goNamed(
+                    'verse_browser',
+                    queryParams: {
+                      Params.colId: collection.id,
+                      Params.colName: collection.name,
+                    },
+                  );
+                },
+              ),
+              ListTile(
                 title: const Text('Rename'),
                 onTap: () async {
                   Navigator.of(context).pop();
-                  final oldName = manager.collectionNameAt(index);
+                  final oldName = manager.collectionAt(index).name;
                   final newName = await _showEditNameDialog(oldName: oldName);
                   print('oldName: $oldName, newName: $newName');
                   await manager.renameCollection(

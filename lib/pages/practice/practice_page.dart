@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:memorize_scripture/go_router.dart';
 import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
 import 'package:memorize_scripture/service_locator.dart';
 
@@ -124,8 +125,8 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
               context.goNamed(
                 'add',
                 queryParams: {
-                  'collectionId': collectionId,
-                  'collectionName': collectionName,
+                  Params.colId: collectionId,
+                  Params.colName: collectionName,
                 },
               );
             },
@@ -134,7 +135,6 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           itemBuilder: (context) => [
             if (manager.currentVerseId != null)
               const PopupMenuItem(value: 1, child: Text('Edit')),
-            const PopupMenuItem(value: 2, child: Text('View all')),
           ],
           onSelected: (value) {
             debugPrint(value.toString());
@@ -142,19 +142,11 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
               context.goNamed(
                 'edit',
                 queryParams: {
-                  'collectionId': collectionId,
-                  'collectionName': collectionName,
-                  'verseId': manager.currentVerseId!,
+                  Params.colId: collectionId,
+                  Params.colName: collectionName,
+                  Params.verseId: manager.currentVerseId!,
                 },
                 extra: manager.onFinishedEditing,
-              );
-            } else if (value == 2) {
-              context.goNamed(
-                'verse_browser',
-                queryParams: {
-                  'collectionId': collectionId,
-                  'collectionName': collectionName,
-                },
               );
             }
           },
