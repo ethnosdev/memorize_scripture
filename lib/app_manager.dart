@@ -31,21 +31,32 @@ final _lightTheme = ThemeData(
   textTheme: TextTheme(
     bodyMedium: const TextStyle(fontSize: 14),
     labelSmall: TextStyle(color: ThemeData.light().disabledColor),
+    bodySmall: TextStyle(
+      fontSize: 12,
+      color: customYellow.shade900,
+    ),
   ),
   outlinedButtonTheme: OutlinedButtonThemeData(
-      style: OutlinedButton.styleFrom(
-    foregroundColor: customYellow.shade900,
-  )),
+    style: OutlinedButton.styleFrom(
+      foregroundColor: customYellow.shade900,
+    ),
+  ),
   textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-    foregroundColor: customYellow.shade900,
-  )),
+    style: TextButton.styleFrom(
+      foregroundColor: customYellow.shade900,
+    ),
+  ),
 );
 
 final _darkTheme = ThemeData(
   brightness: Brightness.dark,
+  primarySwatch: customYellow,
   textTheme: TextTheme(
     bodyMedium: const TextStyle(fontSize: 14),
     labelSmall: TextStyle(color: ThemeData.dark().disabledColor),
+    bodySmall: TextStyle(
+      fontSize: 12,
+      color: customYellow.shade900,
+    ),
   ),
 );

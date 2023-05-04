@@ -233,17 +233,20 @@ class ButtonPanel extends StatelessWidget {
         child: Row(
           children: [
             ResponseButton(
-              title: manager.hardTitle,
+              title: 'Hard',
+              subtitle: manager.hardTitle,
               onPressed: () => manager.onResponse(Difficulty.hard),
             ),
             const SizedBox(width: 5),
             ResponseButton(
-              title: manager.okTitle,
+              title: 'OK',
+              subtitle: manager.okTitle,
               onPressed: () => manager.onResponse(Difficulty.ok),
             ),
             const SizedBox(width: 5),
             ResponseButton(
-              title: manager.easyTitle,
+              title: 'Easy',
+              subtitle: manager.easyTitle,
               onPressed: () => manager.onResponse(Difficulty.easy),
             ),
           ],
@@ -257,10 +260,12 @@ class ResponseButton extends StatelessWidget {
   const ResponseButton({
     super.key,
     required this.title,
+    required this.subtitle,
     required this.onPressed,
   });
 
   final String title;
+  final String subtitle;
   final void Function() onPressed;
 
   @override
@@ -270,7 +275,16 @@ class ResponseButton extends StatelessWidget {
         height: 48,
         child: OutlinedButton(
           onPressed: onPressed,
-          child: Text(title),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(title),
+              Text(
+                subtitle,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
         ),
       ),
     );
