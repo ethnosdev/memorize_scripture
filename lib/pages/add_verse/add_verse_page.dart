@@ -6,10 +6,12 @@ class AddVersePage extends StatefulWidget {
     super.key,
     required this.collectionId,
     required this.collectionName,
+    this.onFinishedAdding,
   });
 
   final String collectionId;
   final String collectionName;
+  final void Function()? onFinishedAdding;
 
   @override
   State<AddVersePage> createState() => _AddVersePageState();
@@ -19,6 +21,13 @@ class _AddVersePageState extends State<AddVersePage> {
   final manager = AddVersePageManager();
   final promptController = TextEditingController();
   final answerController = TextEditingController();
+
+  @override
+  void dispose() {
+    widget.onFinishedAdding?.call();
+    print('disposing adding');
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

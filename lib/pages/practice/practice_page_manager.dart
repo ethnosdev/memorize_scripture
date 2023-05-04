@@ -283,6 +283,10 @@ class PracticePageManager {
     _verses[0] = verse;
     _resetUi();
   }
+
+  void onFinishedAdding() {
+    init(collectionId: _collectionId);
+  }
 }
 
 enum Difficulty { hard, ok, easy }
