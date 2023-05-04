@@ -10,7 +10,6 @@ class AppManager {
 
   Future<void> init() async {
     await _setDarkLightTheme();
-    // await _onFirstRun();
     await getIt<DataRepository>().init();
   }
 
@@ -22,6 +21,10 @@ class AppManager {
 
   void setDarkTheme(bool isDark) {
     themeListener.value = (isDark) ? _darkTheme : _lightTheme;
+  }
+
+  bool get isDarkTheme {
+    return themeListener.value.brightness == Brightness.dark;
   }
 }
 
