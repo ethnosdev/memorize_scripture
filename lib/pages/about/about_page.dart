@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:memorize_scripture/common/color.dart';
 import 'package:memorize_scripture/pages/about/about_page_manager.dart';
 
 class AboutPage extends StatefulWidget {
@@ -29,6 +30,10 @@ class _AboutPageState extends State<AboutPage> {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: SvgPicture.asset(
+                colorFilter: const ColorFilter.mode(
+                  customYellow,
+                  BlendMode.color,
+                ),
                 'assets/logo.svg',
                 width: 100,
                 height: 100,
