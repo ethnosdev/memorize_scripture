@@ -47,7 +47,7 @@ final GoRouter router = GoRouter(
               builder: (context, state) => AddVersePage(
                 collectionId: state.queryParams[Params.colId] as String,
                 collectionName: state.queryParams[Params.colName] as String,
-                onFinishedAdding: state.extra as void Function()?,
+                onVerseAdded: state.extra as void Function()?,
               ),
             ),
             GoRoute(

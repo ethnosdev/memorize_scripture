@@ -155,7 +155,6 @@ class _BodyWidgetState extends State<BodyWidget> {
       },
     );
 
-    // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: const Text("Name"),
       content: TextField(
@@ -165,7 +164,6 @@ class _BodyWidgetState extends State<BodyWidget> {
       actions: [okButton],
     );
 
-    // show the dialog
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -241,13 +239,11 @@ class _BodyWidgetState extends State<BodyWidget> {
       },
     );
 
-    // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       content: const Text('Are you sure you want to delete this collection?'),
       actions: [cancelButton, deleteButton],
     );
 
-    // show the dialog
     return showDialog(
       context: context,
       builder: (BuildContext context) {

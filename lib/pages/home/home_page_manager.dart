@@ -11,7 +11,6 @@ class HomePageManager {
   late final DataRepository dataRepository;
 
   final collectionNotifier = ValueNotifier<List<Collection>>([]);
-  //List<Collection> _collections = [];
 
   Future<void> init() async {
     final collections = await dataRepository.fetchCollections();

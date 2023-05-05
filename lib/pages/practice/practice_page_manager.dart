@@ -284,7 +284,7 @@ class PracticePageManager {
     _resetUi();
   }
 
-  void onFinishedAdding() {
+  void onVerseAdded() {
     init(collectionId: _collectionId);
   }
 }

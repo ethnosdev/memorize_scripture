@@ -6,12 +6,12 @@ class AddVersePage extends StatefulWidget {
     super.key,
     required this.collectionId,
     required this.collectionName,
-    this.onFinishedAdding,
+    this.onVerseAdded,
   });
 
   final String collectionId;
   final String collectionName;
-  final void Function()? onFinishedAdding;
+  final void Function()? onVerseAdded;
 
   @override
   State<AddVersePage> createState() => _AddVersePageState();
@@ -21,13 +21,6 @@ class _AddVersePageState extends State<AddVersePage> {
   final manager = AddVersePageManager();
   final promptController = TextEditingController();
   final answerController = TextEditingController();
-
-  @override
-  void dispose() {
-    widget.onFinishedAdding?.call();
-    print('disposing adding');
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,14 +78,15 @@ class _AddVersePageState extends State<AddVersePage> {
               builder: (context, canAdd, child) {
                 return OutlinedButton(
                   onPressed: (canAdd)
-                      ? () {
-                          manager.addVerse(
+                      ? () async {
+                          await manager.addVerse(
                             collectionId: widget.collectionId,
                             prompt: promptController.text,
                             answer: answerController.text,
                           );
                           promptController.text = '';
                           answerController.text = '';
+                          widget.onVerseAdded?.call();
                         }
                       : null,
                   child: const Text('Add'),
