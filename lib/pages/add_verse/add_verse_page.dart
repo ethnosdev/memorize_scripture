@@ -21,6 +21,7 @@ class _AddVersePageState extends State<AddVersePage> {
   final manager = AddVersePageManager();
   final promptController = TextEditingController();
   final answerController = TextEditingController();
+  final promptFocus = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +38,7 @@ class _AddVersePageState extends State<AddVersePage> {
               builder: (context, alreadyExists, child) {
                 return TextField(
                   autofocus: true,
+                  focusNode: promptFocus,
                   controller: promptController,
                   maxLines: 5,
                   decoration: InputDecoration(
@@ -77,18 +79,7 @@ class _AddVersePageState extends State<AddVersePage> {
               valueListenable: manager.canAddNotifier,
               builder: (context, canAdd, child) {
                 return OutlinedButton(
-                  onPressed: (canAdd)
-                      ? () async {
-                          await manager.addVerse(
-                            collectionId: widget.collectionId,
-                            prompt: promptController.text,
-                            answer: answerController.text,
-                          );
-                          promptController.text = '';
-                          answerController.text = '';
-                          widget.onVerseAdded?.call();
-                        }
-                      : null,
+                  onPressed: (canAdd) ? _addVerse : null,
                   child: const Text('Add'),
                 );
               },
@@ -97,5 +88,17 @@ class _AddVersePageState extends State<AddVersePage> {
         ),
       ),
     );
+  }
+
+  Future<void> _addVerse() async {
+    await manager.addVerse(
+      collectionId: widget.collectionId,
+      prompt: promptController.text,
+      answer: answerController.text,
+    );
+    promptController.text = '';
+    answerController.text = '';
+    promptFocus.requestFocus();
+    widget.onVerseAdded?.call();
   }
 }
