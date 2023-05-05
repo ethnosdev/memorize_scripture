@@ -45,7 +45,12 @@ class EmptyDataRepo implements DataRepository {
   Future<void> updateVerse(String collectionId, Verse verse) async {}
 
   @override
-  Future<bool> promptExists(String prompt) async => false;
+  Future<bool> promptExists({
+    required String collectionId,
+    required String prompt,
+  }) async {
+    return false;
+  }
 }
 
 class MockDataRepo implements DataRepository {
@@ -125,7 +130,10 @@ class MockDataRepo implements DataRepository {
   }
 
   @override
-  Future<bool> promptExists(String prompt) {
+  Future<bool> promptExists({
+    required String collectionId,
+    required String prompt,
+  }) {
     // TODO: implement promptExists
     throw UnimplementedError();
   }

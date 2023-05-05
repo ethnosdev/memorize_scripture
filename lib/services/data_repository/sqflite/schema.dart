@@ -17,12 +17,14 @@ class VerseEntry {
   CREATE TABLE $verseTable (
     $id TEXT PRIMARY KEY,
     $collectionId TEXT NOT NULL,
-    $prompt TEXT NOT NULL UNIQUE,
+    $prompt TEXT NOT NULL,
     $answer TEXT,
     $nextDueDate INTEGER,
     $interval INTEGER DEFAULT 0,
     FOREIGN KEY($collectionId) 
-    REFERENCES ${CollectionEntry.collectionTable} (${CollectionEntry.id}))
+    REFERENCES ${CollectionEntry.collectionTable} (${CollectionEntry.id}),
+    UNIQUE ($collectionId, $prompt)
+  )
   ''';
 }
 

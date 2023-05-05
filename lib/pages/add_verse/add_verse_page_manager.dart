@@ -13,9 +13,14 @@ class AddVersePageManager {
   String _prompt = '';
   String _answer = '';
 
-  void onPromptChanged(String prompt) {
+  void onPromptChanged({
+    required String collectionId,
+    required String prompt,
+  }) {
     _prompt = prompt;
-    dataRepo.promptExists(prompt).then((exists) {
+    dataRepo
+        .promptExists(collectionId: collectionId, prompt: prompt)
+        .then((exists) {
       alreadyExistsNotifier.value = exists;
       canAddNotifier.value = !exists && _bothEmpty();
     });

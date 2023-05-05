@@ -57,7 +57,10 @@ class _AddVersePageState extends State<AddVersePage> {
                     errorText:
                         (alreadyExists) ? 'This prompt already exists' : null,
                   ),
-                  onChanged: manager.onPromptChanged,
+                  onChanged: (value) => manager.onPromptChanged(
+                    collectionId: widget.collectionId,
+                    prompt: value,
+                  ),
                 );
               },
             ),
