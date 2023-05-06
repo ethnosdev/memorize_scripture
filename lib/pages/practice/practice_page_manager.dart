@@ -13,6 +13,9 @@ enum PracticeState {
   /// A user has added a new collection but hasn't added any verses to it yet
   emptyCollection,
 
+  /// The collection has verses but there are no more due today.
+  noVersesDue,
+
   /// There are verses due to practice
   practicing,
 
@@ -63,7 +66,12 @@ class PracticePageManager {
       collectionId: collectionId,
     );
     if (_verses.isEmpty) {
-      uiNotifier.value = PracticeState.emptyCollection;
+      final number = await dataRepository.numberInCollection(collectionId);
+      if (number > 0) {
+        uiNotifier.value = PracticeState.noVersesDue;
+      } else {
+        uiNotifier.value = PracticeState.emptyCollection;
+      }
       return;
     }
     promptNotifier.value = _verses.first.prompt;

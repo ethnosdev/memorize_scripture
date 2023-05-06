@@ -49,6 +49,8 @@ class _PracticePageState extends State<PracticePage> {
               return const LoadingIndicator();
             case PracticeState.emptyCollection:
               return const EmptyCollection();
+            case PracticeState.noVersesDue:
+              return const NoVersesDue();
             case PracticeState.practicing:
               return PromptAnswerLayout(manager: manager);
             case PracticeState.finished:
@@ -69,6 +71,19 @@ class EmptyCollection extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Text('Press the + button to add a verse.'),
+    );
+  }
+}
+
+class NoVersesDue extends StatelessWidget {
+  const NoVersesDue({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('There are no more verses due today.'),
     );
   }
 }

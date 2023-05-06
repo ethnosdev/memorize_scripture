@@ -51,6 +51,9 @@ class EmptyDataRepo implements DataRepository {
   }) async {
     return false;
   }
+
+  @override
+  Future<int> numberInCollection(String collectionId) async => 0;
 }
 
 class MockDataRepo implements DataRepository {
@@ -135,6 +138,12 @@ class MockDataRepo implements DataRepository {
     required String prompt,
   }) {
     // TODO: implement promptExists
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<int> numberInCollection(String collectionId) {
+    // TODO: implement numberInCollection
     throw UnimplementedError();
   }
 }

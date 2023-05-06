@@ -57,4 +57,7 @@ abstract class DataRepository {
     required String collectionId,
     required String prompt,
   });
+
+  /// Return the number of verses in the collection, regardless of due date.
+  Future<int> numberInCollection(String collectionId);
 }

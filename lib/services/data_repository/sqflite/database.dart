@@ -301,4 +301,15 @@ class LocalStorage implements DataRepository {
     );
     return results.isNotEmpty;
   }
+
+  @override
+  Future<int> numberInCollection(String collectionId) async {
+    final List<Map<String, dynamic>> result = await _database.rawQuery('''
+      SELECT COUNT(*)
+      FROM ${VerseEntry.verseTable}
+      WHERE ${VerseEntry.collectionId} = ?
+    ''', [collectionId]);
+
+    return result.isNotEmpty ? result.first.values.first : 0;
+  }
 }
