@@ -190,7 +190,7 @@ class PracticePageManager {
         _verses.add(updated);
         break;
       case Difficulty.easy:
-        final update = _adjustStats(verse, response);
+        final update = _adjustVerseStats(verse, response);
         dataRepository.updateVerse(_collectionId, update);
         break;
       default:
@@ -198,7 +198,7 @@ class PracticePageManager {
   }
 
   void _handleReviewVerse(Verse verse, Difficulty response) {
-    final updatedVerse = _adjustStats(verse, response);
+    final updatedVerse = _adjustVerseStats(verse, response);
     dataRepository.updateVerse(_collectionId, updatedVerse);
     // Keep practicing hard verses until they are ok.
     // Add the verse to the end of the list.
@@ -207,38 +207,7 @@ class PracticePageManager {
     }
   }
 
-  Verse _adjustStats(Verse verse, Difficulty difficulty) {
-    // if hard, do it today
-    // if ok, do it one day later than last time: x + 1
-    // interval 0 days: 1 day
-    // interval 1 days: 2 days
-    // interval 2 days: 3 days
-    // interval 3 days: 4 days
-    // if easy, double the intervals: max(2(x + 1), 4)
-    // interval 0: 4 days
-    // interval 1: 4 days
-    // interval 2: 6 days
-    // interval 3: 8 days
-    // example buttons
-    // always pressing easy
-    // Again (1 min), 1 day, 4 days
-    // Again (1 min), 5 days, 10 days
-    // Again (1 min), 11 days, 22 days
-    // Again (1 min), 23 days, 46 days
-    // Again (1 min), 47 days, 94 days
-    // Again (1 min), 95 days, 6 months (190 days)
-    // always pressing ok
-    // Again (1 min), 1 day, 4 days
-    // Again (1 min), 2 days, 4 days
-    // Again (1 min), 3 days, 6 days
-    // Again (1 min), 4 days, 8 days
-    // Again (1 min), 5 days, 10 days
-    // pressing difficult
-    // Again (1 min), 1 day, 4 days
-    // Again (1 min), 1 day, 4 days
-    // Again (1 min), 1 day, 4 days
-    // Again (1 min), 1 day, 4 days
-
+  Verse _adjustVerseStats(Verse verse, Difficulty difficulty) {
     final days = _nextIntervalInDays(verse, difficulty);
     final now = DateTime.now();
     final nextDueDate = DateTime(now.year, now.month, now.day + days);
@@ -284,9 +253,7 @@ class PracticePageManager {
     _resetUi();
   }
 
-  void onVerseAdded() {
-    init(collectionId: _collectionId);
-  }
+  void onVerseAdded() => init(collectionId: _collectionId);
 }
 
 enum Difficulty { hard, ok, easy }
