@@ -89,7 +89,7 @@ class Prompt extends StatelessWidget {
     return ValueListenableBuilder<String>(
       valueListenable: manager.promptNotifier,
       builder: (context, text, child) {
-        return Text.rich(
+        return SelectableText.rich(
           TextSpan(
             text: text,
           ),
@@ -180,7 +180,7 @@ class Answer extends StatelessWidget {
       builder: (context, answer, child) {
         return Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text.rich(
+          child: SelectableText.rich(
             answer,
             textAlign: TextAlign.center,
             textScaleFactor: textScaleFactor,
