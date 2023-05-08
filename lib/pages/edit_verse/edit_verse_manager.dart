@@ -8,15 +8,12 @@ class EditVersePageManager {
   final dataRepo = getIt<DataRepository>();
 
   late String _collectionId;
-  late String _verseId;
 
   Future<void> init({
     required String collectionId,
     required String verseId,
   }) async {
     _collectionId = collectionId;
-    _verseId = verseId;
-
     verseNotifier.value = await dataRepo.fetchVerse(verseId: verseId);
   }
 
@@ -24,13 +21,31 @@ class EditVersePageManager {
     required String prompt,
     required String answer,
   }) async {
+    final verse = verseNotifier.value;
+    if (verse == null) return;
     await dataRepo.updateVerse(
       _collectionId,
-      Verse(
-        id: _verseId,
+      verse.copyWith(
         prompt: prompt,
         answer: answer,
       ),
     );
+  }
+
+  String formatDueDate(DateTime? date) {
+    if (date == null) return '---';
+    return '${date.year}.${date.month}.${date.day}';
+  }
+
+  String formatInterval(Duration? duration) {
+    if (duration == null) return '0 days';
+    final days = duration.inDays;
+    if (days == 1) return '1 day';
+    return '$days days';
+  }
+
+  /// Update the UI but don't save the verse yet
+  void softResetProgress(Verse? verse) {
+    verseNotifier.value = verse;
   }
 }
