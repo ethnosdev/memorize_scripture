@@ -38,7 +38,6 @@ class AddVersePageManager {
     required String prompt,
     required String answer,
   }) async {
-    print('adding');
     dataRepo.insertVerse(
       collectionId,
       Verse(
@@ -47,6 +46,7 @@ class AddVersePageManager {
         answer: answer,
       ),
     );
+    canAddNotifier.value = false;
   }
 
   Future<void> updateVerse({
