@@ -17,42 +17,48 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      title: Text(collectionName),
-      actions: [
-        IconButton(
-            onPressed: () {
-              context.goNamed(
-                RouteName.add,
-                queryParams: {
-                  Params.colId: collectionId,
-                  Params.colName: collectionName,
+    return ValueListenableBuilder<PracticeState>(
+      valueListenable: manager.uiNotifier,
+      builder: (context, practiceState, child) {
+        return AppBar(
+          title: Text(collectionName),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                context.goNamed(
+                  RouteName.add,
+                  queryParams: {
+                    Params.colId: collectionId,
+                    Params.colName: collectionName,
+                  },
+                  extra: manager.onVerseAdded,
+                );
+              },
+            ),
+            if (practiceState == PracticeState.practicing)
+              PopupMenuButton(
+                itemBuilder: (context) => [
+                  const PopupMenuItem(value: 1, child: Text('Edit')),
+                ],
+                onSelected: (value) {
+                  debugPrint(value.toString());
+                  if (value == 1) {
+                    context.goNamed(
+                      RouteName.editPractice,
+                      queryParams: {
+                        Params.colId: collectionId,
+                        Params.colName: collectionName,
+                        Params.verseId: manager.currentVerseId!,
+                      },
+                      extra: manager.onFinishedEditing,
+                    );
+                  }
                 },
-                extra: manager.onVerseAdded,
-              );
-            },
-            icon: const Icon(Icons.add)),
-        PopupMenuButton(
-          itemBuilder: (context) => [
-            if (manager.currentVerseId != null)
-              const PopupMenuItem(value: 1, child: Text('Edit')),
+              ),
           ],
-          onSelected: (value) {
-            debugPrint(value.toString());
-            if (value == 1) {
-              context.goNamed(
-                RouteName.editPractice,
-                queryParams: {
-                  Params.colId: collectionId,
-                  Params.colName: collectionName,
-                  Params.verseId: manager.currentVerseId!,
-                },
-                extra: manager.onFinishedEditing,
-              );
-            }
-          },
-        ),
-      ],
+        );
+      },
     );
   }
 
