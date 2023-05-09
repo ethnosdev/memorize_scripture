@@ -115,17 +115,16 @@ class _EditVersePageState extends State<EditVersePage> {
                       ),
                       const SizedBox(width: 10),
                       IconButton(
+                        icon: const Icon(Icons.close),
                         onPressed: () {
                           manager.softResetProgress(
-                            verse?.copyWith(
+                            Verse(
+                              id: verse!.id,
                               prompt: promptController.text,
                               answer: answerController.text,
-                              nextDueDate: null,
-                              interval: Duration.zero,
                             ),
                           );
                         },
-                        icon: const Icon(Icons.close),
                       ),
                     ],
                   ),
