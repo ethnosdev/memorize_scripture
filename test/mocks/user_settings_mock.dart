@@ -5,11 +5,11 @@ class MockUserSettings implements UserSettings {
   Future<bool> getDarkMode() async => true;
 
   @override
-  Future<int?> getNewVerseFrequency() async => 1;
-
-  @override
   Future<void> setDarkMode(bool value) async {}
 
   @override
-  Future<void> setNewVerseFrequency(int frequency) async {}
+  Future<int> getDailyLimit() async => 1;
+
+  @override
+  Future<void> setDailyLimit(int value) async {}
 }
