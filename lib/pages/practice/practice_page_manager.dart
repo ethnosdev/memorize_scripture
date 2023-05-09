@@ -62,8 +62,10 @@ class PracticePageManager {
   }) async {
     uiNotifier.value = PracticeState.loading;
     _collectionId = collectionId;
+    final newVerseLimit = await userSettings.getDailyLimit();
     _verses = await dataRepository.fetchTodaysVerses(
       collectionId: collectionId,
+      newVerseLimit: newVerseLimit,
     );
     if (_verses.isEmpty) {
       final number = await dataRepository.numberInCollection(collectionId);

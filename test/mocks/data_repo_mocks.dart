@@ -22,7 +22,7 @@ class EmptyDataRepo implements DataRepository {
   @override
   Future<List<Verse>> fetchTodaysVerses({
     String? collectionId,
-    int? limit,
+    int? newVerseLimit,
   }) async =>
       [];
 
@@ -109,7 +109,8 @@ class MockDataRepo implements DataRepository {
       ];
 
   @override
-  Future<List<Verse>> fetchTodaysVerses({String? collectionId, int? limit}) {
+  Future<List<Verse>> fetchTodaysVerses(
+      {String? collectionId, int? newVerseLimit}) {
     // TODO: implement fetchTodaysVerses
     throw UnimplementedError();
   }

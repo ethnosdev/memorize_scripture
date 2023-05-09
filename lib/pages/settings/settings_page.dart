@@ -40,17 +40,17 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ],
               ),
-              // SettingsSection(
-              //   tiles: [
-              //     SettingsTile(
-              //       title: const Text('New verse frequency'),
-              //       value: const Text('5 per day'),
-              //       onPressed: (BuildContext context) {
-              //         showCustomDialog(context);
-              //       },
-              //     ),
-              //   ],
-              // ),
+              SettingsSection(
+                tiles: [
+                  SettingsTile(
+                    title: const Text('Max new verses per day'),
+                    value: Text('${manager.dailyLimit}'),
+                    onPressed: (BuildContext context) {
+                      _showDailyLimitDialog();
+                    },
+                  ),
+                ],
+              ),
             ],
           );
         },
@@ -58,79 +58,40 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  void showCustomDialog(BuildContext context) {
-    int count = 1;
-    String period = 'day';
+  Future<String?> _showDailyLimitDialog() async {
+    int count = manager.dailyLimit;
+    final controller = TextEditingController(text: count.toString());
+    Widget okButton = TextButton(
+      child: const Text("OK"),
+      onPressed: () {
+        manager.updateDailyLimit(count);
+        Navigator.of(context).pop(controller.text);
+      },
+    );
 
-    final TextEditingController controller =
-        TextEditingController(text: '$count');
-    final FocusNode focusNode = FocusNode();
+    AlertDialog alert = AlertDialog(
+      title: const Text("Daily limit"),
+      content: TextField(
+        autofocus: true,
+        keyboardType: TextInputType.number,
+        controller: controller,
+        onChanged: (value) {
+          count = manager.validateDailyLimit(value);
+        },
+        onTap: () {
+          controller.selection = TextSelection(
+            baseOffset: 0,
+            extentOffset: controller.value.text.length,
+          );
+        },
+      ),
+      actions: [okButton],
+    );
 
-    showDialog(
+    return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Set Limit'),
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 50,
-                child: TextFormField(
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.number,
-                  focusNode: focusNode,
-                  controller: controller,
-                  onChanged: (value) {
-                    count = int.tryParse(value) ?? 1;
-                  },
-                  onTap: () {
-                    controller.selection = TextSelection(
-                      baseOffset: 0,
-                      extentOffset: controller.value.text.length,
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Text('per'),
-              const SizedBox(width: 8),
-              SizedBox(
-                width: 100,
-                child: DropdownButtonFormField<String>(
-                  alignment: Alignment.centerLeft,
-                  value: period,
-                  onChanged: (value) {
-                    period = value ?? 'day';
-                  },
-                  items: const [
-                    DropdownMenuItem<String>(
-                      value: 'day',
-                      child: Center(child: Text('day')),
-                    ),
-                    DropdownMenuItem<String>(
-                      value: 'week',
-                      child: Center(child: Text('week')),
-                    ),
-                    DropdownMenuItem<String>(
-                      value: 'month',
-                      child: Center(child: Text('month')),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                // Do something with count and period
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
+        return alert;
       },
     );
   }

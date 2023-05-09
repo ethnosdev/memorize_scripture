@@ -100,9 +100,9 @@ class LocalStorage implements DataRepository {
   @override
   Future<List<Verse>> fetchTodaysVerses({
     required String collectionId,
-    int? limit,
+    int? newVerseLimit,
   }) async {
-    final newVerses = await _fetchNewVerses(collectionId, limit);
+    final newVerses = await _fetchNewVerses(collectionId, newVerseLimit);
     final reviewVerses = await _fetchReviewVerses(collectionId);
 
     print('collectionId: $collectionId');
