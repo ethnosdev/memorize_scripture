@@ -305,13 +305,16 @@ class LocalStorage implements DataRepository {
 
   @override
   Future<void> deleteCollection({required String collectionId}) async {
-    print('deleteCollection');
     await _database.delete(
       CollectionEntry.collectionTable,
       where: '${CollectionEntry.id} = ?',
       whereArgs: [collectionId],
     );
-    // TODO: also delete verses
+    await _database.delete(
+      VerseEntry.verseTable,
+      where: '${VerseEntry.collectionId} = ?',
+      whereArgs: [collectionId],
+    );
   }
 
   @override
