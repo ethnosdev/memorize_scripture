@@ -1,8 +1,9 @@
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/services/data_repository/data_repository.dart';
+import 'package:memorize_scripture/services/data_repository/sqflite/sample_passage.dart';
 import 'package:memorize_scripture/services/data_repository/sqflite/schema.dart';
-import 'package:memorize_scripture/services/sample_verses.dart';
+import 'package:memorize_scripture/services/data_repository/sqflite/sample_verses.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
@@ -11,15 +12,10 @@ class LocalStorage implements DataRepository {
   final String _databaseName = "database.db";
   static const int _databaseVersion = 1;
   late Database _database;
-  final bool isTesting;
-
-  LocalStorage({this.isTesting = false});
 
   @override
   Future<void> init() async {
-    final path = (isTesting)
-        ? inMemoryDatabasePath
-        : join(await getDatabasesPath(), _databaseName);
+    final path = join(await getDatabasesPath(), _databaseName);
     print('init: $path');
     _database = await openDatabase(
       path,
@@ -32,14 +28,15 @@ class LocalStorage implements DataRepository {
     print('creating database: ${db.path}');
     await db.execute(CollectionEntry.createCollectionTable);
     await db.execute(VerseEntry.createVocabTable);
-    await _insertInitialData(db);
+    await _insertExampleVerses(db);
+    await _insertExamplePassage(db);
     print('finished creating');
   }
 
-  Future<void> _insertInitialData(Database db) async {
+  Future<void> _insertExampleVerses(Database db) async {
     final collection = Collection(
       id: const Uuid().v4(),
-      name: 'Starter pack',
+      name: 'Example verse collection',
     );
     final timestamp = _timestampNow();
     await db.insert(CollectionEntry.collectionTable, {
@@ -50,7 +47,25 @@ class LocalStorage implements DataRepository {
     await batchInsertVerses(
       database: db,
       collection: collection,
-      verses: starterVersesWeb,
+      verses: sampleVerses,
+    );
+  }
+
+  Future<void> _insertExamplePassage(Database db) async {
+    final collection = Collection(
+      id: const Uuid().v4(),
+      name: 'Example passage (Psalm 23)',
+    );
+    final timestamp = _timestampNow();
+    await db.insert(CollectionEntry.collectionTable, {
+      CollectionEntry.id: collection.id,
+      CollectionEntry.name: collection.name,
+      CollectionEntry.accessedDate: timestamp,
+    });
+    await batchInsertVerses(
+      database: db,
+      collection: collection,
+      verses: samplePassage,
     );
   }
 
