@@ -55,7 +55,6 @@ class AddVersePageManager {
     required String prompt,
     required String answer,
   }) async {
-    print('adding');
     dataRepo.updateVerse(
       collectionId,
       Verse(

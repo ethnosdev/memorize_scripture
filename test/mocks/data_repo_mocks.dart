@@ -78,19 +78,16 @@ class MockDataRepo implements DataRepository {
   @override
   Future<void> batchInsertVerses(
       {required Collection collection, required List<Verse> verses}) {
-    // TODO: implement batchInsertVerses
     throw UnimplementedError();
   }
 
   @override
   Future<void> deleteCollection({required String collectionId}) {
-    // TODO: implement deleteCollection
     throw UnimplementedError();
   }
 
   @override
   Future<void> deleteVerse({required String verseId}) {
-    // TODO: implement deleteVerse
     throw UnimplementedError();
   }
 
@@ -111,25 +108,21 @@ class MockDataRepo implements DataRepository {
   @override
   Future<List<Verse>> fetchTodaysVerses(
       {String? collectionId, int? newVerseLimit}) {
-    // TODO: implement fetchTodaysVerses
     throw UnimplementedError();
   }
 
   @override
   Future<Verse?> fetchVerse({required String verseId}) {
-    // TODO: implement fetchVerse
     throw UnimplementedError();
   }
 
   @override
   Future<void> insertCollection(Collection collection) {
-    // TODO: implement upsertCollection
     throw UnimplementedError();
   }
 
   @override
   Future<void> updateCollection(Collection collection) {
-    // TODO: implement upsertCollection
     throw UnimplementedError();
   }
 
@@ -138,13 +131,11 @@ class MockDataRepo implements DataRepository {
     required String collectionId,
     required String prompt,
   }) {
-    // TODO: implement promptExists
     throw UnimplementedError();
   }
 
   @override
   Future<int> numberInCollection(String collectionId) {
-    // TODO: implement numberInCollection
     throw UnimplementedError();
   }
 }

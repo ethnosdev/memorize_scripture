@@ -4,7 +4,6 @@ import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/data_repository/data_repository.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 
-// TODO: rename this to theme manager?
 class AppManager {
   final themeListener = ValueNotifier<ThemeData>(_lightTheme);
 

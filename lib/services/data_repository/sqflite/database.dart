@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/services/data_repository/data_repository.dart';
@@ -16,7 +17,7 @@ class LocalStorage implements DataRepository {
   @override
   Future<void> init() async {
     final path = join(await getDatabasesPath(), _databaseName);
-    print('init: $path');
+    debugPrint('init: $path');
     _database = await openDatabase(
       path,
       onCreate: _onCreate,
@@ -25,12 +26,10 @@ class LocalStorage implements DataRepository {
   }
 
   Future<void> _onCreate(Database db, int version) async {
-    print('creating database: ${db.path}');
     await db.execute(CollectionEntry.createCollectionTable);
     await db.execute(VerseEntry.createVocabTable);
     await _insertExampleVerses(db);
     await _insertExamplePassage(db);
-    print('finished creating');
   }
 
   Future<void> _insertExampleVerses(Database db) async {
@@ -75,7 +74,6 @@ class LocalStorage implements DataRepository {
       CollectionEntry.collectionTable,
       orderBy: 'LOWER(${CollectionEntry.name}) ASC',
     );
-    print('fetchCollections: $collections');
     return List.generate(collections.length, (i) {
       return Collection(
         id: collections[i][CollectionEntry.id] as String,
@@ -96,7 +94,6 @@ class LocalStorage implements DataRepository {
     } else {
       verses = await _database.query(VerseEntry.verseTable);
     }
-    print('fetchAllVerses: ${verses.length}');
     return List.generate(verses.length, (i) {
       final verse = verses[i];
       return Verse(
@@ -138,9 +135,6 @@ class LocalStorage implements DataRepository {
     final newVerses = await _fetchNewVerses(collectionId, newVerseLimit);
     final reviewVerses = await _fetchReviewVerses(collectionId);
     _updateCollectionAccessTime(collectionId);
-    print('collectionId: $collectionId');
-    print('_fetchNewVerses: $newVerses');
-    print('_fetchReviewVerses: $reviewVerses');
     final verses = [...newVerses, ...reviewVerses];
     return List.generate(verses.length, (i) {
       final verse = verses[i];
@@ -188,7 +182,6 @@ class LocalStorage implements DataRepository {
     );
     if (results.isEmpty) return null;
     final verse = results.first;
-    print('fetchVerse: $verse');
     return Verse(
       id: verse[VerseEntry.id] as String,
       prompt: verse[VerseEntry.prompt] as String,
@@ -200,7 +193,6 @@ class LocalStorage implements DataRepository {
 
   @override
   Future<void> insertVerse(String collectionId, Verse verse) async {
-    print('insert verse');
     await _database.insert(
       VerseEntry.verseTable,
       {
@@ -217,7 +209,6 @@ class LocalStorage implements DataRepository {
 
   @override
   Future<void> updateVerse(String collectionId, Verse verse) async {
-    print('update verse');
     await _database.update(
       VerseEntry.verseTable,
       {
@@ -246,7 +237,6 @@ class LocalStorage implements DataRepository {
     required List<Verse> verses,
     Database? database,
   }) async {
-    print('batchInsertVerses');
     final db = database ?? _database;
     final batch = db.batch();
     final timestamp = _timestampNow();
@@ -270,7 +260,6 @@ class LocalStorage implements DataRepository {
 
   @override
   Future<void> deleteVerse({required String verseId}) async {
-    print('deleteVerse');
     await _database.delete(
       VerseEntry.verseTable,
       where: '${VerseEntry.id} = ?',
@@ -280,13 +269,11 @@ class LocalStorage implements DataRepository {
 
   @override
   Future<void> insertCollection(Collection collection) async {
-    print('insertCollection');
     await _upsertCollection(collection);
   }
 
   @override
   Future<void> updateCollection(Collection collection) async {
-    print('updateCollection');
     await _upsertCollection(collection);
   }
 
@@ -299,12 +286,9 @@ class LocalStorage implements DataRepository {
     );
     if (results.isNotEmpty &&
         results.first[CollectionEntry.id] != collection.id) {
-      // Don't allow duplicate collection names
-      print('Don\'t allow duplicate collection names');
+      debugPrint('Don\'t allow duplicate collection names');
       return;
     }
-
-    print('id: ${collection.id}, name: ${collection.name}');
 
     // Insert or replace the collection
     await _database.insert(
@@ -337,7 +321,6 @@ class LocalStorage implements DataRepository {
     required String collectionId,
     required String prompt,
   }) async {
-    print('promptExists: $prompt');
     final results = await _database.query(
       VerseEntry.verseTable,
       where: '${VerseEntry.collectionId} = ? AND ${VerseEntry.prompt} = ?',
