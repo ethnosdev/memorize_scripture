@@ -44,7 +44,6 @@ final sampleVerses = [
         'understanding. In all your ways acknowledge him, and he will make '
         'your paths straight.'
         '\nProverbs 3:5-6 (WEB)',
-    nextDueDate: DateTime.fromMillisecondsSinceEpoch(0),
   ),
   Verse(
     id: const Uuid().v4(),
