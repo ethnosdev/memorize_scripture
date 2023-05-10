@@ -34,9 +34,11 @@ class LocalStorage implements DataRepository {
       id: const Uuid().v4(),
       name: 'Starter pack',
     );
+    final timestamp = _timestampNow();
     await db.insert(CollectionEntry.collectionTable, {
       CollectionEntry.id: collection.id,
       CollectionEntry.name: collection.name,
+      CollectionEntry.accessedDate: timestamp,
     });
     await batchInsertVerses(
       database: db,
@@ -73,7 +75,6 @@ class LocalStorage implements DataRepository {
       verses = await _database.query(VerseEntry.verseTable);
     }
     print('fetchAllVerses: ${verses.length}');
-    print('collectionId: $collectionId');
     return List.generate(verses.length, (i) {
       final verse = verses[i];
       return Verse(
@@ -84,6 +85,16 @@ class LocalStorage implements DataRepository {
         interval: _dbVerseToInterval(verse),
       );
     });
+  }
+
+  Future<void> _updateCollectionAccessTime(String collectionId) async {
+    final timestamp = _timestampNow();
+    await _database.update(
+      CollectionEntry.collectionTable,
+      {CollectionEntry.accessedDate: timestamp},
+      where: '${CollectionEntry.id} = ?',
+      whereArgs: [collectionId],
+    );
   }
 
   DateTime? _dbVerseToDate(Map<String, Object?> verse) {
@@ -104,7 +115,7 @@ class LocalStorage implements DataRepository {
   }) async {
     final newVerses = await _fetchNewVerses(collectionId, newVerseLimit);
     final reviewVerses = await _fetchReviewVerses(collectionId);
-
+    _updateCollectionAccessTime(collectionId);
     print('collectionId: $collectionId');
     print('_fetchNewVerses: $newVerses');
     print('_fetchReviewVerses: $reviewVerses');
@@ -127,8 +138,8 @@ class LocalStorage implements DataRepository {
   ) async {
     return await _database.query(
       VerseEntry.verseTable,
-      where:
-          '${VerseEntry.collectionId} = ? AND ${VerseEntry.nextDueDate} IS NULL',
+      where: '${VerseEntry.collectionId} = ? '
+          'AND ${VerseEntry.nextDueDate} IS NULL',
       whereArgs: [collectionId],
       limit: limit,
     );
@@ -136,7 +147,7 @@ class LocalStorage implements DataRepository {
 
   Future<List<Map<String, Object?>>> _fetchReviewVerses(
       String collectionId) async {
-    final today = _dateToSecondsSinceEpoch(DateTime.now());
+    final today = _timestampNow();
     return await _database.query(
       VerseEntry.verseTable,
       where: '${VerseEntry.collectionId} = ? '
@@ -175,6 +186,7 @@ class LocalStorage implements DataRepository {
         VerseEntry.collectionId: collectionId,
         VerseEntry.prompt: verse.prompt,
         VerseEntry.answer: verse.answer,
+        VerseEntry.modifiedDate: _timestampNow(),
         VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
         VerseEntry.interval: verse.interval.inDays,
       },
@@ -190,6 +202,7 @@ class LocalStorage implements DataRepository {
         VerseEntry.collectionId: collectionId,
         VerseEntry.prompt: verse.prompt,
         VerseEntry.answer: verse.answer,
+        VerseEntry.modifiedDate: _timestampNow(),
         VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
         VerseEntry.interval: verse.interval.inDays,
       },
@@ -197,6 +210,8 @@ class LocalStorage implements DataRepository {
       whereArgs: [verse.id],
     );
   }
+
+  int _timestampNow() => _dateToSecondsSinceEpoch(DateTime.now())!;
 
   int? _dateToSecondsSinceEpoch(DateTime? date) {
     if (date == null) return null;
@@ -212,6 +227,7 @@ class LocalStorage implements DataRepository {
     print('batchInsertVerses');
     final db = database ?? _database;
     final batch = db.batch();
+    final timestamp = _timestampNow();
     for (Verse verse in verses) {
       batch.insert(
         VerseEntry.verseTable,
@@ -220,6 +236,7 @@ class LocalStorage implements DataRepository {
           VerseEntry.collectionId: collection.id,
           VerseEntry.prompt: verse.prompt,
           VerseEntry.answer: verse.answer,
+          VerseEntry.modifiedDate: timestamp,
           VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
           VerseEntry.interval: verse.interval.inDays,
         },
@@ -273,6 +290,7 @@ class LocalStorage implements DataRepository {
       {
         CollectionEntry.id: collection.id,
         CollectionEntry.name: collection.name.trim(),
+        CollectionEntry.accessedDate: _timestampNow(),
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -286,6 +304,7 @@ class LocalStorage implements DataRepository {
       where: '${CollectionEntry.id} = ?',
       whereArgs: [collectionId],
     );
+    // TODO: also delete verses
   }
 
   @override
