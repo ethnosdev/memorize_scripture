@@ -8,25 +8,32 @@ import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
 
 class LocalStorage implements DataRepository {
-  static const String _databaseName = "database.db";
+  final String _databaseName = "database.db";
   static const int _databaseVersion = 1;
   late Database _database;
+  final bool isTesting;
+
+  LocalStorage({this.isTesting = false});
 
   @override
   Future<void> init() async {
-    final path = join(await getDatabasesPath(), _databaseName);
+    final path = (isTesting)
+        ? inMemoryDatabasePath
+        : join(await getDatabasesPath(), _databaseName);
     print('init: $path');
     _database = await openDatabase(
       path,
-      onCreate: (db, version) async {
-        print('creating database: ${db.path}');
-        await db.execute(CollectionEntry.createCollectionTable);
-        await db.execute(VerseEntry.createVocabTable);
-        await _insertInitialData(db);
-        print('finished creating');
-      },
+      onCreate: _onCreate,
       version: _databaseVersion,
     );
+  }
+
+  Future<void> _onCreate(Database db, int version) async {
+    print('creating database: ${db.path}');
+    await db.execute(CollectionEntry.createCollectionTable);
+    await db.execute(VerseEntry.createVocabTable);
+    await _insertInitialData(db);
+    print('finished creating');
   }
 
   Future<void> _insertInitialData(Database db) async {
@@ -331,4 +338,6 @@ class LocalStorage implements DataRepository {
 
     return result.isNotEmpty ? result.first.values.first : 0;
   }
+
+  Future<void> close() async => _database.close();
 }
