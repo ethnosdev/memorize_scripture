@@ -33,7 +33,8 @@ final _lightTheme = ThemeData(
   textTheme: TextTheme(
     bodyMedium: const TextStyle(fontSize: 14),
     labelSmall: TextStyle(color: ThemeData.light().disabledColor),
-    bodySmall: TextStyle(
+    bodySmall: const TextStyle(fontSize: 12),
+    titleSmall: TextStyle(
       fontSize: 12,
       color: customYellow.shade900,
     ),
@@ -56,7 +57,8 @@ final _darkTheme = ThemeData(
   textTheme: TextTheme(
     bodyMedium: const TextStyle(fontSize: 14),
     labelSmall: TextStyle(color: ThemeData.dark().disabledColor),
-    bodySmall: TextStyle(
+    bodySmall: const TextStyle(fontSize: 12),
+    titleSmall: TextStyle(
       fontSize: 12,
       color: customYellow.shade900,
     ),

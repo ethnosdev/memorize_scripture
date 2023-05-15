@@ -91,7 +91,7 @@ class ResponseButton extends StatelessWidget {
               Text(title),
               Text(
                 subtitle,
-                style: Theme.of(context).textTheme.bodySmall,
+                style: Theme.of(context).textTheme.titleSmall,
               ),
             ],
           ),
