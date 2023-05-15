@@ -20,10 +20,6 @@ class AppManager {
   void setDarkTheme(bool isDark) {
     themeListener.value = (isDark) ? _darkTheme : _lightTheme;
   }
-
-  bool get isDarkTheme {
-    return themeListener.value.brightness == Brightness.dark;
-  }
 }
 
 final _lightTheme = ThemeData(
