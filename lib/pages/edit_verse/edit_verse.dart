@@ -59,7 +59,6 @@ class _EditVersePageState extends State<EditVersePage> {
             promptController.text = verse?.prompt ?? '';
             answerController.text = verse?.answer ?? '';
             final due = manager.formatDueDate(verse?.nextDueDate);
-            final interval = manager.formatInterval(verse?.interval);
             return SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -108,8 +107,6 @@ class _EditVersePageState extends State<EditVersePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text('Due: $due'),
-                            const SizedBox(height: 4),
-                            Text('Interval: $interval'),
                           ],
                         ),
                       ),
