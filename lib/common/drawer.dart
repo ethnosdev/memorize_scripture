@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/app_manager.dart';
-import 'package:memorize_scripture/common/color.dart';
 import 'package:memorize_scripture/go_router.dart';
 import 'package:memorize_scripture/service_locator.dart';
 
@@ -21,16 +20,11 @@ class MenuDrawer extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-              ),
               child: SvgPicture.asset(
-                colorFilter: (isDark)
-                    ? const ColorFilter.mode(
-                        customYellow,
-                        BlendMode.srcIn,
-                      )
-                    : null,
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).colorScheme.primary,
+                  BlendMode.srcIn,
+                ),
                 'assets/logo.svg',
                 width: 100,
                 height: 100,

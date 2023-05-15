@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:memorize_scripture/common/color.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/data_repository/data_repository.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
@@ -28,39 +27,13 @@ class AppManager {
 }
 
 final _lightTheme = ThemeData(
+  useMaterial3: true,
   brightness: Brightness.light,
-  primarySwatch: customYellow,
-  textTheme: TextTheme(
-    bodyMedium: const TextStyle(fontSize: 14),
-    labelSmall: TextStyle(color: ThemeData.light().disabledColor),
-    bodySmall: const TextStyle(fontSize: 12),
-    titleSmall: TextStyle(
-      fontSize: 12,
-      color: customYellow.shade900,
-    ),
-  ),
-  outlinedButtonTheme: OutlinedButtonThemeData(
-    style: OutlinedButton.styleFrom(
-      foregroundColor: customYellow.shade900,
-    ),
-  ),
-  textButtonTheme: TextButtonThemeData(
-    style: TextButton.styleFrom(
-      foregroundColor: customYellow.shade900,
-    ),
-  ),
+  colorSchemeSeed: Colors.yellow,
 );
 
 final _darkTheme = ThemeData(
+  useMaterial3: true,
+  colorSchemeSeed: Colors.yellow,
   brightness: Brightness.dark,
-  primarySwatch: customYellow,
-  textTheme: TextTheme(
-    bodyMedium: const TextStyle(fontSize: 14),
-    labelSmall: TextStyle(color: ThemeData.dark().disabledColor),
-    bodySmall: const TextStyle(fontSize: 12),
-    titleSmall: TextStyle(
-      fontSize: 12,
-      color: customYellow.shade900,
-    ),
-  ),
 );

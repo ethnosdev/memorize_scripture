@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:memorize_scripture/common/color.dart';
 import 'package:memorize_scripture/pages/settings/settings_page_manager.dart';
 import 'package:settings_ui/settings_ui.dart';
 
@@ -33,7 +32,7 @@ class _SettingsPageState extends State<SettingsPage> {
               SettingsSection(
                 tiles: [
                   SettingsTile.switchTile(
-                    activeSwitchColor: customYellow,
+                    activeSwitchColor: Theme.of(context).colorScheme.primary,
                     title: const Text('Dark mode'),
                     initialValue: manager.isDarkMode,
                     onToggle: manager.setDarkMode,
