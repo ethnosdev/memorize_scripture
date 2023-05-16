@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/service_locator.dart';
