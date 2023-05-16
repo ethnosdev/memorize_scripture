@@ -97,17 +97,15 @@ class PracticePageManager {
   void _setResponseButtonTitles() {
     final verse = _verses.first;
 
-    if (verse.isNew) {
-      hardTitle = 'Again';
+    hardTitle = 'Again';
+    if (verse.isNew && _verses.length > 1) {
       okTitle = 'Today';
-      easyTitle = '${_nextIntervalInDays(verse, Difficulty.easy)} days';
     } else {
       final okDays = _nextIntervalInDays(verse, Difficulty.ok);
       final s = (okDays == 1) ? '' : 's';
-      hardTitle = 'Again';
       okTitle = '$okDays day$s';
-      easyTitle = '${_nextIntervalInDays(verse, Difficulty.easy)} days';
     }
+    easyTitle = '${_nextIntervalInDays(verse, Difficulty.easy)} days';
   }
 
   int _numberHintWordsShowing = 0;
@@ -193,11 +191,17 @@ class PracticePageManager {
         }
         break;
       case Difficulty.ok:
-        // Giving it a due date will make it no longer new.
-        // However, we won't save it to the data repo yet.
-        // Just put it at the back of today's list.
-        final updated = verse.copyWith(nextDueDate: DateTime.now());
-        _verses.add(updated);
+        if (_verses.isEmpty) {
+          // If this is the only verse, we're finished.
+          final updated = _adjustVerseStats(verse, response);
+          dataRepository.updateVerse(_collectionId, updated);
+        } else {
+          // Giving it a due date will make it no longer new.
+          // However, we won't save it to the data repo yet.
+          // Just put it at the back of today's list.
+          final updated = verse.copyWith(nextDueDate: DateTime.now());
+          _verses.add(updated);
+        }
         break;
       case Difficulty.easy:
         final update = _adjustVerseStats(verse, response);
@@ -237,7 +241,7 @@ class PracticePageManager {
         days++;
         break;
       case Difficulty.easy:
-        days = max(2 * (days + 1), 4);
+        days = 2 * (days + 1);
         break;
     }
     return days;
