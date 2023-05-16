@@ -1,22 +1,20 @@
-## 0.2.0
+## 1.0.0 - May 16, 2023
 
-- purple theme
-- added browse verses page
-- added edit verse page
-- remove show hints settings option
-- new verse frequency item in settings
+Basic features:
 
-## 0.1.0
-
-These are current features at the time of starting the changelog:
-
-- collection list on home page
-- collections reorderable
-- dark mode
-- hide hints
-- basic menu structure and navigation
-- first letters hints
-- one word at a time hints
-- show answer
-- three button response
-- add verse page
+- Home screen with collection list.
+- Can view, edit, and delete collections.
+- Drawer with Settings and About
+- Settings allows dark/light mode and max new verses.
+- About shows title, version, and contact email.
+- Practice screen shows prompt and hints for new verses and review verses.
+- Hints include letters and words.
+- Letter hint shows first letter of every word.
+- Word hind shows one more word for each press.
+- Answer button shows answer and reveals response buttons.
+- Three response buttons: Hard, OK, Easy.
+- Hard puts new verses three back in line and review verses at the end of the list.
+- OK puts new verses at the end of the list and schedules review verses some interval number of days in the future.
+- Easy schedules verses double the number of the interval days in the future.
+- Verses and collections are saved locally in a SQLite database.
+- Can add new verses and edit existing verses.
