@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
 import 'package:memorize_scripture/pages/practice/widgets/button_panel.dart';
+import 'package:memorize_scripture/pages/practice/widgets/hint_box.dart';
 
 // use this to enlarge the text. Later allow the user to adjust this.
 const textScaleFactor = 1.2;
@@ -97,70 +98,6 @@ class Prompt extends StatelessWidget {
           textScaleFactor: textScaleFactor,
         );
       },
-    );
-  }
-}
-
-class HintBox extends StatelessWidget {
-  const HintBox({
-    super.key,
-    required this.manager,
-  });
-
-  final PracticePageManager manager;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Theme.of(context).disabledColor,
-              width: 0.5,
-            ),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: ValueListenableBuilder<bool>(
-                valueListenable: manager.isShowingAnswerNotifier,
-                builder: (context, isShowingAnswer, child) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      OutlinedButton(
-                        onPressed: (isShowingAnswer)
-                            ? null
-                            : manager.showFirstLettersHint,
-                        child: const Text('Letters'),
-                      ),
-                      const SizedBox(width: 20),
-                      OutlinedButton(
-                        onPressed:
-                            (isShowingAnswer) ? null : manager.showNextWordHint,
-                        child: const Text('Word'),
-                      ),
-                    ],
-                  );
-                }),
-          ),
-        ),
-        Positioned(
-          top: 3,
-          left: 20,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: Text(
-              'Hints',
-              style: Theme.of(context).textTheme.labelSmall,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
