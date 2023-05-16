@@ -67,8 +67,9 @@ class Body extends StatelessWidget {
           children: [
             const SizedBox(height: 20),
             Prompt(manager: manager),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             HintBox(manager: manager),
+            const SizedBox(height: 10),
             Answer(manager: manager),
           ],
         ),
@@ -90,12 +91,15 @@ class Prompt extends StatelessWidget {
     return ValueListenableBuilder<String>(
       valueListenable: manager.promptNotifier,
       builder: (context, text, child) {
-        return SelectableText.rich(
-          TextSpan(
-            text: text,
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: SelectableText.rich(
+            TextSpan(
+              text: text,
+            ),
+            textAlign: TextAlign.center,
+            textScaleFactor: textScaleFactor,
           ),
-          textAlign: TextAlign.center,
-          textScaleFactor: textScaleFactor,
         );
       },
     );
@@ -116,7 +120,7 @@ class Answer extends StatelessWidget {
       valueListenable: manager.answerNotifier,
       builder: (context, answer, child) {
         return Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: SelectableText.rich(
             answer,
             textAlign: TextAlign.center,
