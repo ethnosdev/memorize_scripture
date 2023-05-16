@@ -138,20 +138,21 @@ class PracticePageManager {
   TextSpan _formatForNumberOfWords(int number, String verseText) {
     if (verseText.isEmpty) return const TextSpan(text: '');
 
-    final pattern = _upToNthSpacePattern(number);
-    final match = pattern.firstMatch(verseText);
+    final index = _indexAfterNthSpace(number, verseText);
+    final before = verseText.substring(0, index);
+    final after = (index == null) ? '' : verseText.substring(index);
 
-    if (match == null) {
+    if (index == null) {
       _showResponseButtons();
     }
 
     final textSpan = TextSpan(children: [
       TextSpan(
-        text: match?.group(1) ?? verseText,
+        text: before,
         style: TextStyle(color: _textThemeColor),
       ),
       TextSpan(
-        text: match?.group(2),
+        text: after,
         style: const TextStyle(color: Colors.transparent),
       ),
     ]);
@@ -159,8 +160,29 @@ class PracticePageManager {
     return textSpan;
   }
 
-  RegExp _upToNthSpacePattern(int n) {
-    return RegExp(r'^((?:\S+\s){' + (n - 1).toString() + r'}\S+\s)(\S.*)');
+  int? _indexAfterNthSpace(int number, String verseText) {
+    int index = 0;
+    for (int i = 0; i <= number; i++) {
+      var temp = _advanceToNextWhiteSpace(index, verseText);
+      if (temp == null) return null;
+      index = temp;
+      temp = _advanceToNextNonWhiteSpace(index, verseText);
+      if (temp == null) return null;
+      index = temp;
+    }
+    return index;
+  }
+
+  int? _advanceToNextNonWhiteSpace(int start, String text) {
+    final nonWhiteSpace = RegExp(r'\S');
+    final index = text.indexOf(nonWhiteSpace, start);
+    return (index < 0) ? null : index;
+  }
+
+  int? _advanceToNextWhiteSpace(int start, String text) {
+    final whiteSpace = RegExp(r'\s');
+    final index = text.indexOf(whiteSpace, start);
+    return (index < 0) ? null : index;
   }
 
   void onResponse(Difficulty response) {
