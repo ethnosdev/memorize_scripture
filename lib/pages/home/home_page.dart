@@ -102,47 +102,49 @@ class _BodyWidgetState extends State<BodyWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: ValueListenableBuilder<List<Collection>>(
-              valueListenable: manager.collectionNotifier,
-              builder: (context, collections, child) {
-                return ListView.builder(
-                  itemCount: collections.length,
-                  itemBuilder: (context, index) {
-                    final collection = collections[index];
-                    return Card(
-                      key: ValueKey(collection.name),
-                      child: ListTile(
-                        title: Text(collection.name),
-                        onTap: () {
-                          context.goNamed(
-                            RouteName.practice,
-                            queryParams: {
-                              Params.colId: collection.id,
-                              Params.colName: collection.name,
-                            },
-                          );
-                        },
-                        onLongPress: () {
-                          _showCollectionOptionsDialog(index);
-                        },
-                      ),
-                    );
-                  },
-                );
-              }),
-        ),
-        OutlinedButton(
-          onPressed: () async {
-            final name = await _showEditNameDialog();
-            manager.addCollection(name);
-          },
-          child: const Text('Add Collection'),
-        ),
-        const SizedBox(height: 20),
-      ],
+    return SafeArea(
+      child: Column(
+        children: [
+          Expanded(
+            child: ValueListenableBuilder<List<Collection>>(
+                valueListenable: manager.collectionNotifier,
+                builder: (context, collections, child) {
+                  return ListView.builder(
+                    itemCount: collections.length,
+                    itemBuilder: (context, index) {
+                      final collection = collections[index];
+                      return Card(
+                        key: ValueKey(collection.name),
+                        child: ListTile(
+                          title: Text(collection.name),
+                          onTap: () {
+                            context.goNamed(
+                              RouteName.practice,
+                              queryParams: {
+                                Params.colId: collection.id,
+                                Params.colName: collection.name,
+                              },
+                            );
+                          },
+                          onLongPress: () {
+                            _showCollectionOptionsDialog(index);
+                          },
+                        ),
+                      );
+                    },
+                  );
+                }),
+          ),
+          OutlinedButton(
+            onPressed: () async {
+              final name = await _showEditNameDialog();
+              manager.addCollection(name);
+            },
+            child: const Text('Add Collection'),
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
     );
   }
 

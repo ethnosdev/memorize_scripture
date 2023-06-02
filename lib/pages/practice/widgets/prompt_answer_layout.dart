@@ -16,12 +16,14 @@ class PromptAnswerLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Counter(manager: manager),
-        Body(manager: manager),
-        BottomButtons(manager: manager),
-      ],
+    return SafeArea(
+      child: Column(
+        children: [
+          Counter(manager: manager),
+          Body(manager: manager),
+          BottomButtons(manager: manager),
+        ],
+      ),
     );
   }
 }
