@@ -1,6 +1,9 @@
-# memorize_scripture
+# Memorize Scripture
 
 A scripture memory app.
+
+Android: https://play.google.com/store/apps/details?id=dev.ethnos.memorize_scripture
+Apple: https://apps.apple.com/us/app/memorize-scripture-ethnosdev/id6449814205
 
 ## Tasks for testers
 
