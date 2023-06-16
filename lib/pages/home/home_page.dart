@@ -6,12 +6,24 @@ import 'package:memorize_scripture/go_router.dart';
 import 'package:memorize_scripture/pages/home/home_page_manager.dart';
 import 'package:memorize_scripture/service_locator.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final manager = getIt<HomePageManager>();
+
+  @override
+  void initState() {
+    super.initState();
+    manager.init();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final manager = getIt<HomePageManager>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Memorize Scripture'),
@@ -69,7 +81,37 @@ class HomePage extends StatelessWidget {
         ],
       ),
       drawer: const MenuDrawer(),
-      body: const BodyWidget(),
+      body: ValueListenableBuilder<List<Collection>>(
+        valueListenable: manager.collectionNotifier,
+        builder: (context, collections, child) {
+          if (collections.isEmpty) {
+            return const NoCollections();
+          } else {
+            return BodyWidget(collections: collections);
+          }
+        },
+      ),
+    );
+  }
+}
+
+class NoCollections extends StatelessWidget {
+  const NoCollections({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('Press the + button to add a collection.'),
+          const SizedBox(height: 50),
+          OutlinedButton(
+            onPressed: () {},
+            child: const Text('App Tutorial'),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -102,7 +144,10 @@ class IconTextRow extends StatelessWidget {
 class BodyWidget extends StatefulWidget {
   const BodyWidget({
     super.key,
+    required this.collections,
   });
+
+  final List<Collection> collections;
 
   @override
   State<BodyWidget> createState() => _BodyWidgetState();
@@ -112,40 +157,29 @@ class _BodyWidgetState extends State<BodyWidget> {
   final manager = getIt<HomePageManager>();
 
   @override
-  void initState() {
-    super.initState();
-    manager.init();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: ValueListenableBuilder<List<Collection>>(
-        valueListenable: manager.collectionNotifier,
-        builder: (context, collections, child) {
-          return ListView.builder(
-            itemCount: collections.length,
-            itemBuilder: (context, index) {
-              final collection = collections[index];
-              return Card(
-                key: ValueKey(collection.name),
-                child: ListTile(
-                  title: Text(collection.name),
-                  onTap: () {
-                    context.goNamed(
-                      RouteName.practice,
-                      queryParams: {
-                        Params.colId: collection.id,
-                        Params.colName: collection.name,
-                      },
-                    );
+      child: ListView.builder(
+        itemCount: widget.collections.length,
+        itemBuilder: (context, index) {
+          final collection = widget.collections[index];
+          return Card(
+            key: ValueKey(collection.name),
+            child: ListTile(
+              title: Text(collection.name),
+              onTap: () {
+                context.goNamed(
+                  RouteName.practice,
+                  queryParams: {
+                    Params.colId: collection.id,
+                    Params.colName: collection.name,
                   },
-                  onLongPress: () {
-                    _showCollectionOptionsDialog(index);
-                  },
-                ),
-              );
-            },
+                );
+              },
+              onLongPress: () {
+                _showCollectionOptionsDialog(index);
+              },
+            ),
           );
         },
       ),

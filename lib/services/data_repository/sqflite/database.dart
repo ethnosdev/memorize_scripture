@@ -2,12 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/services/data_repository/data_repository.dart';
-import 'package:memorize_scripture/services/data_repository/sqflite/sample_passage.dart';
 import 'package:memorize_scripture/services/data_repository/sqflite/schema.dart';
-import 'package:memorize_scripture/services/data_repository/sqflite/sample_verses.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:uuid/uuid.dart';
 
 class LocalStorage implements DataRepository {
   final String _databaseName = "database.db";
@@ -28,44 +25,6 @@ class LocalStorage implements DataRepository {
   Future<void> _onCreate(Database db, int version) async {
     await db.execute(CollectionEntry.createCollectionTable);
     await db.execute(VerseEntry.createVocabTable);
-    await _insertExampleVerses(db);
-    await _insertExamplePassage(db);
-  }
-
-  Future<void> _insertExampleVerses(Database db) async {
-    final collection = Collection(
-      id: const Uuid().v4(),
-      name: 'Example verse collection',
-    );
-    final timestamp = _timestampNow();
-    await db.insert(CollectionEntry.collectionTable, {
-      CollectionEntry.id: collection.id,
-      CollectionEntry.name: collection.name,
-      CollectionEntry.accessedDate: timestamp,
-    });
-    await batchInsertVerses(
-      database: db,
-      collection: collection,
-      verses: sampleVerses,
-    );
-  }
-
-  Future<void> _insertExamplePassage(Database db) async {
-    final collection = Collection(
-      id: const Uuid().v4(),
-      name: 'Example passage (Psalm 23)',
-    );
-    final timestamp = _timestampNow();
-    await db.insert(CollectionEntry.collectionTable, {
-      CollectionEntry.id: collection.id,
-      CollectionEntry.name: collection.name,
-      CollectionEntry.accessedDate: timestamp,
-    });
-    await batchInsertVerses(
-      database: db,
-      collection: collection,
-      verses: samplePassage,
-    );
   }
 
   @override

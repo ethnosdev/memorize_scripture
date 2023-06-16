@@ -35,6 +35,12 @@ class MenuDrawer extends StatelessWidget {
               },
             ),
             ListTile(
+              title: const Text('Help'),
+              onTap: () {
+                // TODO: open tutorial
+              },
+            ),
+            ListTile(
               title: const Text('About'),
               onTap: () {
                 Navigator.pop(context);
