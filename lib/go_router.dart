@@ -1,7 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/pages/about/about_page.dart';
-import 'package:memorize_scripture/pages/add_verse/add_verse_page.dart';
-import 'package:memorize_scripture/pages/edit_verse/edit_verse.dart';
+import 'package:memorize_scripture/pages/add_edit_verse/add_edit_verse_page.dart';
 import 'package:memorize_scripture/pages/home/home_page.dart';
 import 'package:memorize_scripture/pages/practice/practice_page.dart';
 import 'package:memorize_scripture/pages/settings/settings_page.dart';
@@ -44,19 +43,18 @@ final GoRouter router = GoRouter(
             GoRoute(
               name: RouteName.add,
               path: 'add',
-              builder: (context, state) => AddVersePage(
+              builder: (context, state) => AddEditVersePage(
                 collectionId: state.queryParams[Params.colId] as String,
-                collectionName: state.queryParams[Params.colName] as String,
-                onVerseAdded: state.extra as void Function()?,
+                onFinished: state.extra as void Function(String?)?,
               ),
             ),
             GoRoute(
               name: RouteName.editPractice,
               path: 'edit',
-              builder: (context, state) => EditVersePage(
+              builder: (context, state) => AddEditVersePage(
                 collectionId: state.queryParams[Params.colId] as String,
                 verseId: state.queryParams[Params.verseId] as String,
-                onFinishedEditing: state.extra as void Function(String?)?,
+                onFinished: state.extra as void Function(String?)?,
               ),
             ),
           ],
@@ -72,10 +70,10 @@ final GoRouter router = GoRouter(
             GoRoute(
               name: RouteName.editBrowser,
               path: 'edit',
-              builder: (context, state) => EditVersePage(
+              builder: (context, state) => AddEditVersePage(
                 collectionId: state.queryParams[Params.colId] as String,
                 verseId: state.queryParams[Params.verseId] as String,
-                onFinishedEditing: state.extra as void Function(String?)?,
+                onFinished: state.extra as void Function(String?)?,
               ),
             ),
           ],

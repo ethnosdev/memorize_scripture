@@ -58,7 +58,7 @@ class LocalStorage implements DataRepository {
       return Verse(
         id: verse[VerseEntry.id] as String,
         prompt: verse[VerseEntry.prompt] as String,
-        answer: verse[VerseEntry.answer] as String,
+        text: verse[VerseEntry.verseText] as String,
         nextDueDate: _dbVerseToDate(verse),
         interval: _dbVerseToInterval(verse),
       );
@@ -100,7 +100,7 @@ class LocalStorage implements DataRepository {
       return Verse(
         id: verse[VerseEntry.id] as String,
         prompt: verse[VerseEntry.prompt] as String,
-        answer: verse[VerseEntry.answer] as String,
+        text: verse[VerseEntry.verseText] as String,
         nextDueDate: _dbVerseToDate(verse),
         interval: _dbVerseToInterval(verse),
       );
@@ -144,7 +144,7 @@ class LocalStorage implements DataRepository {
     return Verse(
       id: verse[VerseEntry.id] as String,
       prompt: verse[VerseEntry.prompt] as String,
-      answer: verse[VerseEntry.answer] as String,
+      text: verse[VerseEntry.verseText] as String,
       nextDueDate: _dbVerseToDate(verse),
       interval: _dbVerseToInterval(verse),
     );
@@ -158,7 +158,7 @@ class LocalStorage implements DataRepository {
         VerseEntry.id: verse.id,
         VerseEntry.collectionId: collectionId,
         VerseEntry.prompt: verse.prompt,
-        VerseEntry.answer: verse.answer,
+        VerseEntry.verseText: verse.text,
         VerseEntry.modifiedDate: _timestampNow(),
         VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
         VerseEntry.interval: verse.interval.inDays,
@@ -173,7 +173,7 @@ class LocalStorage implements DataRepository {
       {
         VerseEntry.collectionId: collectionId,
         VerseEntry.prompt: verse.prompt,
-        VerseEntry.answer: verse.answer,
+        VerseEntry.verseText: verse.text,
         VerseEntry.modifiedDate: _timestampNow(),
         VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
         VerseEntry.interval: verse.interval.inDays,
@@ -206,7 +206,7 @@ class LocalStorage implements DataRepository {
           VerseEntry.id: verse.id,
           VerseEntry.collectionId: collection.id,
           VerseEntry.prompt: verse.prompt,
-          VerseEntry.answer: verse.answer,
+          VerseEntry.verseText: verse.text,
           VerseEntry.modifiedDate: timestamp,
           VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
           VerseEntry.interval: verse.interval.inDays,

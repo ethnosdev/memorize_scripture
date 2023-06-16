@@ -50,7 +50,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
                     const SizedBox(width: 8),
                     Expanded(
                         child: Text(
-                      verse.answer,
+                      verse.text,
                       style: Theme.of(context).textTheme.bodySmall,
                     )),
                   ],

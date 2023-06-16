@@ -6,7 +6,7 @@ class VerseEntry {
   static const String id = '_id';
   static const String collectionId = 'collection_id';
   static const String prompt = 'prompt';
-  static const String answer = 'answer';
+  static const String verseText = 'answer';
   // seconds since epoch, new verses default to null
   static const String modifiedDate = 'modified_date';
   static const String nextDueDate = 'next_due_date';
@@ -19,7 +19,7 @@ class VerseEntry {
     $id TEXT PRIMARY KEY,
     $collectionId TEXT NOT NULL,
     $prompt TEXT NOT NULL,
-    $answer TEXT,
+    $verseText TEXT,
     $modifiedDate INTEGER,
     $nextDueDate INTEGER,
     $interval INTEGER DEFAULT 0,

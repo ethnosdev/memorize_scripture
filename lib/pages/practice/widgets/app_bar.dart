@@ -32,7 +32,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                     Params.colId: collectionId,
                     Params.colName: collectionName,
                   },
-                  extra: manager.onVerseAdded,
+                  extra: manager.onFinishedAddingEditing,
                 );
               },
             ),
@@ -51,7 +51,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                         Params.colName: collectionName,
                         Params.verseId: manager.currentVerseId!,
                       },
-                      extra: manager.onFinishedEditing,
+                      extra: manager.onFinishedAddingEditing,
                     );
                   }
                 },

@@ -2,7 +2,7 @@ class Verse {
   Verse({
     required this.id,
     required this.prompt,
-    required this.answer,
+    required this.text,
     this.nextDueDate,
     this.interval = Duration.zero,
   });
@@ -16,7 +16,7 @@ class Verse {
 
   /// The verse text to show the user when they ask for the answer to
   /// the prompt.
-  final String answer;
+  final String text;
 
   /// The day this verse is due.
   ///
@@ -34,14 +34,14 @@ class Verse {
   Verse copyWith({
     String? id,
     String? prompt,
-    String? answer,
+    String? text,
     DateTime? nextDueDate,
     Duration? interval,
   }) {
     return Verse(
       id: id ?? this.id,
       prompt: prompt ?? this.prompt,
-      answer: answer ?? this.answer,
+      text: text ?? this.text,
       nextDueDate: nextDueDate ?? this.nextDueDate,
       interval: interval ?? this.interval,
     );

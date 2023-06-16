@@ -35,7 +35,7 @@ class PracticePageManager {
   final uiNotifier = ValueNotifier<PracticeState>(PracticeState.loading);
   final countNotifier = ValueNotifier<String>('');
   final promptNotifier = ValueNotifier<String>('');
-  final answerNotifier = ValueNotifier<TextSpan>(const TextSpan());
+  final verseTextNotifier = ValueNotifier<TextSpan>(const TextSpan());
   final isShowingAnswerNotifier = ValueNotifier<bool>(false);
 
   late List<Verse> _verses;
@@ -81,8 +81,8 @@ class PracticePageManager {
 
   void show() {
     _showResponseButtons();
-    answerNotifier.value = TextSpan(
-      text: _verses[0].answer,
+    verseTextNotifier.value = TextSpan(
+      text: _verses[0].text,
       style: TextStyle(color: _textThemeColor),
     );
   }
@@ -110,9 +110,9 @@ class PracticePageManager {
 
   void showNextWordHint() {
     _numberHintWordsShowing++;
-    answerNotifier.value = _formatForNumberOfWords(
+    verseTextNotifier.value = _formatForNumberOfWords(
       _numberHintWordsShowing,
-      _verses[0].answer,
+      _verses[0].text,
     );
   }
 
@@ -120,7 +120,7 @@ class PracticePageManager {
     final latinChar = RegExp(r'\w');
     final result = StringBuffer();
     bool isWordStart = true;
-    final text = _verses[0].answer;
+    final text = _verses[0].text;
     for (int i = 0; i < text.length; i++) {
       final character = text[i];
       final isWordChar = character.contains(latinChar);
@@ -129,7 +129,7 @@ class PracticePageManager {
         isWordStart = !isWordChar;
       }
     }
-    answerNotifier.value = TextSpan(
+    verseTextNotifier.value = TextSpan(
       text: result.toString(),
       style: TextStyle(color: _textThemeColor),
     );
@@ -272,22 +272,24 @@ class PracticePageManager {
       uiNotifier.value = PracticeState.finished;
     } else {
       isShowingAnswerNotifier.value = false;
-      answerNotifier.value = const TextSpan();
+      verseTextNotifier.value = const TextSpan();
       promptNotifier.value = _verses.first.prompt;
       countNotifier.value = _verses.length.toString();
       _numberHintWordsShowing = 0;
     }
   }
 
-  void onFinishedEditing(String? verseId) async {
-    if (verseId == null) return;
+  void onFinishedAddingEditing(String? verseId) async {
+    final isAdding = verseId == null;
+    if (isAdding) {
+      init(collectionId: _collectionId);
+      return;
+    }
     final verse = await dataRepository.fetchVerse(verseId: verseId);
     if (verse == null) return;
     _verses[0] = verse;
     _resetUi();
   }
-
-  void onVerseAdded() => init(collectionId: _collectionId);
 }
 
 enum Difficulty { hard, ok, easy }

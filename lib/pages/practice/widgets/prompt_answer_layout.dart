@@ -119,12 +119,12 @@ class Answer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<TextSpan>(
-      valueListenable: manager.answerNotifier,
-      builder: (context, answer, child) {
+      valueListenable: manager.verseTextNotifier,
+      builder: (context, verseText, child) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: SelectableText.rich(
-            answer,
+            verseText,
             textAlign: TextAlign.center,
             textScaleFactor: textScaleFactor,
           ),

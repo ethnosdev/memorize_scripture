@@ -32,12 +32,12 @@ How would you:
                 {
                     "translation": "ESV",
                     "prompt": "Proverbs 3:1",
-                    "answer": "jahsd jhsd jh asdjh adjs"
+                    "text": "jahsd jhsd jh asdjh adjs"
                 },
                 {
                     "translation": "ESV",
                     "prompt": "Proverbs 3:2",
-                    "answer": "jahsd jhsd js"
+                    "text": "jahsd jhsd js"
                 },
             ]
         },
@@ -48,12 +48,12 @@ How would you:
                 {
                     "translation": "ESV",
                     "prompt": "John 15:1",
-                    "answer": "jahsd jhsd jh asdjh adjs"
+                    "text": "jahsd jhsd jh asdjh adjs"
                 },
                 {
                     "translation": "ESV",
                     "prompt": "John 15:2",
-                    "answer": "jahsd jhsd js"
+                    "text": "jahsd jhsd js"
                 },
             ]
         },

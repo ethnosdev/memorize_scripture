@@ -96,12 +96,12 @@ class MockDataRepo implements DataRepository {
         Verse(
           id: '0',
           prompt: 'a 1',
-          answer: 'one two three',
+          text: 'one two three',
         ),
         Verse(
           id: '1',
           prompt: 'a 2',
-          answer: 'four five six',
+          text: 'four five six',
         ),
       ];
 

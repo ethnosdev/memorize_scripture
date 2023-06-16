@@ -14,7 +14,7 @@ void main() {
 
     await manager.init(collectionId: 'whatever');
 
-    expect(manager.answerNotifier.value, const TextSpan());
+    expect(manager.verseTextNotifier.value, const TextSpan());
     expect(manager.isShowingAnswerNotifier.value, false);
   });
 
@@ -26,7 +26,7 @@ void main() {
 
     await manager.init(collectionId: 'whatever');
 
-    expect(manager.answerNotifier.value, const TextSpan());
+    expect(manager.verseTextNotifier.value, const TextSpan());
     expect(manager.isShowingAnswerNotifier.value, false);
   });
 
@@ -39,22 +39,23 @@ void main() {
 
     manager.showNextWordHint();
 
-    var textBefore = manager.answerNotifier.value.children?.first as TextSpan;
-    var textAfter = manager.answerNotifier.value.children?.last as TextSpan;
+    var textBefore =
+        manager.verseTextNotifier.value.children?.first as TextSpan;
+    var textAfter = manager.verseTextNotifier.value.children?.last as TextSpan;
     expect(textBefore.text, 'one ');
     expect(textAfter.text, 'two three');
 
     manager.showNextWordHint();
 
-    textBefore = manager.answerNotifier.value.children?.first as TextSpan;
-    textAfter = manager.answerNotifier.value.children?.last as TextSpan;
+    textBefore = manager.verseTextNotifier.value.children?.first as TextSpan;
+    textAfter = manager.verseTextNotifier.value.children?.last as TextSpan;
     expect(textBefore.text, 'one two ');
     expect(textAfter.text, 'three');
 
     manager.showNextWordHint();
 
-    textBefore = manager.answerNotifier.value.children?.first as TextSpan;
-    textAfter = manager.answerNotifier.value.children?.last as TextSpan;
+    textBefore = manager.verseTextNotifier.value.children?.first as TextSpan;
+    textAfter = manager.verseTextNotifier.value.children?.last as TextSpan;
     expect(textBefore.text, 'one two three ');
     expect(textAfter.text, '');
   });
@@ -68,7 +69,7 @@ void main() {
 
     manager.showFirstLettersHint();
 
-    var text = manager.answerNotifier.value.text;
+    var text = manager.verseTextNotifier.value.text;
     expect(text, 'o t t');
   });
 
@@ -81,7 +82,7 @@ void main() {
     await manager.init(collectionId: 'whatever');
     manager.show();
 
-    final text = manager.answerNotifier.value.text;
+    final text = manager.verseTextNotifier.value.text;
     expect(text, 'one two three');
     expect(manager.isShowingAnswerNotifier.value, true);
   });
@@ -100,17 +101,17 @@ void main() {
 
     manager.show();
     var prompt = manager.promptNotifier.value;
-    var answer = manager.answerNotifier.value.text;
+    var verseText = manager.verseTextNotifier.value.text;
     expect(prompt, 'a 1');
-    expect(answer, 'one two three');
+    expect(verseText, 'one two three');
     expect(manager.isShowingAnswerNotifier.value, true);
 
     manager.onResponse(Difficulty.hard);
 
     prompt = manager.promptNotifier.value;
-    answer = manager.answerNotifier.value.text;
+    verseText = manager.verseTextNotifier.value.text;
     expect(prompt, 'a 2');
-    expect(answer, null);
+    expect(verseText, null);
     expect(manager.isShowingAnswerNotifier.value, false);
 
     // mark the next one as easy
@@ -118,43 +119,43 @@ void main() {
 
     manager.show();
     prompt = manager.promptNotifier.value;
-    answer = manager.answerNotifier.value.text;
+    verseText = manager.verseTextNotifier.value.text;
     expect(prompt, 'a 2');
-    expect(answer, 'four five six');
+    expect(verseText, 'four five six');
     expect(manager.isShowingAnswerNotifier.value, true);
 
     manager.onResponse(Difficulty.easy);
 
     prompt = manager.promptNotifier.value;
-    answer = manager.answerNotifier.value.text;
+    verseText = manager.verseTextNotifier.value.text;
     expect(prompt, 'a 1');
-    expect(answer, null);
+    expect(verseText, null);
     expect(manager.isShowingAnswerNotifier.value, false);
 
     // mark the remaining one as hard
 
     manager.show();
     prompt = manager.promptNotifier.value;
-    answer = manager.answerNotifier.value.text;
+    verseText = manager.verseTextNotifier.value.text;
     expect(prompt, 'a 1');
-    expect(answer, 'one two three');
+    expect(verseText, 'one two three');
     expect(manager.isShowingAnswerNotifier.value, true);
 
     manager.onResponse(Difficulty.hard);
 
     prompt = manager.promptNotifier.value;
-    answer = manager.answerNotifier.value.text;
+    verseText = manager.verseTextNotifier.value.text;
     expect(prompt, 'a 1');
-    expect(answer, null);
+    expect(verseText, null);
     expect(manager.isShowingAnswerNotifier.value, false);
 
     // since it was marked hard, it's still there
 
     manager.show();
     prompt = manager.promptNotifier.value;
-    answer = manager.answerNotifier.value.text;
+    verseText = manager.verseTextNotifier.value.text;
     expect(prompt, 'a 1');
-    expect(answer, 'one two three');
+    expect(verseText, 'one two three');
     expect(manager.isShowingAnswerNotifier.value, true);
 
     // mark it as ok now. This finishes the collection.
@@ -162,9 +163,9 @@ void main() {
     manager.onResponse(Difficulty.ok);
 
     prompt = manager.promptNotifier.value;
-    answer = manager.answerNotifier.value.text;
+    verseText = manager.verseTextNotifier.value.text;
     expect(prompt, '');
-    expect(answer, null);
+    expect(verseText, null);
     expect(manager.isShowingAnswerNotifier.value, false);
   });
 }

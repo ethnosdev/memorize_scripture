@@ -1,6 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class UserSettings {
+  static const defaultDailyLimit = 10;
+
   Future<bool> getDarkMode();
   Future<void> setDarkMode(bool value);
   Future<int> getDailyLimit();
@@ -26,7 +28,7 @@ class SharedPreferencesStorage extends UserSettings {
   @override
   Future<int> getDailyLimit() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt(_dailyLimitKey) ?? 1;
+    return prefs.getInt(_dailyLimitKey) ?? UserSettings.defaultDailyLimit;
   }
 
   @override
