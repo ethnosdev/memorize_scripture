@@ -87,6 +87,14 @@ class _VerseBrowserState extends State<VerseBrowser> {
             shrinkWrap: true,
             children: [
               ListTile(
+                title: const Text('Reset due date'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  manager.resetDueDate(index: index);
+                  _showMessage('Due date reset');
+                },
+              ),
+              ListTile(
                 title: const Text('Delete'),
                 onTap: () {
                   Navigator.of(context).pop();
@@ -97,6 +105,15 @@ class _VerseBrowserState extends State<VerseBrowser> {
           ),
         );
       },
+    );
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 1),
+      ),
     );
   }
 

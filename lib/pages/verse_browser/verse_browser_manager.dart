@@ -31,4 +31,15 @@ class VerseBrowserManager {
     if (verseId == null) return;
     init(_collectionId);
   }
+
+  Future<void> resetDueDate({required int index}) async {
+    final list = listNotifier.value;
+    final verse = list[index];
+    final updated = Verse(
+      id: verse.id,
+      prompt: verse.prompt,
+      text: verse.text,
+    );
+    await dataRepo.updateVerse(_collectionId, updated);
+  }
 }

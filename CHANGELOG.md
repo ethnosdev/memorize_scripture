@@ -1,3 +1,11 @@
+## 1.1.0 - June 16, 2023
+
+- Not prepopulating example collections.
+- Adding link to tutorial.
+- Moving add collection and add verse buttons to app bar.
+- Making edit button more accessible on practice page.
+- Combined add and edit page ui and logic.
+
 ## 1.0.0 - May 16, 2023
 
 Basic features:
