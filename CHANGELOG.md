@@ -5,6 +5,8 @@
 - Moving add collection and add verse buttons to app bar.
 - Making edit button more accessible on practice page.
 - Combined add and edit page ui and logic.
+- Reset due date by long clicking verse in verse browser.
+- Made the yellow more happy.
 
 ## 1.0.0 - May 16, 2023
 
