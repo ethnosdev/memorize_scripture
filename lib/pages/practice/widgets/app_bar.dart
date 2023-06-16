@@ -23,8 +23,25 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
         return AppBar(
           title: Text(collectionName),
           actions: [
+            if (practiceState == PracticeState.practicing)
+              IconButton(
+                icon: const Icon(Icons.edit),
+                tooltip: 'Edit',
+                onPressed: () {
+                  context.goNamed(
+                    RouteName.editPractice,
+                    queryParams: {
+                      Params.colId: collectionId,
+                      Params.colName: collectionName,
+                      Params.verseId: manager.currentVerseId!,
+                    },
+                    extra: manager.onFinishedAddingEditing,
+                  );
+                },
+              ),
             IconButton(
               icon: const Icon(Icons.add),
+              tooltip: 'Add verse',
               onPressed: () {
                 context.goNamed(
                   RouteName.add,
@@ -36,26 +53,6 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                 );
               },
             ),
-            if (practiceState == PracticeState.practicing)
-              PopupMenuButton(
-                itemBuilder: (context) => [
-                  const PopupMenuItem(value: 1, child: Text('Edit')),
-                ],
-                onSelected: (value) {
-                  debugPrint(value.toString());
-                  if (value == 1) {
-                    context.goNamed(
-                      RouteName.editPractice,
-                      queryParams: {
-                        Params.colId: collectionId,
-                        Params.colName: collectionName,
-                        Params.verseId: manager.currentVerseId!,
-                      },
-                      extra: manager.onFinishedAddingEditing,
-                    );
-                  }
-                },
-              ),
           ],
         );
       },
