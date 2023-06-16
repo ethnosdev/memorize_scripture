@@ -7,17 +7,17 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupServiceLocator();
   await getIt<AppManager>().init();
-  runApp(const MyApp());
+  runApp(const MemorizeScriptureApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class MemorizeScriptureApp extends StatefulWidget {
+  const MemorizeScriptureApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<MemorizeScriptureApp> createState() => _MemorizeScriptureAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MemorizeScriptureAppState extends State<MemorizeScriptureApp> {
   final manager = getIt<AppManager>();
 
   @override

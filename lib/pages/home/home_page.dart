@@ -4,52 +4,69 @@ import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/drawer.dart';
 import 'package:memorize_scripture/go_router.dart';
 import 'package:memorize_scripture/pages/home/home_page_manager.dart';
+import 'package:memorize_scripture/service_locator.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final manager = getIt<HomePageManager>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Memorize Scripture'),
-        // actions: [
-        //   PopupMenuButton(
-        //     itemBuilder: (BuildContext context) => [
-        //       const PopupMenuItem(
-        //         value: 1,
-        //         child: IconTextRow(
-        //           icon: Icons.play_arrow,
-        //           text: 'Play all',
-        //         ),
-        //       ),
-        //       const PopupMenuItem(
-        //         value: 1,
-        //         child: IconTextRow(
-        //           icon: Icons.sync,
-        //           text: 'Sync',
-        //         ),
-        //       ),
-        //       const PopupMenuItem(
-        //         value: 1,
-        //         child: IconTextRow(
-        //           icon: Icons.upload,
-        //           text: 'Backup',
-        //         ),
-        //       ),
-        //       const PopupMenuItem(
-        //         value: 1,
-        //         child: IconTextRow(
-        //           icon: Icons.download,
-        //           text: 'Restore backup',
-        //         ),
-        //       ),
-        //     ],
-        //     onSelected: (value) {
-        //       // handle menu item selection
-        //     },
-        //   ),
-        // ],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            tooltip: 'Add collection',
+            onPressed: () async {
+              final name = await _showEditNameDialog(context);
+              manager.addCollection(name);
+            },
+          ),
+          // PopupMenuButton(
+          //   itemBuilder: (BuildContext context) => [
+          //     const PopupMenuItem(
+          //       value: 1,
+          //       child: IconTextRow(
+          //         icon: Icons.play_arrow,
+          //         text: 'Play all',
+          //       ),
+          //     ),
+          //     const PopupMenuItem(
+          //       value: 1,
+          //       child: IconTextRow(
+          //         icon: Icons.sync,
+          //         text: 'Sync',
+          //       ),
+          //     ),
+          //     const PopupMenuItem(
+          //       value: 1,
+          //       child: IconTextRow(
+          //         icon: Icons.add,
+          //         text: 'Add collection',
+          //       ),
+          //     ),
+          //     const PopupMenuItem(
+          //       value: 1,
+          //       child: IconTextRow(
+          //         icon: Icons.upload,
+          //         text: 'Backup',
+          //       ),
+          //     ),
+          //     const PopupMenuItem(
+          //       value: 1,
+          //       child: IconTextRow(
+          //         icon: Icons.download,
+          //         text: 'Restore backup',
+          //       ),
+          //     ),
+          //   ],
+          //   onSelected: (value) {
+          //     // handle menu item selection
+          //   },
+          // ),
+        ],
       ),
       drawer: const MenuDrawer(),
       body: const BodyWidget(),
@@ -92,7 +109,7 @@ class BodyWidget extends StatefulWidget {
 }
 
 class _BodyWidgetState extends State<BodyWidget> {
-  final manager = HomePageManager();
+  final manager = getIt<HomePageManager>();
 
   @override
   void initState() {
@@ -103,74 +120,35 @@ class _BodyWidgetState extends State<BodyWidget> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
-        children: [
-          Expanded(
-            child: ValueListenableBuilder<List<Collection>>(
-                valueListenable: manager.collectionNotifier,
-                builder: (context, collections, child) {
-                  return ListView.builder(
-                    itemCount: collections.length,
-                    itemBuilder: (context, index) {
-                      final collection = collections[index];
-                      return Card(
-                        key: ValueKey(collection.name),
-                        child: ListTile(
-                          title: Text(collection.name),
-                          onTap: () {
-                            context.goNamed(
-                              RouteName.practice,
-                              queryParams: {
-                                Params.colId: collection.id,
-                                Params.colName: collection.name,
-                              },
-                            );
-                          },
-                          onLongPress: () {
-                            _showCollectionOptionsDialog(index);
-                          },
-                        ),
-                      );
-                    },
-                  );
-                }),
-          ),
-          OutlinedButton(
-            onPressed: () async {
-              final name = await _showEditNameDialog();
-              manager.addCollection(name);
+      child: ValueListenableBuilder<List<Collection>>(
+        valueListenable: manager.collectionNotifier,
+        builder: (context, collections, child) {
+          return ListView.builder(
+            itemCount: collections.length,
+            itemBuilder: (context, index) {
+              final collection = collections[index];
+              return Card(
+                key: ValueKey(collection.name),
+                child: ListTile(
+                  title: Text(collection.name),
+                  onTap: () {
+                    context.goNamed(
+                      RouteName.practice,
+                      queryParams: {
+                        Params.colId: collection.id,
+                        Params.colName: collection.name,
+                      },
+                    );
+                  },
+                  onLongPress: () {
+                    _showCollectionOptionsDialog(index);
+                  },
+                ),
+              );
             },
-            child: const Text('Add Collection'),
-          ),
-          const SizedBox(height: 20),
-        ],
+          );
+        },
       ),
-    );
-  }
-
-  Future<String?> _showEditNameDialog({String? oldName}) async {
-    final controller = TextEditingController(text: oldName);
-    Widget okButton = TextButton(
-      child: const Text("OK"),
-      onPressed: () {
-        Navigator.of(context).pop(controller.text);
-      },
-    );
-
-    AlertDialog alert = AlertDialog(
-      title: const Text("Name"),
-      content: TextField(
-        autofocus: true,
-        controller: controller,
-      ),
-      actions: [okButton],
-    );
-
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
     );
   }
 
@@ -201,7 +179,8 @@ class _BodyWidgetState extends State<BodyWidget> {
                 onTap: () async {
                   Navigator.of(context).pop();
                   final oldName = manager.collectionAt(index).name;
-                  final newName = await _showEditNameDialog(oldName: oldName);
+                  final newName =
+                      await _showEditNameDialog(context, oldName: oldName);
                   await manager.renameCollection(
                     index: index,
                     newName: newName,
@@ -253,4 +232,33 @@ class _BodyWidgetState extends State<BodyWidget> {
       },
     );
   }
+}
+
+Future<String?> _showEditNameDialog(
+  BuildContext context, {
+  String? oldName,
+}) async {
+  final controller = TextEditingController(text: oldName);
+  Widget okButton = TextButton(
+    child: const Text("OK"),
+    onPressed: () {
+      Navigator.of(context).pop(controller.text);
+    },
+  );
+
+  AlertDialog alert = AlertDialog(
+    title: const Text("Name"),
+    content: TextField(
+      autofocus: true,
+      controller: controller,
+    ),
+    actions: [okButton],
+  );
+
+  return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }
