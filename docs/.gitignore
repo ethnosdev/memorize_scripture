@@ -1,0 +1,47 @@
+# Ignore build output
+build/
+
+# Ignore node_modules directory
+node_modules/
+
+# Ignore yarn lock file
+yarn.lock
+
+# Ignore package-lock.json file
+package-lock.json
+
+# Ignore .DS_Store files (Mac specific)
+.DS_Store
+
+# Ignore cache and temporary files
+.cache/
+.docusaurus/
+
+# Ignore site deployment files
+deploy/
+.docusaurus.docusaurus-plugin-content-docs/
+
+# Ignore IDE specific files
+.vscode/
+.idea/
+*.iml
+
+# Ignore log files
+*.log
+
+# Ignore environment variables file
+.env.local
+
+# Ignore user-specific configuration files
+*.sensitive.js
+
+# Ignore backup files
+*.bak
+*.backup
+*.swp
+
+# Ignore generated files
+*.pdf
+
+# Ignore debug files
+*.debug.*
