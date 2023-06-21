@@ -160,9 +160,10 @@ class PracticePageManager {
     return textSpan;
   }
 
+  /// number is 1-based
   int? _indexAfterNthSpace(int number, String verseText) {
     int index = 0;
-    for (int i = 0; i <= number; i++) {
+    for (int i = 1; i <= number; i++) {
       var temp = _advanceToNextWhiteSpace(index, verseText);
       if (temp == null) return null;
       index = temp;
