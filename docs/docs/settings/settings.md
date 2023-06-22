@@ -4,6 +4,41 @@ sidebar_position: 5
 
 # Other Settings
 
-- Other settings
-  - Changing the max new verses
-  - Dark mode
+You can access other setting from the menu in the top left of the home screen:
+
+<div class="bordered-image">
+
+![home page menu](img/menu-1.png)
+</div>
+
+Press the menu icon and then choose **Settings** from the list.
+
+<div class="bordered-image">
+
+![settings in menu](img/menu-2.png)
+</div>
+
+This will give you the following options:
+
+<div class="bordered-image">
+
+![settings in menu](img/settings.png)
+</div>
+
+## Dark mode
+
+Choose dark mode to make it easier on your eyes if you practice your verses early in the morning before it gets light.
+
+## Max new verses per day
+
+This is the maximum number of new verses the app will show you every day. The default is 10. Set it to a lower number if you don't want to have so many new verses in one day.
+
+This setting can be useful if you reset the due date for all of the verses in a collection and you don't want to practice them all at once.
+
+:::tip
+Rather than entering a lot of new verses at once and setting the the max new verses to a number like 1. It is generally better to wait to enter a new verse until you are ready to start learning it.
+:::
+
+Congratulations! You've finished the tutorial!
+
+If there were any parts you still found confusing, please leave a comment in the feedback section.
