@@ -56,6 +56,14 @@ const config = {
           alt: 'Logo',
           src: 'img/logo.png',
         },
+        items: [
+          {
+            href: 'https://github.com/ethnosdev/memorize_scripture',
+            position: 'right',
+            className: 'header-github-link',
+            "aria-label": "GitHub repository",
+          },
+        ]
       },
       footer: {
         style: 'dark',

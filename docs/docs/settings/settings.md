@@ -11,7 +11,7 @@ You can access other setting from the menu in the top left of the home screen:
 ![home page menu](img/menu-1.png)
 </div>
 
-Press the menu icon and then choose **Settings** from the list.
+Press the **menu icon** and then choose **Settings** from the list.
 
 <div class="bordered-image">
 
@@ -33,10 +33,10 @@ Choose dark mode to make it easier on your eyes if you practice your verses earl
 
 This is the maximum number of new verses the app will show you every day. The default is 10. Set it to a lower number if you don't want to have so many new verses in one day.
 
-This setting can be useful if you reset the due date for all of the verses in a collection and you don't want to practice them all at once.
+This setting is useful when you reset the due date for all of the verses in a collection but you don't want to practice them all at once.
 
 :::tip
-Rather than entering a lot of new verses at once and setting the the max new verses to a number like 1. It is generally better to wait to enter a new verse until you are ready to start learning it.
+Rather than entering a lot of new verses at once and setting the the max new verses to a low number like 1. It's generally better to wait to enter a new verse until you are ready to start learning it.
 :::
 
 Congratulations! You've finished the tutorial!

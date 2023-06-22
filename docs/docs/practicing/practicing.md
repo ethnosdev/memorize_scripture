@@ -7,10 +7,10 @@ sidebar_position: 3
 Now that you know how to create collections and add verses, it's time to learn about practicing verses.
 
 :::important
-This app assumes that you are practice every day. For long-term memorization, develop daily learning and review as a habit.  
+This app assumes that you'll practice every day. Begin to develop this important habit today!
 :::
 
-Starting from the home screen, choose the Hebrews 11 collection that you made earlier. You should see the verse practice screen come up.
+Starting from the home screen, choose the **Hebrews 11** collection that you made earlier. You should see the verse practice screen come up.
 
 ## Parts of the screen
 
@@ -23,12 +23,12 @@ Have a look at the various parts of the verse practice screen:
 
 The numbers correspond to the following parts:
 
-1. **Remaining verses today**: This is the number of verses that are due to practice today. You entered three new verses earlier, so that's where this number comes from. Today they're all new but in the future, you'll also have old verses to review.
-2. **Edit verse**: Press this button to edit the prompt or verse text.
+1. **Remaining verses today**: This is the number of verses that are due to practice today. You entered three new verses earlier, so that's where this number comes from. Today they're all new, but in the future, you'll also have old verses to review.
+2. **Edit verse**: Press this button to edit the prompt and verse text.
 3. **Add new verse**: This is the same as what you did previously.
 4. **Prompt**: This is your queue to help you remember what you need to quote.
 5. **Hints**: These give you a little help if you need it. More on them shortly.
-6. **Show verse text**: Press this button to show the verse text that you are trying to quote.
+6. **Show verse text**: Press this button to check if you quoted the verse right.
 
 
 :::note
@@ -37,7 +37,7 @@ If you entered new verses and they aren't all showing up, check the **Max new ve
 
 ## Showing hints
 
-There are two different types of hints: first etters and incremental words.
+There are two different types of hints: letters and words.
 
 <div class="bordered-image">
 
@@ -73,7 +73,7 @@ Now press the **Word** hint button. You'll see that it shows you the first word 
 
 This allows you to give yourself just the amount of help that you need.
 
-If you press the Word hint button enough, it will reveal the entire verse text, which will trigger the response buttons being shown at the bottom. That's fine, but for the sake of the tutorial, let's cancel the hints so that you can see how to show the verse text the normal way. To do that, go back out to the home screen by pressing the **<** back button. Then choose the **Hebrews 11** collection again.
+If you press the Word hint button enough, it'll reveal the entire verse text, which will trigger the response buttons being shown at the bottom. That's fine, but for the sake of this tutorial, let's cancel the hints so that you can see how to show the verse text the normal way. To do that, go back out to the home screen by pressing the **<** back button. Then choose the **Hebrews 11** collection again.
 
 ## Showing the verse text
 
@@ -97,7 +97,7 @@ In the next section you'll learn what the response buttons mean.
 
 Memorize Scripture uses a spaced repetition strategy for reviewing verses. That means you'll practice the difficult verses every day while the easy verses you'll practice less frequently.
 
-You determine the verse difficulty yourself using the response buttons. There are three of these buttons: Hard, OK, and Easy.
+You determine the verse difficulty yourself by using the response buttons. There are three of these buttons: Hard, OK, and Easy.
 
 <div class="bordered-image">
 
@@ -106,9 +106,9 @@ You determine the verse difficulty yourself using the response buttons. There ar
 
 These are the meanings:
 
-- **Hard**: Press this button if you couldn't remember the verse or you made a mistake while quoting it. For old verses, this will reset the due date so that you'll begin reviewing the verse daily again, including again today. For new verses, it schedules the verse so that you'll practice it again in a few minutes, even if there are a total of 20 verses due that day.
-- **OK**: Press this button if you quoted the verse correctly. For new verses, the time still says "Today" because you should review it more more time. If you think of the verses like a deck of flashcards, the app places the new verse at the bottom of today's deck. For old review cards, the time will say something like "1 day" or "2 days", etc. Every time you press OK, the interval in the number of days will increase by one.
-- **Easy**: Press this button if you could quote the verse in your sleep. The number of days will generally be double whatever the OK button says.
+- **Hard**: Press this button if you couldn't remember the verse or if you made a mistake while quoting it. For old verses, this will reset the due date so that you'll begin reviewing the verse daily again. For new verses, it schedules the verse so that you'll practice it again in a few minutes.
+- **OK**: Press this button if you quoted the verse correctly. For new verses, the button says "Today" because you still need to review it more more time today. For old verses, the button will say "1 day" or "2 days", etc. Every time you review and press OK, the number of days for that verse will increase by one.
+- **Easy**: Press this button if you could quote the verse in your sleep. For review verses, the number of days will be double whatever the OK button says.
 
 Go through all three verses pressing OK for each one. The next time you come to Hebrews 11:01, the OK response button will look a little different:
 
@@ -117,9 +117,9 @@ Go through all three verses pressing OK for each one. The next time you come to 
 ![response buttons](img/practice-8.png)
 </div>
 
-Now the OK button says "1 day". If you press OK again, you're finished practicing it and you won't see it again until tomorrow.
+Now the OK button says "1 day". If you press OK again, you're finished practicing it, and you won't see it again until tomorrow.
 
-Press OK again for each of the three verses. You'll see the remaining verse number in the top left decrease until there are no more verses left.
+Press **OK** again for each of the three verses. You'll see the remaining verse number in the top left decrease until there are no more verses left.
 
 <div class="bordered-image">
 

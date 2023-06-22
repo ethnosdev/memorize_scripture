@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/drawer.dart';
@@ -190,7 +189,7 @@ class _BodyWidgetState extends State<BodyWidget> {
   Future<String?> _showCollectionOptionsDialog(int index) async {
     return showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext buildContext) {
         return Dialog(
           child: ListView(
             shrinkWrap: true,
@@ -212,6 +211,7 @@ class _BodyWidgetState extends State<BodyWidget> {
               ListTile(
                 title: const Text('Rename'),
                 onTap: () async {
+                  Navigator.of(context).pop();
                   final oldName = manager.collectionAt(index).name;
                   final newName =
                       await _showEditNameDialog(context, oldName: oldName);
@@ -277,7 +277,6 @@ Future<String?> _showEditNameDialog(
     child: const Text("OK"),
     onPressed: () {
       Navigator.of(context).pop(controller.text);
-      Navigator.of(context).pop(); // pop menu also
     },
   );
 

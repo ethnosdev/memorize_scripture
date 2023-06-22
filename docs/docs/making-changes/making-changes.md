@@ -25,7 +25,7 @@ Try that now. Delete your **Philippians 3** collection.
 
 ## Editing verses
 
-From the home screen, long-press your **Hebrews 11** collection. Then choose **View** from the menu. You should see all three verses that you added earlier:
+From the home screen, long-press your **Hebrews 11** collection. Then choose **View** from the menu. This will bring you to the verse browser. You should see all three verses that you added earlier:
 
 <div class="bordered-image">
 
@@ -43,14 +43,14 @@ Tap the first verse and make a small change. For example, add **(WEB)** after th
 
 ## Resetting the due date
 
-Back in the view screen for all of the verses in the collection, long-press the third verse. You'll see another menu:
+Back in the Hebrews 11 view screen, long-press the third verse. You'll see another menu:
 
 <div class="bordered-image">
 
 ![verse view menu](img/verse-menu.png)
 </div>
 
-Press **Reset due date**. This will make the third verse new again, as if you had just entered it and never practiced it before. This is useful if you accidentally marked it with too easy of a response and you want to practice it again sooner.
+Press **Reset due date**. This will make the third verse new again, as if you had just entered it and never practiced it before. This is useful if you accidentally mark a verse as OK or Easy before you're ready.
 
 ## Deleting verses
 
