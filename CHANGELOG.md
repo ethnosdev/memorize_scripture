@@ -1,3 +1,7 @@
+## 1.1.1 - June 24, 2023
+
+- Fix bug where tutorial link not launching on Android
+
 ## 1.1.0 - June 23, 2023
 
 - Not prepopulating example collections.

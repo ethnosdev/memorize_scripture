@@ -40,10 +40,8 @@ class MenuDrawer extends StatelessWidget {
               title: const Text('Help'),
               onTap: () async {
                 final url = Uri.parse(AppStrings.tutorialUrl);
-                try {
+                if (await canLaunchUrl(url)) {
                   launchUrl(url);
-                } catch (e) {
-                  debugPrint(e.toString());
                 }
               },
             ),
