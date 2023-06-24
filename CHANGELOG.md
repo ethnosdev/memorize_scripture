@@ -1,4 +1,4 @@
-## 1.1.0 - June 16, 2023
+## 1.1.0 - June 23, 2023
 
 - Not prepopulating example collections.
 - Adding link to tutorial.
@@ -7,6 +7,7 @@
 - Combined add and edit page ui and logic.
 - Reset due date by long clicking verse in verse browser.
 - Made the yellow more happy.
+- Fix bug with adding two words as hint.
 
 ## 1.0.0 - May 16, 2023
 

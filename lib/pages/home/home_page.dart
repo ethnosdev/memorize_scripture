@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/drawer.dart';
+import 'package:memorize_scripture/common/strings.dart';
 import 'package:memorize_scripture/go_router.dart';
 import 'package:memorize_scripture/pages/home/home_page_manager.dart';
 import 'package:memorize_scripture/service_locator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -107,7 +109,14 @@ class NoCollections extends StatelessWidget {
           const Text('Press the + button to add a collection.'),
           const SizedBox(height: 50),
           OutlinedButton(
-            onPressed: () {},
+            onPressed: () {
+              final url = Uri.parse(AppStrings.tutorialUrl);
+              try {
+                launchUrl(url);
+              } catch (e) {
+                debugPrint(e.toString());
+              }
+            },
             child: const Text('App Tutorial'),
           ),
         ],

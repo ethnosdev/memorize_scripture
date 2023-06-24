@@ -18,6 +18,7 @@ dependencies:
   settings_ui: ^2.0.2
   shared_preferences: ^2.0.18
   sqflite: ^2.2.6
+  url_launcher: ^6.1.11
   uuid: ^3.0.7
 
 dev_dependencies:

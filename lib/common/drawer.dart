@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:memorize_scripture/common/strings.dart';
 import 'package:memorize_scripture/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MenuDrawer extends StatelessWidget {
   const MenuDrawer({
@@ -36,8 +38,13 @@ class MenuDrawer extends StatelessWidget {
             ),
             ListTile(
               title: const Text('Help'),
-              onTap: () {
-                // TODO: open tutorial
+              onTap: () async {
+                final url = Uri.parse(AppStrings.tutorialUrl);
+                try {
+                  launchUrl(url);
+                } catch (e) {
+                  debugPrint(e.toString());
+                }
               },
             ),
             ListTile(
