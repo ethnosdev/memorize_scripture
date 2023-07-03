@@ -101,7 +101,7 @@ but have eternal life.
 ```
 
 :::note
-The translation above is the [World English Bible](https://worldenglish.bible/) (WEB). It's one of the only modern translations that has been releases into the public domain. All verses quoted in this tutorial will use the WEB version.
+The translation above is the [World English Bible](https://worldenglish.bible/) (WEB). It's one of the only modern translations that has been released into the public domain. All verses quoted in this tutorial will use the WEB version.
 :::
 
 To save the verse, press the **check mark button** in the top right:

@@ -107,7 +107,7 @@ You determine the verse difficulty yourself by using the response buttons. There
 These are the meanings:
 
 - **Hard**: Press this button if you couldn't remember the verse or if you made a mistake while quoting it. For old verses, this will reset the due date so that you'll begin reviewing the verse daily again. For new verses, it schedules the verse so that you'll practice it again in a few minutes.
-- **OK**: Press this button if you quoted the verse correctly. For new verses, the button says "Today" because you still need to review it more more time today. For old verses, the button will say "1 day" or "2 days", etc. Every time you review and press OK, the number of days for that verse will increase by one.
+- **OK**: Press this button if you quoted the verse correctly. For new verses, the button says "Today" because you still need to review it more time today. For old verses, the button will say "1 day" or "2 days", etc. Every time you review and press OK, the number of days for that verse will increase by one.
 - **Easy**: Press this button if you could quote the verse in your sleep. For review verses, the number of days will be double whatever the OK button says.
 
 Go through all three verses pressing OK for each one. The next time you come to Hebrews 11:01, the OK response button will look a little different:

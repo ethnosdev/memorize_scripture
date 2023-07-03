@@ -18,3 +18,4 @@ $ npm run build
 
 This command generates static content into the `build` directory and can be served using any static contents hosting service.
 
+Copy into the [apps/memorize-scripture/tutorial](https://github.com/ethnosdev/ethnosdev.github.io/tree/main/apps/memorize-scripture/tutorial) folder. Push changes to GitHub.

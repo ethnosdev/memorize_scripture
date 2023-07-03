@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # Other Settings
 
-You can access other setting from the menu in the top left of the home screen:
+You can access other settings from the menu in the top left of the home screen:
 
 <div class="bordered-image">
 
@@ -36,7 +36,7 @@ This is the maximum number of new verses the app will show you every day. The de
 This setting is useful when you reset the due date for all of the verses in a collection but you don't want to practice them all at once.
 
 :::tip
-Rather than entering a lot of new verses at once and setting the the max new verses to a low number like 1. It's generally better to wait to enter a new verse until you are ready to start learning it.
+Rather than entering a lot of new verses at once and setting the max new verses to a low number like 1, it's generally better to wait to enter a new verse until you're ready to start learning it.
 :::
 
 Congratulations! You've finished the tutorial!
