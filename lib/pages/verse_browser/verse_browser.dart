@@ -59,7 +59,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
                   final verse = manager.verseFor(index);
                   context.goNamed(
                     RouteName.editBrowser,
-                    queryParams: {
+                    queryParameters: {
                       Params.colId: widget.collectionId,
                       Params.colName: widget.collectionName,
                       Params.verseId: verse.id,

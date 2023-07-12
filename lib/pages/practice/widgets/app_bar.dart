@@ -30,7 +30,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                 onPressed: () {
                   context.goNamed(
                     RouteName.editPractice,
-                    queryParams: {
+                    queryParameters: {
                       Params.colId: collectionId,
                       Params.colName: collectionName,
                       Params.verseId: manager.currentVerseId!,
@@ -45,7 +45,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
               onPressed: () {
                 context.goNamed(
                   RouteName.add,
-                  queryParams: {
+                  queryParameters: {
                     Params.colId: collectionId,
                     Params.colName: collectionName,
                   },

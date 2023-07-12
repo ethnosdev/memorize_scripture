@@ -168,6 +168,8 @@ class LocalStorage implements DataRepository {
 
   @override
   Future<void> updateVerse(String collectionId, Verse verse) async {
+    print(
+        'id: ${verse.id}, interval: ${verse.interval}, due: ${verse.nextDueDate}');
     await _database.update(
       VerseEntry.verseTable,
       {

@@ -177,7 +177,7 @@ class _BodyWidgetState extends State<BodyWidget> {
               onTap: () {
                 context.goNamed(
                   RouteName.practice,
-                  queryParams: {
+                  queryParameters: {
                     Params.colId: collection.id,
                     Params.colName: collection.name,
                   },
@@ -208,7 +208,7 @@ class _BodyWidgetState extends State<BodyWidget> {
                   final collection = manager.collectionAt(index);
                   context.goNamed(
                     RouteName.verseBrowser,
-                    queryParams: {
+                    queryParameters: {
                       Params.colId: collection.id,
                       Params.colName: collection.name,
                     },

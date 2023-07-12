@@ -50,7 +50,8 @@ class PracticePageManager {
 
   // Response button titles
   String hardTitle = '';
-  String okTitle = '';
+  String sosoTitle = '';
+  String goodTitle = '';
   String easyTitle = '';
 
   late String _collectionId;
@@ -82,27 +83,36 @@ class PracticePageManager {
   void show() {
     _showResponseButtons();
     verseTextNotifier.value = TextSpan(
-      text: _verses[0].text,
+      text: _verses.first.text,
       style: TextStyle(color: _textThemeColor),
     );
   }
 
   void _showResponseButtons() {
-    _setResponseButtonTitles();
+    _setResponseButtonTimeSubtitles();
     isShowingAnswerNotifier.value = true;
   }
 
-  void _setResponseButtonTitles() {
+  void _setResponseButtonTimeSubtitles() {
     final verse = _verses.first;
 
+    // hard
     hardTitle = 'Again';
-    if (verse.isNew && _verses.length > 1) {
-      okTitle = 'Today';
+
+    // so-so
+    if (verse.isNew) {
+      final minutes = _verses.length - 1;
+      sosoTitle = (minutes == 0) ? '0 min' : '~$minutes min';
     } else {
-      final okDays = _nextIntervalInDays(verse, Difficulty.ok);
-      final s = (okDays == 1) ? '' : 's';
-      okTitle = '$okDays day$s';
+      sosoTitle = '1 day';
     }
+
+    // good
+    final goodDays = _nextIntervalInDays(verse, Difficulty.good);
+    final s = (goodDays == 1) ? '' : 's';
+    goodTitle = '$goodDays day$s';
+
+    // easy
     easyTitle = '${_nextIntervalInDays(verse, Difficulty.easy)} days';
   }
 
@@ -112,7 +122,7 @@ class PracticePageManager {
     _numberHintWordsShowing++;
     verseTextNotifier.value = _formatForNumberOfWords(
       _numberHintWordsShowing,
-      _verses[0].text,
+      _verses.first.text,
     );
   }
 
@@ -120,7 +130,7 @@ class PracticePageManager {
     final latinChar = RegExp(r'\w');
     final result = StringBuffer();
     bool isWordStart = true;
-    final text = _verses[0].text;
+    final text = _verses.first.text;
     for (int i = 0; i < text.length; i++) {
       final character = text[i];
       final isWordChar = character.contains(latinChar);
@@ -210,8 +220,7 @@ class PracticePageManager {
         } else {
           _verses.add(verse);
         }
-        break;
-      case Difficulty.ok:
+      case Difficulty.soso:
         if (_verses.isEmpty) {
           // If this is the only verse, we're finished.
           final updated = _adjustVerseStats(verse, response);
@@ -220,22 +229,20 @@ class PracticePageManager {
           // Giving it a due date will make it no longer new.
           // However, we won't save it to the data repo yet.
           // Just put it at the back of today's list.
-          final updated = verse.copyWith(nextDueDate: DateTime.now());
-          _verses.add(updated);
+          // final updated = verse.copyWith(nextDueDate: DateTime.now());
+          _verses.add(verse);
         }
-        break;
+      case Difficulty.good:
       case Difficulty.easy:
         final update = _adjustVerseStats(verse, response);
         dataRepository.updateVerse(_collectionId, update);
-        break;
-      default:
     }
   }
 
   void _handleReviewVerse(Verse verse, Difficulty response) {
     final updatedVerse = _adjustVerseStats(verse, response);
     dataRepository.updateVerse(_collectionId, updatedVerse);
-    // Keep practicing hard verses until they are ok.
+    // Keep practicing hard verses until they are so-so.
     // Add the verse to the end of the list.
     if (response == Difficulty.hard) {
       _verses.add(updatedVerse);
@@ -257,8 +264,9 @@ class PracticePageManager {
     switch (difficulty) {
       case Difficulty.hard:
         days = 0;
-        break;
-      case Difficulty.ok:
+      case Difficulty.soso:
+        days = 1;
+      case Difficulty.good:
         days++;
         break;
       case Difficulty.easy:
@@ -293,4 +301,4 @@ class PracticePageManager {
   }
 }
 
-enum Difficulty { hard, ok, easy }
+enum Difficulty { hard, soso, good, easy }

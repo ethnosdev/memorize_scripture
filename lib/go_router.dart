@@ -35,8 +35,8 @@ final GoRouter router = GoRouter(
           path: 'practice',
           builder: (context, state) {
             return PracticePage(
-              collectionId: state.queryParams[Params.colId] as String,
-              collectionName: state.queryParams[Params.colName] as String,
+              collectionId: state.queryParameters[Params.colId] as String,
+              collectionName: state.queryParameters[Params.colName] as String,
             );
           },
           routes: [
@@ -44,7 +44,7 @@ final GoRouter router = GoRouter(
               name: RouteName.add,
               path: 'add',
               builder: (context, state) => AddEditVersePage(
-                collectionId: state.queryParams[Params.colId] as String,
+                collectionId: state.queryParameters[Params.colId] as String,
                 onFinished: state.extra as void Function(String?)?,
               ),
             ),
@@ -52,8 +52,8 @@ final GoRouter router = GoRouter(
               name: RouteName.editPractice,
               path: 'edit',
               builder: (context, state) => AddEditVersePage(
-                collectionId: state.queryParams[Params.colId] as String,
-                verseId: state.queryParams[Params.verseId] as String,
+                collectionId: state.queryParameters[Params.colId] as String,
+                verseId: state.queryParameters[Params.verseId] as String,
                 onFinished: state.extra as void Function(String?)?,
               ),
             ),
@@ -63,16 +63,16 @@ final GoRouter router = GoRouter(
           name: RouteName.verseBrowser,
           path: 'verse_browser',
           builder: (context, state) => VerseBrowser(
-            collectionId: state.queryParams[Params.colId] as String,
-            collectionName: state.queryParams[Params.colName] as String,
+            collectionId: state.queryParameters[Params.colId] as String,
+            collectionName: state.queryParameters[Params.colName] as String,
           ),
           routes: [
             GoRoute(
               name: RouteName.editBrowser,
               path: 'edit',
               builder: (context, state) => AddEditVersePage(
-                collectionId: state.queryParams[Params.colId] as String,
-                verseId: state.queryParams[Params.verseId] as String,
+                collectionId: state.queryParameters[Params.colId] as String,
+                verseId: state.queryParameters[Params.verseId] as String,
                 onFinished: state.extra as void Function(String?)?,
               ),
             ),
