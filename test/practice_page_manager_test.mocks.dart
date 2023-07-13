@@ -211,14 +211,41 @@ class MockDataRepository extends _i1.Mock implements _i2.DataRepository {
 /// See the documentation for Mockito's code generation for more information.
 class MockUserSettings extends _i1.Mock implements _i6.UserSettings {
   @override
-  _i3.Future<bool> getDarkMode() => (super.noSuchMethod(
+  bool get isTwoButtonMode => (super.noSuchMethod(
+        Invocation.getter(#isTwoButtonMode),
+        returnValue: false,
+        returnValueForMissingStub: false,
+      ) as bool);
+  @override
+  bool get isDarkMode => (super.noSuchMethod(
+        Invocation.getter(#isDarkMode),
+        returnValue: false,
+        returnValueForMissingStub: false,
+      ) as bool);
+  @override
+  int get getDailyLimit => (super.noSuchMethod(
+        Invocation.getter(#getDailyLimit),
+        returnValue: 0,
+        returnValueForMissingStub: 0,
+      ) as int);
+  @override
+  _i3.Future<void> init() => (super.noSuchMethod(
         Invocation.method(
-          #getDarkMode,
+          #init,
           [],
         ),
-        returnValue: _i3.Future<bool>.value(false),
-        returnValueForMissingStub: _i3.Future<bool>.value(false),
-      ) as _i3.Future<bool>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
+  @override
+  _i3.Future<void> setTwoButtonMode(bool? value) => (super.noSuchMethod(
+        Invocation.method(
+          #setTwoButtonMode,
+          [value],
+        ),
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
   @override
   _i3.Future<void> setDarkMode(bool? value) => (super.noSuchMethod(
         Invocation.method(
@@ -228,15 +255,6 @@ class MockUserSettings extends _i1.Mock implements _i6.UserSettings {
         returnValue: _i3.Future<void>.value(),
         returnValueForMissingStub: _i3.Future<void>.value(),
       ) as _i3.Future<void>);
-  @override
-  _i3.Future<int> getDailyLimit() => (super.noSuchMethod(
-        Invocation.method(
-          #getDailyLimit,
-          [],
-        ),
-        returnValue: _i3.Future<int>.value(0),
-        returnValueForMissingStub: _i3.Future<int>.value(0),
-      ) as _i3.Future<int>);
   @override
   _i3.Future<void> setDailyLimit(int? value) => (super.noSuchMethod(
         Invocation.method(

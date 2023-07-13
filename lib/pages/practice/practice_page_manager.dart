@@ -54,6 +54,10 @@ class PracticePageManager {
   String goodTitle = '';
   String easyTitle = '';
 
+  bool get isTwoButtonMode => userSettings.isTwoButtonMode;
+
+  static const hardNewInsertionIndex = 2;
+
   late String _collectionId;
 
   Future<void> init({
@@ -61,7 +65,7 @@ class PracticePageManager {
   }) async {
     uiNotifier.value = PracticeState.loading;
     _collectionId = collectionId;
-    final newVerseLimit = await userSettings.getDailyLimit();
+    final newVerseLimit = userSettings.getDailyLimit;
     _verses = await dataRepository.fetchTodaysVerses(
       collectionId: collectionId,
       newVerseLimit: newVerseLimit,
@@ -108,9 +112,14 @@ class PracticePageManager {
     }
 
     // good
-    final goodDays = _nextIntervalInDays(verse, Difficulty.good);
-    final s = (goodDays == 1) ? '' : 's';
-    goodTitle = '$goodDays day$s';
+    if (isTwoButtonMode && verse.isNew) {
+      final minutes = _verses.length - 1;
+      goodTitle = (minutes == 0) ? '0 min' : '~$minutes min';
+    } else {
+      final goodDays = _nextIntervalInDays(verse, Difficulty.good);
+      final s = (goodDays == 1) ? '' : 's';
+      goodTitle = '$goodDays day$s';
+    }
 
     // easy
     easyTitle = '${_nextIntervalInDays(verse, Difficulty.easy)} days';
@@ -211,39 +220,58 @@ class PracticePageManager {
   }
 
   void _handleNewVerse(Verse verse, Difficulty response) {
-    switch (response) {
-      case Difficulty.hard:
-        // The user needs to practice a new verse again soon,
-        // so put it third in line (unless there aren't enough)
-        if (_verses.length > 2) {
-          _verses.insert(2, verse);
-        } else {
+    if (isTwoButtonMode) {
+      switch (response) {
+        case Difficulty.hard:
+          // The user needs to practice a new verse again soon,
+          // so put it third in line (unless there aren't enough)
+          if (_verses.length > hardNewInsertionIndex) {
+            _verses.insert(hardNewInsertionIndex, verse);
+          } else {
+            _verses.add(verse);
+          }
+        case Difficulty.soso:
+          throw 'Illegal state: This is two-button mode.';
+        case Difficulty.good:
+          if (_verses.isEmpty) {
+            // If this is the only verse, we're finished.
+            final updated = _adjustVerseStats(verse, response);
+            dataRepository.updateVerse(_collectionId, updated);
+          } else {
+            // Giving it a due date will make it no longer new.
+            // However, we won't save it to the data repo yet.
+            // Just put it at the back of today's list.
+            final updated = verse.copyWith(nextDueDate: DateTime.now());
+            _verses.add(updated);
+          }
+        case Difficulty.easy:
+          throw 'Illegal state: This is two-button mode.';
+      }
+    } else {
+      // 4-button mode
+      switch (response) {
+        case Difficulty.hard:
+          // The user needs to practice a new verse again soon,
+          // so put it third in line (unless there aren't enough)
+          if (_verses.length > hardNewInsertionIndex) {
+            _verses.insert(hardNewInsertionIndex, verse);
+          } else {
+            _verses.add(verse);
+          }
+        case Difficulty.soso:
           _verses.add(verse);
-        }
-      case Difficulty.soso:
-        if (_verses.isEmpty) {
-          // If this is the only verse, we're finished.
-          final updated = _adjustVerseStats(verse, response);
-          dataRepository.updateVerse(_collectionId, updated);
-        } else {
-          // Giving it a due date will make it no longer new.
-          // However, we won't save it to the data repo yet.
-          // Just put it at the back of today's list.
-          // final updated = verse.copyWith(nextDueDate: DateTime.now());
-          _verses.add(verse);
-        }
-      case Difficulty.good:
-      case Difficulty.easy:
-        final update = _adjustVerseStats(verse, response);
-        dataRepository.updateVerse(_collectionId, update);
+        case Difficulty.good:
+        case Difficulty.easy:
+          final update = _adjustVerseStats(verse, response);
+          dataRepository.updateVerse(_collectionId, update);
+      }
     }
   }
 
   void _handleReviewVerse(Verse verse, Difficulty response) {
     final updatedVerse = _adjustVerseStats(verse, response);
     dataRepository.updateVerse(_collectionId, updatedVerse);
-    // Keep practicing hard verses until they are so-so.
-    // Add the verse to the end of the list.
+    // Put hard verses at the end of the list
     if (response == Difficulty.hard) {
       _verses.add(updatedVerse);
     }

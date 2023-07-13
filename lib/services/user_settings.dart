@@ -2,38 +2,51 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class UserSettings {
   static const defaultDailyLimit = 10;
-
-  Future<bool> getDarkMode();
+  Future<void> init();
+  bool get isTwoButtonMode;
+  Future<void> setTwoButtonMode(bool value);
+  bool get isDarkMode;
   Future<void> setDarkMode(bool value);
-  Future<int> getDailyLimit();
+  int get getDailyLimit;
   Future<void> setDailyLimit(int value);
 }
 
 class SharedPreferencesStorage extends UserSettings {
+  static const String _twoButtonModeKey = 'twoButtonMode';
   static const String _darkModeKey = 'darkMode';
   static const String _dailyLimitKey = 'dailyLimit';
 
+  // getters cache
+  late final SharedPreferences prefs;
+
   @override
-  Future<bool> getDarkMode() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_darkModeKey) ?? false;
+  Future<void> init() async {
+    prefs = await SharedPreferences.getInstance();
   }
 
   @override
+  bool get isTwoButtonMode => prefs.getBool(_twoButtonModeKey) ?? true;
+
+  @override
+  Future<void> setTwoButtonMode(bool value) async {
+    await prefs.setBool(_twoButtonModeKey, value);
+  }
+
+  @override
+  bool get isDarkMode => prefs.getBool(_darkModeKey) ?? false;
+
+  @override
   Future<void> setDarkMode(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_darkModeKey, value);
   }
 
   @override
-  Future<int> getDailyLimit() async {
-    final prefs = await SharedPreferences.getInstance();
+  int get getDailyLimit {
     return prefs.getInt(_dailyLimitKey) ?? UserSettings.defaultDailyLimit;
   }
 
   @override
   Future<void> setDailyLimit(int value) async {
-    final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_dailyLimitKey, value);
   }
 }

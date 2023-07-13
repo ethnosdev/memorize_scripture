@@ -39,9 +39,6 @@ class AddEditVersePageManager {
     dataRepo
         .promptExists(collectionId: collectionId, prompt: prompt)
         .then((exists) {
-      print(!exists);
-      print(_bothNotEmpty);
-      print(_changesMade);
       if (_initialVerse?.prompt != prompt) {
         alreadyExistsNotifier.value = exists;
       }

@@ -13,9 +13,9 @@ class SettingsPageManager extends ChangeNotifier {
   int get dailyLimit => _dailyLimit;
   int _dailyLimit = UserSettings.defaultDailyLimit;
 
-  Future<void> init() async {
-    _isDarkMode = await userSettings.getDarkMode();
-    _dailyLimit = await userSettings.getDailyLimit();
+  void init() {
+    _isDarkMode = userSettings.isDarkMode;
+    _dailyLimit = userSettings.getDailyLimit;
     notifyListeners();
   }
 

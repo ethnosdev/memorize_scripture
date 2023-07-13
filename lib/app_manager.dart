@@ -5,15 +5,16 @@ import 'package:memorize_scripture/services/user_settings.dart';
 
 class AppManager {
   final themeListener = ValueNotifier<ThemeData>(_lightTheme);
+  final userSettings = getIt<UserSettings>();
 
   Future<void> init() async {
+    await userSettings.init();
     await _setDarkLightTheme();
     await getIt<DataRepository>().init();
   }
 
   Future<void> _setDarkLightTheme() async {
-    final userSettings = getIt<UserSettings>();
-    final isDarkTheme = await userSettings.getDarkMode();
+    final isDarkTheme = userSettings.isDarkMode;
     setDarkTheme(isDarkTheme);
   }
 
