@@ -89,21 +89,36 @@ class ResponseButton extends StatelessWidget {
     return Expanded(
       child: SizedBox(
         height: 48,
-        child: OutlinedButton(
-          onPressed: onPressed,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(title),
-              Text(
-                subtitle,
-                style: DefaultTextStyle.of(context)
-                    .style
-                    .copyWith(color: Theme.of(context).colorScheme.secondary),
-                textScaleFactor: 0.9,
+        child: Stack(
+          children: [
+            OutlinedButton(
+              onPressed: onPressed,
+              child: const SizedBox(
+                height: double.infinity,
+                width: double.infinity,
               ),
-            ],
-          ),
+            ),
+            Center(
+              child: IgnorePointer(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      title,
+                      style: DefaultTextStyle.of(context).style.copyWith(
+                          color: Theme.of(context).colorScheme.primary),
+                    ),
+                    Text(
+                      subtitle,
+                      style: DefaultTextStyle.of(context).style.copyWith(
+                          color: Theme.of(context).colorScheme.secondary),
+                      textScaleFactor: 0.9,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

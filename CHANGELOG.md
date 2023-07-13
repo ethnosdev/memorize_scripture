@@ -1,3 +1,8 @@
+## 1.2.0 - July 12, 2023
+
+- Added extra So-so response button so that "1 day" is always an option
+- Added mokito library for better testing
+
 ## 1.1.1 - June 24, 2023
 
 - Fix bug where tutorial link not launching on Android
