@@ -47,24 +47,26 @@ class ButtonPanel extends StatelessWidget {
               subtitle: manager.hardTitle,
               onPressed: () => manager.onResponse(Difficulty.hard),
             ),
-            const SizedBox(width: 5),
-            ResponseButton(
-              title: 'So-So',
-              subtitle: manager.sosoTitle,
-              onPressed: () => manager.onResponse(Difficulty.soso),
-            ),
+            if (!manager.isTwoButtonMode) const SizedBox(width: 5),
+            if (!manager.isTwoButtonMode)
+              ResponseButton(
+                title: 'OK',
+                subtitle: manager.okTitle,
+                onPressed: () => manager.onResponse(Difficulty.ok),
+              ),
             const SizedBox(width: 5),
             ResponseButton(
               title: 'Good',
               subtitle: manager.goodTitle,
               onPressed: () => manager.onResponse(Difficulty.good),
             ),
-            const SizedBox(width: 5),
-            ResponseButton(
-              title: 'Easy',
-              subtitle: manager.easyTitle,
-              onPressed: () => manager.onResponse(Difficulty.easy),
-            ),
+            if (!manager.isTwoButtonMode) const SizedBox(width: 5),
+            if (!manager.isTwoButtonMode)
+              ResponseButton(
+                title: 'Easy',
+                subtitle: manager.easyTitle,
+                onPressed: () => manager.onResponse(Difficulty.easy),
+              ),
           ],
         ),
       ),

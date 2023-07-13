@@ -13,19 +13,13 @@ class _SettingsPageState extends State<SettingsPage> {
   final manager = SettingsPageManager();
 
   @override
-  void initState() {
-    super.initState();
-    manager.init();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
       ),
-      body: AnimatedBuilder(
-        animation: manager,
+      body: ListenableBuilder(
+        listenable: manager,
         builder: (context, widget) {
           return SettingsList(
             sections: [
@@ -47,6 +41,19 @@ class _SettingsPageState extends State<SettingsPage> {
                     onPressed: (BuildContext context) {
                       _showDailyLimitDialog();
                     },
+                  ),
+                ],
+              ),
+              SettingsSection(
+                tiles: [
+                  SettingsTile.switchTile(
+                    activeSwitchColor: Theme.of(context).colorScheme.primary,
+                    title: const Text('Two-button response mode'),
+                    description: (manager.isTwoButtonMode)
+                        ? const Text('Only show Hard and Good buttons')
+                        : const Text('Show Hard, OK, Good, and Easy buttons'),
+                    initialValue: manager.isTwoButtonMode,
+                    onToggle: manager.setTwoButtonMode,
                   ),
                 ],
               ),

@@ -142,7 +142,7 @@ void main() {
       manager.show();
       expect(manager.promptNotifier.value, 'p0');
       expect(manager.hardTitle, 'Again');
-      expect(manager.sosoTitle, '~3 min');
+      expect(manager.okTitle, '~3 min');
       expect(manager.goodTitle, '1 day');
       expect(manager.easyTitle, '2 days');
 
@@ -157,7 +157,7 @@ void main() {
       expect(manager.promptNotifier.value, 'p0');
       expect(manager.countNotifier.value, '2');
       expect(manager.hardTitle, 'Again');
-      expect(manager.sosoTitle, '~1 min');
+      expect(manager.okTitle, '~1 min');
       expect(manager.goodTitle, '1 day');
       expect(manager.easyTitle, '2 days');
     });
@@ -241,7 +241,7 @@ void main() {
       expect(manager.countNotifier.value, '1');
     });
 
-    test('Soso button puts new verse last', () async {
+    test('OK button puts new verse last', () async {
       when(mockUserSettings.getDailyLimit).thenReturn(10);
       when(mockUserSettings.isTwoButtonMode).thenReturn(false);
       when(mockDataRepository.fetchTodaysVerses(
@@ -256,10 +256,10 @@ void main() {
       await manager.init(collectionId: 'whatever');
       manager.show();
       expect(manager.promptNotifier.value, 'p0');
-      expect(manager.sosoTitle, '~3 min');
+      expect(manager.okTitle, '~3 min');
       expect(manager.isTwoButtonMode, false);
 
-      manager.onResponse(Difficulty.soso);
+      manager.onResponse(Difficulty.ok);
       expect(manager.countNotifier.value, '4');
       verifyNever(mockDataRepository.updateVerse(any, any));
 
@@ -273,10 +273,10 @@ void main() {
 
       expect(manager.promptNotifier.value, 'p0');
       expect(manager.countNotifier.value, '1');
-      expect(manager.sosoTitle, '0 min');
+      expect(manager.okTitle, '0 min');
     });
 
-    test('Soso button sets review verse one day', () async {
+    test('OK button sets review verse one day', () async {
       when(mockUserSettings.getDailyLimit).thenReturn(10);
       when(mockUserSettings.isTwoButtonMode).thenReturn(false);
       when(mockDataRepository.fetchTodaysVerses(
@@ -296,10 +296,10 @@ void main() {
       manager.show();
 
       expect(manager.promptNotifier.value, 'p0');
-      expect(manager.sosoTitle, '1 day');
+      expect(manager.okTitle, '1 day');
       expect(manager.isTwoButtonMode, false);
 
-      manager.onResponse(Difficulty.soso);
+      manager.onResponse(Difficulty.ok);
       final verse = verify(
         mockDataRepository.updateVerse(any, captureAny),
       ).captured.single as Verse;
@@ -589,6 +589,30 @@ void main() {
       expect(manager.promptNotifier.value, 'p0');
       expect(manager.countNotifier.value, '4');
       expect(manager.goodTitle, '1 day');
+    });
+
+    test('Good button sets new verse one day if only one verse left', () async {
+      when(mockUserSettings.getDailyLimit).thenReturn(10);
+      when(mockUserSettings.isTwoButtonMode).thenReturn(true);
+      when(mockDataRepository.fetchTodaysVerses(
+        collectionId: 'whatever',
+        newVerseLimit: 10,
+      )).thenAnswer((_) async => [
+            Verse(id: '0', prompt: 'p0', text: 'a'),
+          ]);
+      await manager.init(collectionId: 'whatever');
+      manager.show();
+      expect(manager.promptNotifier.value, 'p0');
+      expect(manager.goodTitle, '1 day');
+      expect(manager.isTwoButtonMode, true);
+
+      manager.onResponse(Difficulty.good);
+      final verse = verify(
+        mockDataRepository.updateVerse(any, captureAny),
+      ).captured.single as Verse;
+
+      expect(verse.interval.inDays, 1);
+      expect(manager.countNotifier.value, '1');
     });
 
     test('Good button sets 0-interval review verse one day', () async {

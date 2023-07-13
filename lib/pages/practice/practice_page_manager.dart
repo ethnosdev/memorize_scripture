@@ -50,7 +50,7 @@ class PracticePageManager {
 
   // Response button titles
   String hardTitle = '';
-  String sosoTitle = '';
+  String okTitle = '';
   String goodTitle = '';
   String easyTitle = '';
 
@@ -103,18 +103,18 @@ class PracticePageManager {
     // hard
     hardTitle = 'Again';
 
-    // so-so
+    // ok
     if (verse.isNew) {
       final minutes = _verses.length - 1;
-      sosoTitle = (minutes == 0) ? '0 min' : '~$minutes min';
+      okTitle = (minutes == 0) ? '0 min' : '~$minutes min';
     } else {
-      sosoTitle = '1 day';
+      okTitle = '1 day';
     }
 
     // good
-    if (isTwoButtonMode && verse.isNew) {
+    if (isTwoButtonMode && verse.isNew && _verses.length > 1) {
       final minutes = _verses.length - 1;
-      goodTitle = (minutes == 0) ? '0 min' : '~$minutes min';
+      goodTitle = '~$minutes min';
     } else {
       final goodDays = _nextIntervalInDays(verse, Difficulty.good);
       final s = (goodDays == 1) ? '' : 's';
@@ -230,7 +230,7 @@ class PracticePageManager {
           } else {
             _verses.add(verse);
           }
-        case Difficulty.soso:
+        case Difficulty.ok:
           throw 'Illegal state: This is two-button mode.';
         case Difficulty.good:
           if (_verses.isEmpty) {
@@ -258,7 +258,7 @@ class PracticePageManager {
           } else {
             _verses.add(verse);
           }
-        case Difficulty.soso:
+        case Difficulty.ok:
           _verses.add(verse);
         case Difficulty.good:
         case Difficulty.easy:
@@ -292,7 +292,7 @@ class PracticePageManager {
     switch (difficulty) {
       case Difficulty.hard:
         days = 0;
-      case Difficulty.soso:
+      case Difficulty.ok:
         days = 1;
       case Difficulty.good:
         days++;
@@ -329,4 +329,4 @@ class PracticePageManager {
   }
 }
 
-enum Difficulty { hard, soso, good, easy }
+enum Difficulty { hard, ok, good, easy }

@@ -7,28 +7,25 @@ class SettingsPageManager extends ChangeNotifier {
   final themeManager = getIt<AppManager>();
   final userSettings = getIt<UserSettings>();
 
-  bool get isDarkMode => _isDarkMode;
-  bool _isDarkMode = false;
+  bool get isDarkMode => userSettings.isDarkMode;
 
-  int get dailyLimit => _dailyLimit;
-  int _dailyLimit = UserSettings.defaultDailyLimit;
+  int get dailyLimit => userSettings.getDailyLimit;
 
-  void init() {
-    _isDarkMode = userSettings.isDarkMode;
-    _dailyLimit = userSettings.getDailyLimit;
-    notifyListeners();
-  }
+  bool get isTwoButtonMode => userSettings.isTwoButtonMode;
 
-  void setDarkMode(bool value) {
-    _isDarkMode = value;
+  Future<void> setDarkMode(bool value) async {
     themeManager.setDarkTheme(value);
-    userSettings.setDarkMode(value);
+    await userSettings.setDarkMode(value);
     notifyListeners();
   }
 
-  void updateDailyLimit(int number) {
-    _dailyLimit = number;
-    userSettings.setDailyLimit(number);
+  Future<void> updateDailyLimit(int number) async {
+    await userSettings.setDailyLimit(number);
+    notifyListeners();
+  }
+
+  Future<void> setTwoButtonMode(bool value) async {
+    await userSettings.setTwoButtonMode(value);
     notifyListeners();
   }
 
