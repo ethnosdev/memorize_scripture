@@ -50,8 +50,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     activeSwitchColor: Theme.of(context).colorScheme.primary,
                     title: const Text('Two-button response mode'),
                     description: (manager.isTwoButtonMode)
-                        ? const Text('Only show Hard and Good buttons')
-                        : const Text('Show Hard, OK, Good, and Easy buttons'),
+                        ? const Text('On: Only show Hard and Good buttons')
+                        : const Text(
+                            'Off: Show Hard, OK, Good, and Easy buttons'),
                     initialValue: manager.isTwoButtonMode,
                     onToggle: manager.setTwoButtonMode,
                   ),
