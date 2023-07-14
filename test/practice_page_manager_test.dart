@@ -276,7 +276,7 @@ void main() {
       expect(manager.okTitle, '0 min');
     });
 
-    test('OK button sets review verse one day', () async {
+    test('OK button sets review verse one day (if Good not 1 day)', () async {
       when(mockUserSettings.getDailyLimit).thenReturn(10);
       when(mockUserSettings.isTwoButtonMode).thenReturn(false);
       when(mockDataRepository.fetchTodaysVerses(
@@ -305,6 +305,34 @@ void main() {
       ).captured.single as Verse;
       expect(verse.interval.inDays, 1);
       expect(manager.countNotifier.value, '1');
+    });
+
+    test('OK and Good should not both be 1 day', () async {
+      when(mockUserSettings.getDailyLimit).thenReturn(10);
+      when(mockUserSettings.isTwoButtonMode).thenReturn(false);
+      when(mockDataRepository.fetchTodaysVerses(
+        collectionId: 'whatever',
+        newVerseLimit: 10,
+      )).thenAnswer((_) async => [
+            Verse(
+              id: '0',
+              prompt: 'p0',
+              text: 'a',
+              nextDueDate: DateTime.now(),
+            ),
+            Verse(id: '1', prompt: 'p1', text: 'a'),
+          ]);
+      await manager.init(collectionId: 'whatever');
+      manager.show();
+
+      expect(manager.promptNotifier.value, 'p0');
+      expect(manager.okTitle, '~1 min');
+      expect(manager.goodTitle, '1 day');
+      expect(manager.isTwoButtonMode, false);
+
+      manager.onResponse(Difficulty.ok);
+      verifyNever(mockDataRepository.updateVerse(any, any));
+      expect(manager.countNotifier.value, '2');
     });
 
     test('Good button sets new verse one day', () async {

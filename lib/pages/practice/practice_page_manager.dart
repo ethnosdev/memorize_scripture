@@ -104,7 +104,7 @@ class PracticePageManager {
     hardTitle = 'Again';
 
     // ok
-    if (verse.isNew) {
+    if (verse.isNew || verse.interval.inDays == 0) {
       final minutes = _verses.length - 1;
       okTitle = (minutes == 0) ? '0 min' : '~$minutes min';
     } else {
@@ -269,6 +269,11 @@ class PracticePageManager {
   }
 
   void _handleReviewVerse(Verse verse, Difficulty response) {
+    // OK and Good should not both be 1 day
+    if (response == Difficulty.ok && verse.interval.inDays == 0) {
+      _verses.add(verse);
+      return;
+    }
     final updatedVerse = _adjustVerseStats(verse, response);
     dataRepository.updateVerse(_collectionId, updatedVerse);
     // Put hard verses at the end of the list
