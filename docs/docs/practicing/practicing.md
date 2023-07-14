@@ -97,7 +97,7 @@ In the next section you'll learn what the response buttons mean.
 
 Memorize Scripture uses a spaced repetition strategy for reviewing verses. That means you'll practice the difficult verses every day while the easy verses you'll practice less frequently.
 
-You determine the verse difficulty yourself by using the response buttons. There are three of these buttons: Hard, OK, and Easy.
+You determine the verse difficulty yourself by using the response buttons. There are two of these buttons by default: Hard and Good.
 
 <div class="bordered-image">
 
@@ -106,20 +106,30 @@ You determine the verse difficulty yourself by using the response buttons. There
 
 These are the meanings:
 
-- **Hard**: Press this button if you couldn't remember the verse or if you made a mistake while quoting it. For old verses, this will reset the due date so that you'll begin reviewing the verse daily again. For new verses, it schedules the verse so that you'll practice it again in a few minutes.
-- **OK**: Press this button if you quoted the verse correctly. For new verses, the button says "Today" because you still need to review it more time today. For old verses, the button will say "1 day" or "2 days", etc. Every time you review and press OK, the number of days for that verse will increase by one.
-- **Easy**: Press this button if you could quote the verse in your sleep. For review verses, the number of days will be double whatever the OK button says.
+- **Hard**: Press this button if you can't remember the verse or if you make a mistake while quoting it. For old verses, this will reset the due date so that you'll begin reviewing the verse daily again. For new verses, it schedules the verse so that you'll practice it again right away.
+- **Good**: Press this button if you quoted the verse correctly. For new verses, you still need to review it one more time today, so the button gives an approximate time in minutes until the next review. For old verses, the button will say "1 day" or "2 days", etc. Every time you review and press Good, the number of days for that verse will increase by one.
 
-Go through all three verses pressing OK for each one. The next time you come to Hebrews 11:01, the OK response button will look a little different:
+:::note
+**Power users**: Do you want a little more control over when you'll practice the verse next? Go to **Settings** in the app menu and turn off **Two-button response** mode. This will give you four choices for every verse:
+
+<div class="bordered-image">
+
+![response buttons](img/practice-10.png)
+</div>
+
+No matter how high the other buttons get, the **OK** button is guaranteed to never be more than 1 day, so you can always practice again tomorrow if you like. This is equivalent to pressing Hard and then Good in the two-button mode. The **Easy** button is double the number of days as Good. Choose this if you can quote the verse in your sleep.
+:::
+
+Go through all three verses, pressing **Good** for each one. The next time you come to Hebrews 11:01, the Good response button will look a little different:
 
 <div class="bordered-image">
 
 ![response buttons](img/practice-8.png)
 </div>
 
-Now the OK button says "1 day". If you press OK again, you're finished practicing it, and you won't see it again until tomorrow.
+Now the Good button says "1 day". If you press Good again, you're finished practicing it, and you won't see it again until tomorrow.
 
-Press **OK** again for each of the three verses. You'll see the remaining verse number in the top left decrease until there are no more verses left.
+Press **Good** again for each of the three verses. You'll see the remaining verse number in the top left decrease until there are no more verses left.
 
 <div class="bordered-image">
 

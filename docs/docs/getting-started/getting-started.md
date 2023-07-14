@@ -53,9 +53,9 @@ You have one key verse collection and two passage collections.
 The collection names are displayed alphabetically. If you want to display them in Bible order, one trick is to prefix the name with a number. For example:
 
 ```
-01.  Genesis 12
-02.  Exodus 20
-66.  Revelation 2-3
+01. Genesis 12
+02. Exodus 20
+66. Revelation 2-3
 ```
 :::
 
@@ -65,14 +65,14 @@ Depending on whether you are memorizing an assortment of key verses or a long pa
 
 ### In a key verse collection
 
-Let's start by entering verses in the Key Verse collection you made earlier. Click the **Key Verses** collection item in the list. You'll see the following screen:
+Start by entering verses in the Key Verse collection you made earlier. Click the **Key Verses** collection item in the list. You'll see the following screen:
 
 <div class="bordered-image">
 
 ![empty collection](img/add-verse-1.png)
 </div>
 
-Follow the directions and click the **+** button in the top right. That will show you the Add Verse page:
+Follow the directions and click the **+** button in the top right. That'll show you the **Add Verse** page:
 
 <div class="bordered-image">
 
@@ -84,13 +84,13 @@ Here's the meaning of these two text input boxes:
 - The **prompt** is what the app will show when it's prompting you to quote a verse from memory. For a key verse collection, most people will probably write the verse reference here.
 - The **verse text** is what you're trying to quote. The app will hide this text from you until you're ready to check yourself.
 
-Copy the following and paste it into the **Prompt** box:
+Copy the reference below and paste it into the **Prompt** box:
 
 ```text
 John 3:16
 ```
 
-Then copy the following into the **Verse text** box:
+Then copy and paste the following into the **Verse text** box:
 
 ```text
 For God so loved the world, 
@@ -101,7 +101,7 @@ but have eternal life.
 ```
 
 :::note
-The translation above is the [World English Bible](https://worldenglish.bible/) (WEB). It's one of the only modern translations that has been released into the public domain. All verses quoted in this tutorial will use the WEB version.
+The translation above is from the [World English Bible](https://worldenglish.bible/) (WEB). It's one of the only modern translations that has been released into the public domain. All verses quoted in this tutorial use the WEB version.
 :::
 
 To save the verse, press the **check mark button** in the top right:

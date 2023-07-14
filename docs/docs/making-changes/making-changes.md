@@ -50,7 +50,7 @@ Back in the Hebrews 11 view screen, long-press the third verse. You'll see anoth
 ![verse view menu](img/verse-menu.png)
 </div>
 
-Press **Reset due date**. This will make the third verse new again, as if you had just entered it and never practiced it before. This is useful if you accidentally mark a verse as OK or Easy before you're ready.
+Press **Reset due date**. This will make the third verse new again, as if you had just entered it and never practiced it before. This is useful if you accidentally mark a verse as Good before you're ready.
 
 ## Deleting verses
 
