@@ -11,19 +11,6 @@ import 'package:test/test.dart';
 @GenerateNiceMocks([MockSpec<UserSettings>()])
 import 'practice_page_manager_test.mocks.dart';
 
-final twoVerses = [
-  Verse(
-    id: '0',
-    prompt: 'a 1',
-    text: 'one two three',
-  ),
-  Verse(
-    id: '1',
-    prompt: 'a 2',
-    text: 'four five six',
-  ),
-];
-
 void main() {
   late MockDataRepository mockDataRepository;
   late MockUserSettings mockUserSettings;
@@ -51,7 +38,10 @@ void main() {
 
     test('init with collection', () async {
       when(mockDataRepository.fetchTodaysVerses(collectionId: 'whatever'))
-          .thenAnswer((_) async => twoVerses);
+          .thenAnswer((_) async => [
+                Verse(id: '0', prompt: 'a 1', text: 'one two three'),
+                Verse(id: '1', prompt: 'a 2', text: 'four five six'),
+              ]);
 
       await manager.init(collectionId: 'whatever');
 
@@ -66,7 +56,10 @@ void main() {
       when(mockDataRepository.fetchTodaysVerses(
         collectionId: 'whatever',
         newVerseLimit: 10,
-      )).thenAnswer((_) async => twoVerses);
+      )).thenAnswer((_) async => [
+            Verse(id: '0', prompt: 'a 1', text: 'one two three'),
+            Verse(id: '1', prompt: 'a 2', text: 'four five six'),
+          ]);
       await manager.init(collectionId: 'whatever');
 
       manager.showNextWordHint();
@@ -98,7 +91,10 @@ void main() {
       when(mockDataRepository.fetchTodaysVerses(
         collectionId: 'whatever',
         newVerseLimit: 10,
-      )).thenAnswer((_) async => twoVerses);
+      )).thenAnswer((_) async => [
+            Verse(id: '0', prompt: 'a 1', text: 'one two three'),
+            Verse(id: '1', prompt: 'a 2', text: 'four five six'),
+          ]);
       await manager.init(collectionId: 'whatever');
 
       manager.showFirstLettersHint();
@@ -114,7 +110,10 @@ void main() {
       when(mockDataRepository.fetchTodaysVerses(
         collectionId: 'whatever',
         newVerseLimit: 10,
-      )).thenAnswer((_) async => twoVerses);
+      )).thenAnswer((_) async => [
+            Verse(id: '0', prompt: 'a 1', text: 'one two three'),
+            Verse(id: '1', prompt: 'a 2', text: 'four five six'),
+          ]);
       await manager.init(collectionId: 'whatever');
 
       manager.show();
@@ -273,7 +272,7 @@ void main() {
 
       expect(manager.promptNotifier.value, 'p0');
       expect(manager.countNotifier.value, '1');
-      expect(manager.okTitle, '0 min');
+      expect(manager.okTitle, 'Now');
     });
 
     test('OK button sets review verse one day (if Good not 1 day)', () async {
@@ -469,6 +468,98 @@ void main() {
       ).captured.single as Verse;
       expect(verse.interval.inDays, 8);
       expect(manager.countNotifier.value, '1');
+    });
+
+    test('OK minute labels formatted correctly', () async {
+      when(mockUserSettings.getDailyLimit).thenReturn(20);
+      when(mockUserSettings.isTwoButtonMode).thenReturn(false);
+      when(mockDataRepository.fetchTodaysVerses(
+        collectionId: 'whatever',
+        newVerseLimit: 20,
+      )).thenAnswer((_) async => List.generate(
+            16,
+            (i) => Verse(id: '$i', prompt: 'p$i', text: 'a'),
+          ));
+      await manager.init(collectionId: 'whatever');
+
+      manager.show();
+      expect(manager.countNotifier.value, '16');
+      expect(manager.okTitle, '~20 min');
+
+      manager.onResponse(Difficulty.easy);
+      manager.show();
+      expect(manager.countNotifier.value, '15');
+      expect(manager.okTitle, '~10 min');
+
+      manager.onResponse(Difficulty.easy);
+      manager.show();
+      expect(manager.countNotifier.value, '14');
+      expect(manager.okTitle, '~10 min');
+
+      manager.onResponse(Difficulty.easy);
+      manager.show();
+      expect(manager.countNotifier.value, '13');
+      expect(manager.okTitle, '~10 min');
+
+      manager.onResponse(Difficulty.easy);
+      manager.show();
+      expect(manager.countNotifier.value, '12');
+      expect(manager.okTitle, '~10 min');
+
+      manager.onResponse(Difficulty.easy);
+      manager.show();
+      expect(manager.countNotifier.value, '11');
+      expect(manager.okTitle, '~10 min');
+
+      manager.onResponse(Difficulty.easy);
+      manager.show();
+      expect(manager.countNotifier.value, '10');
+      expect(manager.okTitle, '~10 min');
+
+      manager.onResponse(Difficulty.easy);
+      manager.show();
+      expect(manager.countNotifier.value, '9');
+      expect(manager.okTitle, '~10 min');
+
+      manager.onResponse(Difficulty.easy);
+      manager.show();
+      expect(manager.countNotifier.value, '8');
+      expect(manager.okTitle, '~10 min');
+
+      manager.onResponse(Difficulty.easy);
+      manager.show();
+      expect(manager.countNotifier.value, '7');
+      expect(manager.okTitle, '~5 min');
+
+      manager.onResponse(Difficulty.easy);
+      manager.show();
+      expect(manager.countNotifier.value, '6');
+      expect(manager.okTitle, '~5 min');
+
+      manager.onResponse(Difficulty.easy);
+      manager.show();
+      expect(manager.countNotifier.value, '5');
+      expect(manager.okTitle, '~5 min');
+
+      manager.onResponse(Difficulty.easy);
+      manager.show();
+      expect(manager.countNotifier.value, '4');
+      expect(manager.okTitle, '~3 min');
+
+      manager.onResponse(Difficulty.easy);
+      manager.show();
+      expect(manager.countNotifier.value, '3');
+      expect(manager.okTitle, '~2 min');
+
+      manager.onResponse(Difficulty.easy);
+      manager.show();
+      expect(manager.countNotifier.value, '2');
+      expect(manager.okTitle, '~1 min');
+
+      manager.onResponse(Difficulty.easy);
+      manager.show();
+      expect(manager.countNotifier.value, '1');
+      expect(manager.okTitle, 'Now');
     });
   });
 

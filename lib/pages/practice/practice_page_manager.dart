@@ -106,23 +106,37 @@ class PracticePageManager {
     // ok
     if (verse.isNew || verse.interval.inDays == 0) {
       final minutes = _verses.length - 1;
-      okTitle = (minutes == 0) ? '0 min' : '~$minutes min';
+      okTitle = _formatDuration(Duration(minutes: minutes));
     } else {
-      okTitle = '1 day';
+      okTitle = _formatDuration(const Duration(days: 1));
     }
 
     // good
     if (isTwoButtonMode && verse.isNew && _verses.length > 1) {
       final minutes = _verses.length - 1;
-      goodTitle = '~$minutes min';
+      goodTitle = _formatDuration(Duration(minutes: minutes));
     } else {
       final goodDays = _nextIntervalInDays(verse, Difficulty.good);
-      final s = (goodDays == 1) ? '' : 's';
-      goodTitle = '$goodDays day$s';
+      goodTitle = _formatDuration(Duration(days: goodDays));
     }
 
     // easy
-    easyTitle = '${_nextIntervalInDays(verse, Difficulty.easy)} days';
+    final easyDays = _nextIntervalInDays(verse, Difficulty.easy);
+    easyTitle = _formatDuration(Duration(days: easyDays));
+  }
+
+  String _formatDuration(Duration duration) {
+    final days = duration.inDays;
+    if (days == 1) return '1 day';
+    if (days > 1) return '$days days';
+    final minutes = duration.inMinutes;
+    if (minutes == 0) return 'Now';
+    if (minutes == 6) return '~5 min';
+    if (minutes == 5) return '~5 min';
+    if (minutes == 4) return '~5 min';
+    if (minutes < 4) return '~$minutes min';
+    final rounded = (minutes / 10).round() * 10;
+    return '~$rounded min';
   }
 
   int _numberHintWordsShowing = 0;
