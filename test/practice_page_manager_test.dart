@@ -210,7 +210,7 @@ void main() {
       expect(manager.countNotifier.value, '1');
     });
 
-    test('Hard button inserts review verse last in list of 4', () async {
+    test('Hard button inserts review verse last (if Good > 1)', () async {
       when(mockUserSettings.getDailyLimit).thenReturn(10);
       when(mockUserSettings.isTwoButtonMode).thenReturn(false);
       when(mockDataRepository.fetchTodaysVerses(
@@ -218,7 +218,12 @@ void main() {
         newVerseLimit: 10,
       )).thenAnswer((_) async => [
             Verse(
-                id: '0', prompt: 'p0', text: 'a', nextDueDate: DateTime.now()),
+              id: '0',
+              prompt: 'p0',
+              text: 'a',
+              nextDueDate: DateTime.now(),
+              interval: const Duration(days: 1),
+            ),
             Verse(id: '1', prompt: 'p1', text: 'a'),
             Verse(id: '2', prompt: 'p2', text: 'a'),
             Verse(id: '3', prompt: 'p3', text: 'a'),
@@ -228,6 +233,8 @@ void main() {
 
       // mark as hard, then loop through to check that it is last
       manager.show();
+      expect(manager.okTitle, '1 day');
+      expect(manager.goodTitle, '2 days');
       manager.onResponse(Difficulty.hard);
       manager.show();
       manager.onResponse(Difficulty.easy);
@@ -235,9 +242,44 @@ void main() {
       manager.onResponse(Difficulty.easy);
       manager.show();
       manager.onResponse(Difficulty.easy);
+      manager.show();
 
       expect(manager.promptNotifier.value, 'p0');
       expect(manager.countNotifier.value, '1');
+    });
+
+    test('Hard button inserts review verse third (if Good == 1)', () async {
+      when(mockUserSettings.getDailyLimit).thenReturn(10);
+      when(mockUserSettings.isTwoButtonMode).thenReturn(false);
+      when(mockDataRepository.fetchTodaysVerses(
+        collectionId: 'whatever',
+        newVerseLimit: 10,
+      )).thenAnswer((_) async => [
+            Verse(
+              id: '0',
+              prompt: 'p0',
+              text: 'a',
+              nextDueDate: DateTime.now(),
+            ),
+            Verse(id: '1', prompt: 'p1', text: 'a'),
+            Verse(id: '2', prompt: 'p2', text: 'a'),
+            Verse(id: '3', prompt: 'p3', text: 'a'),
+          ]);
+      await manager.init(collectionId: 'whatever');
+      expect(manager.promptNotifier.value, 'p0');
+
+      // mark as hard, then loop through to check that it is last
+      manager.show();
+      expect(manager.goodTitle, '1 day');
+      manager.onResponse(Difficulty.hard);
+      manager.show();
+      manager.onResponse(Difficulty.easy);
+      manager.show();
+      manager.onResponse(Difficulty.easy);
+      manager.show();
+
+      expect(manager.promptNotifier.value, 'p0');
+      expect(manager.countNotifier.value, '2');
     });
 
     test('OK button puts new verse last', () async {
@@ -296,6 +338,7 @@ void main() {
 
       expect(manager.promptNotifier.value, 'p0');
       expect(manager.okTitle, '1 day');
+      expect(manager.goodTitle, '4 days');
       expect(manager.isTwoButtonMode, false);
 
       manager.onResponse(Difficulty.ok);

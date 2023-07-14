@@ -290,9 +290,14 @@ class PracticePageManager {
     }
     final updatedVerse = _adjustVerseStats(verse, response);
     dataRepository.updateVerse(_collectionId, updatedVerse);
-    // Put hard verses at the end of the list
     if (response == Difficulty.hard) {
-      _verses.add(updatedVerse);
+      if (!isTwoButtonMode &&
+          _verses.length > hardNewInsertionIndex &&
+          verse.interval == Duration.zero) {
+        _verses.insert(hardNewInsertionIndex, verse);
+      } else {
+        _verses.add(verse);
+      }
     }
   }
 
