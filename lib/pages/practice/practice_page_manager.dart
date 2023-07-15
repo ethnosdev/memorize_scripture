@@ -244,8 +244,6 @@ class PracticePageManager {
           } else {
             _verses.add(verse);
           }
-        case Difficulty.ok:
-          throw 'Illegal state: This is two-button mode.';
         case Difficulty.good:
           if (_verses.isEmpty) {
             // If this is the only verse, we're finished.
@@ -258,7 +256,7 @@ class PracticePageManager {
             final updated = verse.copyWith(nextDueDate: DateTime.now());
             _verses.add(updated);
           }
-        case Difficulty.easy:
+        default:
           throw 'Illegal state: This is two-button mode.';
       }
     } else {
@@ -283,20 +281,35 @@ class PracticePageManager {
   }
 
   void _handleReviewVerse(Verse verse, Difficulty response) {
-    // OK and Good should not both be 1 day
-    if (response == Difficulty.ok && verse.interval.inDays == 0) {
-      _verses.add(verse);
-      return;
-    }
-    final updatedVerse = _adjustVerseStats(verse, response);
-    dataRepository.updateVerse(_collectionId, updatedVerse);
-    if (response == Difficulty.hard) {
-      if (!isTwoButtonMode &&
-          _verses.length > hardNewInsertionIndex &&
-          verse.interval == Duration.zero) {
-        _verses.insert(hardNewInsertionIndex, verse);
-      } else {
-        _verses.add(verse);
+    if (isTwoButtonMode) {
+      final updatedVerse = _adjustVerseStats(verse, response);
+      dataRepository.updateVerse(_collectionId, updatedVerse);
+      if (response == Difficulty.hard) {
+        _verses.add(updatedVerse);
+      }
+    } else {
+      switch (response) {
+        case Difficulty.hard:
+          final updatedVerse = _adjustVerseStats(verse, response);
+          dataRepository.updateVerse(_collectionId, updatedVerse);
+          if (_verses.length > hardNewInsertionIndex &&
+              // insert last if good greater than 1
+              verse.interval.inDays == 0) {
+            _verses.insert(hardNewInsertionIndex, updatedVerse);
+          } else {
+            _verses.add(updatedVerse);
+          }
+        case Difficulty.ok:
+          if (verse.interval.inDays == 0) {
+            _verses.add(verse);
+          } else {
+            final updatedVerse = _adjustVerseStats(verse, response);
+            dataRepository.updateVerse(_collectionId, updatedVerse);
+          }
+        case Difficulty.good:
+        case Difficulty.easy:
+          final updatedVerse = _adjustVerseStats(verse, response);
+          dataRepository.updateVerse(_collectionId, updatedVerse);
       }
     }
   }
@@ -320,10 +333,8 @@ class PracticePageManager {
         days = 1;
       case Difficulty.good:
         days++;
-        break;
       case Difficulty.easy:
         days = 2 * (days + 1);
-        break;
     }
     return days;
   }

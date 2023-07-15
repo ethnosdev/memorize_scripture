@@ -116,6 +116,7 @@ class LocalStorage implements DataRepository {
       where: '${VerseEntry.collectionId} = ? '
           'AND ${VerseEntry.nextDueDate} IS NULL',
       whereArgs: [collectionId],
+      orderBy: '${VerseEntry.prompt} ASC',
       limit: limit,
     );
   }
@@ -128,7 +129,7 @@ class LocalStorage implements DataRepository {
       where: '${VerseEntry.collectionId} = ? '
           'AND ${VerseEntry.nextDueDate} <= ?',
       whereArgs: [collectionId, today],
-      orderBy: '${VerseEntry.nextDueDate} ASC',
+      orderBy: '${VerseEntry.prompt} ASC',
     );
   }
 

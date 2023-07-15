@@ -718,6 +718,49 @@ void main() {
       expect(manager.countNotifier.value, '4');
     });
 
+    test('Hard button resets review verse interval', () async {
+      when(mockUserSettings.getDailyLimit).thenReturn(10);
+      when(mockUserSettings.isTwoButtonMode).thenReturn(true);
+      when(mockDataRepository.fetchTodaysVerses(
+        collectionId: 'whatever',
+        newVerseLimit: 10,
+      )).thenAnswer((_) async => [
+            Verse(
+              id: '0',
+              prompt: 'p0',
+              text: 'a',
+              nextDueDate: DateTime.now(),
+              interval: const Duration(days: 2),
+            ),
+            Verse(id: '1', prompt: 'p1', text: 'a'),
+          ]);
+      await manager.init(collectionId: 'whatever');
+      expect(manager.promptNotifier.value, 'p0');
+      manager.show();
+      expect(manager.goodTitle, '3 days');
+
+      manager.onResponse(Difficulty.hard);
+      var verse = verify(
+        mockDataRepository.updateVerse(any, captureAny),
+      ).captured.single as Verse;
+      expect(verse.prompt, 'p0');
+      expect(verse.interval.inDays, 0);
+
+      manager.show();
+      manager.onResponse(Difficulty.hard);
+      manager.show();
+
+      expect(manager.promptNotifier.value, 'p0');
+      expect(manager.goodTitle, '1 day');
+
+      manager.onResponse(Difficulty.good);
+      verse = verify(
+        mockDataRepository.updateVerse(any, captureAny),
+      ).captured.single as Verse;
+      expect(verse.prompt, 'p0');
+      expect(verse.interval.inDays, 1);
+    });
+
     test('Good button puts new verse last', () async {
       when(mockUserSettings.getDailyLimit).thenReturn(10);
       when(mockUserSettings.isTwoButtonMode).thenReturn(true);

@@ -1,3 +1,8 @@
+## 1.2.1 - July 15, 2023
+
+- practice: sort alphabetically by prompt rather than due date
+- fix bug where pressing hard was not resetting the interval.
+
 ## 1.2.0 - July 14, 2023
 
 - Support 4-button mode (Hard, OK, Good, Easy) and 2-button mode (Hard, Good)
