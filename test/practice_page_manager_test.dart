@@ -32,7 +32,7 @@ void main() {
     test('init on empty collection', () async {
       await manager.init(collectionId: 'whatever');
 
-      expect(manager.verseTextNotifier.value, const TextSpan());
+      expect(manager.answerNotifier.value.textSpan, const TextSpan());
       expect(manager.isShowingAnswerNotifier.value, false);
     });
 
@@ -45,7 +45,7 @@ void main() {
 
       await manager.init(collectionId: 'whatever');
 
-      expect(manager.verseTextNotifier.value, const TextSpan());
+      expect(manager.answerNotifier.value.textSpan, const TextSpan());
       expect(manager.isShowingAnswerNotifier.value, false);
     });
   });
@@ -65,23 +65,27 @@ void main() {
       manager.showNextWordHint();
 
       var textBefore =
-          manager.verseTextNotifier.value.children?.first as TextSpan;
+          manager.answerNotifier.value.textSpan.children?.first as TextSpan;
       var textAfter =
-          manager.verseTextNotifier.value.children?.last as TextSpan;
+          manager.answerNotifier.value.textSpan.children?.last as TextSpan;
       expect(textBefore.text, 'one ');
       expect(textAfter.text, 'two three');
 
       manager.showNextWordHint();
 
-      textBefore = manager.verseTextNotifier.value.children?.first as TextSpan;
-      textAfter = manager.verseTextNotifier.value.children?.last as TextSpan;
+      textBefore =
+          manager.answerNotifier.value.textSpan.children?.first as TextSpan;
+      textAfter =
+          manager.answerNotifier.value.textSpan.children?.last as TextSpan;
       expect(textBefore.text, 'one two ');
       expect(textAfter.text, 'three');
 
       manager.showNextWordHint();
 
-      textBefore = manager.verseTextNotifier.value.children?.first as TextSpan;
-      textAfter = manager.verseTextNotifier.value.children?.last as TextSpan;
+      textBefore =
+          manager.answerNotifier.value.textSpan.children?.first as TextSpan;
+      textAfter =
+          manager.answerNotifier.value.textSpan.children?.last as TextSpan;
       expect(textBefore.text, 'one two three');
       expect(textAfter.text, '');
     });
@@ -99,7 +103,7 @@ void main() {
 
       manager.showFirstLettersHint();
 
-      var text = manager.verseTextNotifier.value.text;
+      var text = manager.answerNotifier.value.textSpan.text;
       expect(text, 'o t t');
     });
   });
@@ -118,7 +122,7 @@ void main() {
 
       manager.show();
 
-      final text = manager.verseTextNotifier.value.text;
+      final text = manager.answerNotifier.value.textSpan.text;
       expect(text, 'one two three');
       expect(manager.isShowingAnswerNotifier.value, true);
     });

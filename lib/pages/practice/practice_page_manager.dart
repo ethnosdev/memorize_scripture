@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/verse.dart';
+import 'package:memorize_scripture/pages/practice/widgets/answer_types.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/data_repository/data_repository.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
@@ -35,7 +36,7 @@ class PracticePageManager {
   final uiNotifier = ValueNotifier<PracticeState>(PracticeState.loading);
   final countNotifier = ValueNotifier<String>('');
   final promptNotifier = ValueNotifier<String>('');
-  final verseTextNotifier = ValueNotifier<TextSpan>(const TextSpan());
+  final answerNotifier = ValueNotifier<AnswerContent>(EmptyAnswer());
   final isShowingAnswerNotifier = ValueNotifier<bool>(false);
 
   late List<Verse> _verses;
@@ -86,10 +87,10 @@ class PracticePageManager {
 
   void show() {
     _showResponseButtons();
-    verseTextNotifier.value = TextSpan(
+    answerNotifier.value = NormalText(TextSpan(
       text: _verses.first.text,
       style: TextStyle(color: _textThemeColor),
-    );
+    ));
   }
 
   void _showResponseButtons() {
@@ -143,10 +144,11 @@ class PracticePageManager {
 
   void showNextWordHint() {
     _numberHintWordsShowing++;
-    verseTextNotifier.value = _formatForNumberOfWords(
+    final textSpan = _formatForNumberOfWords(
       _numberHintWordsShowing,
       _verses.first.text,
     );
+    answerNotifier.value = WordsHint(textSpan);
   }
 
   void showFirstLettersHint() {
@@ -162,10 +164,10 @@ class PracticePageManager {
         isWordStart = !isWordChar;
       }
     }
-    verseTextNotifier.value = TextSpan(
+    answerNotifier.value = LettersHint(TextSpan(
       text: result.toString(),
       style: TextStyle(color: _textThemeColor),
-    );
+    ));
   }
 
   TextSpan _formatForNumberOfWords(int number, String verseText) {
@@ -344,7 +346,7 @@ class PracticePageManager {
       uiNotifier.value = PracticeState.finished;
     } else {
       isShowingAnswerNotifier.value = false;
-      verseTextNotifier.value = const TextSpan();
+      answerNotifier.value = EmptyAnswer();
       promptNotifier.value = _verses.first.prompt;
       countNotifier.value = _verses.length.toString();
       _numberHintWordsShowing = 0;
