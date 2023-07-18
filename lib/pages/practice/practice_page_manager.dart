@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/verse.dart';
-import 'package:memorize_scripture/pages/practice/widgets/answer_types.dart';
+import 'package:memorize_scripture/pages/practice/helpers/letters_hint.dart';
+import 'package:memorize_scripture/pages/practice/helpers/words_hint.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/data_repository/data_repository.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
@@ -32,11 +33,12 @@ class PracticePageManager {
   }
   late final DataRepository dataRepository;
   late final UserSettings userSettings;
+  late final WordsHintHelper wordsHintHelper;
 
   final uiNotifier = ValueNotifier<PracticeState>(PracticeState.loading);
   final countNotifier = ValueNotifier<String>('');
   final promptNotifier = ValueNotifier<String>('');
-  final answerNotifier = ValueNotifier<AnswerContent>(EmptyAnswer());
+  final answerNotifier = ValueNotifier<TextSpan>(const TextSpan());
   final isShowingAnswerNotifier = ValueNotifier<bool>(false);
 
   late List<Verse> _verses;
@@ -83,14 +85,20 @@ class PracticePageManager {
     promptNotifier.value = _verses.first.prompt;
     countNotifier.value = _verses.length.toString();
     uiNotifier.value = PracticeState.practicing;
+    wordsHintHelper = WordsHintHelper()
+      ..onFinished = _showResponseButtons
+      ..init(
+        text: _verses.first.text,
+        textColor: _textThemeColor,
+      );
   }
 
   void show() {
     _showResponseButtons();
-    answerNotifier.value = NormalText(TextSpan(
+    answerNotifier.value = TextSpan(
       text: _verses.first.text,
       style: TextStyle(color: _textThemeColor),
-    ));
+    );
   }
 
   void _showResponseButtons() {
@@ -140,85 +148,16 @@ class PracticePageManager {
     return '~$rounded min';
   }
 
-  int _numberHintWordsShowing = 0;
-
   void showNextWordHint() {
-    _numberHintWordsShowing++;
-    final textSpan = _formatForNumberOfWords(
-      _numberHintWordsShowing,
-      _verses.first.text,
-    );
-    answerNotifier.value = WordsHint(textSpan);
+    answerNotifier.value = wordsHintHelper.nextWord();
   }
 
   void showFirstLettersHint() {
-    final latinChar = RegExp(r'\w');
-    final result = StringBuffer();
-    bool isWordStart = true;
-    final text = _verses.first.text;
-    for (int i = 0; i < text.length; i++) {
-      final character = text[i];
-      final isWordChar = character.contains(latinChar);
-      if (!isWordChar || isWordStart) {
-        result.write(character);
-        isWordStart = !isWordChar;
-      }
-    }
-    answerNotifier.value = LettersHint(TextSpan(
-      text: result.toString(),
-      style: TextStyle(color: _textThemeColor),
-    ));
-  }
-
-  TextSpan _formatForNumberOfWords(int number, String verseText) {
-    if (verseText.isEmpty) return const TextSpan(text: '');
-
-    final index = _indexAfterNthSpace(number, verseText);
-    final before = verseText.substring(0, index);
-    final after = (index == null) ? '' : verseText.substring(index);
-
-    if (index == null) {
-      _showResponseButtons();
-    }
-
-    final textSpan = TextSpan(children: [
-      TextSpan(
-        text: before,
-        style: TextStyle(color: _textThemeColor),
-      ),
-      TextSpan(
-        text: after,
-        style: const TextStyle(color: Colors.transparent),
-      ),
-    ]);
-
-    return textSpan;
-  }
-
-  /// number is 1-based
-  int? _indexAfterNthSpace(int number, String verseText) {
-    int index = 0;
-    for (int i = 1; i <= number; i++) {
-      var temp = _advanceToNextWhiteSpace(index, verseText);
-      if (temp == null) return null;
-      index = temp;
-      temp = _advanceToNextNonWhiteSpace(index, verseText);
-      if (temp == null) return null;
-      index = temp;
-    }
-    return index;
-  }
-
-  int? _advanceToNextNonWhiteSpace(int start, String text) {
-    final nonWhiteSpace = RegExp(r'\S');
-    final index = text.indexOf(nonWhiteSpace, start);
-    return (index < 0) ? null : index;
-  }
-
-  int? _advanceToNextWhiteSpace(int start, String text) {
-    final whiteSpace = RegExp(r'\s');
-    final index = text.indexOf(whiteSpace, start);
-    return (index < 0) ? null : index;
+    final helper = LettersHintHelper(
+      text: _verses.first.text,
+      textColor: _textThemeColor,
+    );
+    answerNotifier.value = helper.textSpan;
   }
 
   void onResponse(Difficulty response) {
@@ -346,10 +285,13 @@ class PracticePageManager {
       uiNotifier.value = PracticeState.finished;
     } else {
       isShowingAnswerNotifier.value = false;
-      answerNotifier.value = EmptyAnswer();
+      answerNotifier.value = const TextSpan();
       promptNotifier.value = _verses.first.prompt;
       countNotifier.value = _verses.length.toString();
-      _numberHintWordsShowing = 0;
+      wordsHintHelper.init(
+        text: _verses.first.text,
+        textColor: _textThemeColor,
+      );
     }
   }
 

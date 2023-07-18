@@ -3,8 +3,6 @@ import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
 import 'package:memorize_scripture/pages/practice/widgets/button_panel.dart';
 import 'package:memorize_scripture/pages/practice/widgets/hint_box.dart';
 
-import 'answer_types.dart';
-
 // use this to enlarge the text. Later allow the user to adjust this.
 const textScaleFactor = 1.2;
 
@@ -120,13 +118,13 @@ class Answer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<AnswerContent>(
+    return ValueListenableBuilder<TextSpan>(
       valueListenable: manager.answerNotifier,
       builder: (context, answerContent, child) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: SelectableText.rich(
-            answerContent.textSpan,
+            answerContent,
             textAlign: TextAlign.center,
             textScaleFactor: textScaleFactor,
           ),
