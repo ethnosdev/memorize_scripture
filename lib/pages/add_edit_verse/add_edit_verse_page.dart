@@ -85,6 +85,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
                         autofocus: !isEditing,
                         focusNode: promptFocus,
                         controller: promptController,
+                        textCapitalization: TextCapitalization.sentences,
                         maxLines: 5,
                         decoration: InputDecoration(
                           labelText: 'Prompt',
@@ -108,6 +109,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
                   ),
                   const SizedBox(height: 10),
                   TextField(
+                    textCapitalization: TextCapitalization.sentences,
                     maxLines: 5,
                     controller: verseTextController,
                     decoration: const InputDecoration(

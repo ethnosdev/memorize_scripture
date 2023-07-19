@@ -290,6 +290,7 @@ Future<String?> _showEditNameDialog(
   AlertDialog alert = AlertDialog(
     title: const Text("Name"),
     content: TextField(
+      textCapitalization: TextCapitalization.sentences,
       autofocus: true,
       controller: controller,
     ),

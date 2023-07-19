@@ -1,3 +1,7 @@
+## 1.x
+
+- Tell the keyboard that the first letters of sentences should be capitalized in the prompt, verse text, and collection name TextFields.
+
 ## 1.2.1 - July 15, 2023
 
 - practice: sort alphabetically by prompt rather than due date
