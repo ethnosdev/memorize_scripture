@@ -123,7 +123,7 @@ class Answer extends StatelessWidget {
       builder: (context, answerContent, child) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: SelectableText.rich(
+          child: Text.rich(
             answerContent,
             textAlign: TextAlign.center,
             textScaleFactor: textScaleFactor,

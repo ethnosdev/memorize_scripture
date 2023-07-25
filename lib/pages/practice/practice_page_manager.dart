@@ -156,6 +156,13 @@ class PracticePageManager {
     final helper = LettersHintHelper(
       text: _verses.first.text,
       textColor: _textThemeColor,
+      onUpdate: (textSpan) {
+        // for (final span in textSpan.children!) {
+        //   print(span.toPlainText());
+        //   print(span.style);
+        // }
+        answerNotifier.value = textSpan;
+      },
     );
     answerNotifier.value = helper.textSpan;
   }
