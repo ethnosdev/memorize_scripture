@@ -112,7 +112,7 @@ class NoCollections extends StatelessWidget {
             onPressed: () async {
               final url = Uri.parse(AppStrings.tutorialUrl);
               if (await canLaunchUrl(url)) {
-                launchUrl(url);
+                launchUrl(url, mode: LaunchMode.externalApplication);
               }
             },
             child: const Text('App Tutorial'),

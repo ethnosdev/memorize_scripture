@@ -41,7 +41,7 @@ class MenuDrawer extends StatelessWidget {
               onTap: () async {
                 final url = Uri.parse(AppStrings.tutorialUrl);
                 if (await canLaunchUrl(url)) {
-                  launchUrl(url);
+                  launchUrl(url, mode: LaunchMode.externalApplication);
                 }
               },
             ),

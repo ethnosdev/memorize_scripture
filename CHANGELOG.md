@@ -2,6 +2,7 @@
 
 - Tell the keyboard that the first letters of sentences should be capitalized in the prompt, verse text, and collection name TextFields.
 - Tap the words in the letter hints to make them visible.
+- Launch tutorial in an external application so users can switch back and forth.
 
 ## 1.2.1 - July 15, 2023
 
