@@ -60,4 +60,12 @@ abstract class DataRepository {
 
   /// Return the number of verses in the collection, regardless of due date.
   Future<int> numberInCollection(String collectionId);
+
+  /// Return all of the database rows for the collections table.
+  /// This is useful for backup.
+  Future<List<Map<String, Object?>>> dumpCollections();
+
+  /// Return all of the database rows for the verses table.
+  /// This is useful for backup.
+  Future<List<Map<String, Object?>>> dumpVerses();
 }

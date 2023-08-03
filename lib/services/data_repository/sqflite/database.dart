@@ -303,4 +303,14 @@ class LocalStorage implements DataRepository {
   }
 
   Future<void> close() async => _database.close();
+
+  @override
+  Future<List<Map<String, Object?>>> dumpCollections() async {
+    return await _database.query(CollectionEntry.collectionTable);
+  }
+
+  @override
+  Future<List<Map<String, Object?>>> dumpVerses() async {
+    return await _database.query(VerseEntry.verseTable);
+  }
 }

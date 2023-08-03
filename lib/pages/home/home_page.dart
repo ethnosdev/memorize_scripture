@@ -38,48 +38,53 @@ class _HomePageState extends State<HomePage> {
               manager.addCollection(name);
             },
           ),
-          // PopupMenuButton(
-          //   itemBuilder: (BuildContext context) => [
-          //     const PopupMenuItem(
-          //       value: 1,
-          //       child: IconTextRow(
-          //         icon: Icons.play_arrow,
-          //         text: 'Play all',
-          //       ),
-          //     ),
-          //     const PopupMenuItem(
-          //       value: 1,
-          //       child: IconTextRow(
-          //         icon: Icons.sync,
-          //         text: 'Sync',
-          //       ),
-          //     ),
-          //     const PopupMenuItem(
-          //       value: 1,
-          //       child: IconTextRow(
-          //         icon: Icons.add,
-          //         text: 'Add collection',
-          //       ),
-          //     ),
-          //     const PopupMenuItem(
-          //       value: 1,
-          //       child: IconTextRow(
-          //         icon: Icons.upload,
-          //         text: 'Backup',
-          //       ),
-          //     ),
-          //     const PopupMenuItem(
-          //       value: 1,
-          //       child: IconTextRow(
-          //         icon: Icons.download,
-          //         text: 'Restore backup',
-          //       ),
-          //     ),
-          //   ],
-          //   onSelected: (value) {
-          //     // handle menu item selection
-          //   },
-          // ),
+          PopupMenuButton(
+            itemBuilder: (BuildContext context) => [
+              // const PopupMenuItem(
+              //   value: 1,
+              //   child: IconTextRow(
+              //     icon: Icons.play_arrow,
+              //     text: 'Play all',
+              //   ),
+              // ),
+              // const PopupMenuItem(
+              //   value: 1,
+              //   child: IconTextRow(
+              //     icon: Icons.sync,
+              //     text: 'Sync',
+              //   ),
+              // ),
+              // const PopupMenuItem(
+              //   value: 1,
+              //   child: IconTextRow(
+              //     icon: Icons.add,
+              //     text: 'Add collection',
+              //   ),
+              // ),
+              const PopupMenuItem(
+                value: 1,
+                child: IconTextRow(
+                  icon: Icons.upload,
+                  text: 'Backup',
+                ),
+              ),
+              const PopupMenuItem(
+                value: 2,
+                child: IconTextRow(
+                  icon: Icons.download,
+                  text: 'Restore backup',
+                ),
+              ),
+            ],
+            onSelected: (value) {
+              switch (value) {
+                case 1:
+                  manager.backupCollections();
+                case 2:
+                  manager.restoreBackup();
+              }
+            },
+          ),
         ],
       ),
       drawer: const MenuDrawer(),

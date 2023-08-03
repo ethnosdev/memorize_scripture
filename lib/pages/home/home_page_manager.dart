@@ -1,7 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/data_repository/data_repository.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
 
 class HomePageManager {
@@ -48,4 +54,29 @@ class HomePageManager {
   Collection collectionAt(int index) {
     return collectionNotifier.value[index];
   }
+
+  Future<void> backupCollections() async {
+    final collections = await dataRepository.dumpCollections();
+    final verses = await dataRepository.dumpVerses();
+
+    final backup = {
+      'date': DateTime.now().millisecondsSinceEpoch,
+      'version': '1', // should match the database version
+      'collections': collections,
+      'verses': verses,
+    };
+
+    const encoder = JsonEncoder.withIndent('  ');
+    final serialized = encoder.convert(backup);
+    final uint8list = Uint8List.fromList(utf8.encode(serialized));
+    final directory = await getTemporaryDirectory();
+    final fileName = 'ms-backup-${DateTime.now().toIso8601String()}.json';
+    final file = File('${directory.path}/$fileName');
+    await file.writeAsBytes(uint8list);
+
+    print(serialized);
+    Share.shareXFiles([XFile(file.path)]);
+  }
+
+  void restoreBackup() {}
 }
