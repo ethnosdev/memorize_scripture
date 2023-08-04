@@ -71,7 +71,8 @@ class HomePageManager {
     final serialized = encoder.convert(backup);
     final uint8list = Uint8List.fromList(utf8.encode(serialized));
     final directory = await getTemporaryDirectory();
-    final fileName = 'ms-backup-${DateTime.now().toIso8601String()}.json';
+    final timeString = DateTime.now().toIso8601String().split('.').first;
+    final fileName = 'ms-backup-$timeString.json';
     final file = File('${directory.path}/$fileName');
     await file.writeAsBytes(uint8list);
 
