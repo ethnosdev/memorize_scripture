@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/service_locator.dart';
@@ -60,7 +61,7 @@ class HomePageManager {
     final verses = await dataRepository.dumpVerses();
 
     final backup = {
-      'date': DateTime.now().millisecondsSinceEpoch,
+      'date': _dateToSecondsSinceEpoch(DateTime.now()),
       'version': '1', // should match the database version
       'collections': collections,
       'verses': verses,
@@ -74,9 +75,48 @@ class HomePageManager {
     final file = File('${directory.path}/$fileName');
     await file.writeAsBytes(uint8list);
 
-    print(serialized);
     Share.shareXFiles([XFile(file.path)]);
   }
 
-  void restoreBackup() {}
+  int? _dateToSecondsSinceEpoch(DateTime? date) {
+    if (date == null) return null;
+    return date.millisecondsSinceEpoch ~/ 1000;
+  }
+
+  void restoreBackup(void Function(String message) onResult) async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['json'],
+    );
+    if (result == null) return;
+    final path = result.files.single.path;
+    if (path == null) {
+      onResult.call("The file couldn't be read.");
+      return;
+    }
+    final file = File(path);
+    final jsonString = await file.readAsString();
+    try {
+      dynamic json = jsonDecode(jsonString);
+      final collections =
+          (json['collections'] as List).cast<Map<String, Object?>>();
+      final verses = (json['verses'] as List).cast<Map<String, Object?>>();
+      await dataRepository.restoreCollections(collections);
+      final (added, updated) = await dataRepository.restoreVerses(verses);
+      onResult.call(_resultString(added, updated));
+    } on FormatException {
+      onResult.call('The data in the file was in the wrong format.');
+    }
+    init();
+  }
+
+  String _resultString(int added, int updated) {
+    if (added == 0) {
+      return '$updated verses updated';
+    }
+    if (updated == 0) {
+      return '$added verses added';
+    }
+    return '$added verses added and $updated verses updated.';
+  }
 }

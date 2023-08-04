@@ -24,6 +24,11 @@ class _HomePageState extends State<HomePage> {
     manager.init();
   }
 
+  void _onBackupRestoreResult(String message) {
+    final snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                 case 1:
                   manager.backupCollections();
                 case 2:
-                  manager.restoreBackup();
+                  manager.restoreBackup(_onBackupRestoreResult);
               }
             },
           ),

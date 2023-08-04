@@ -1,3 +1,7 @@
+## 1.4.0
+
+- Backup and restore with .json file formatting.
+
 ## 1.3.0 - July 26, 2023
 
 - Tap the words in the letter hints to make them visible.

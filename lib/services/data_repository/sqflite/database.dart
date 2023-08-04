@@ -169,8 +169,6 @@ class LocalStorage implements DataRepository {
 
   @override
   Future<void> updateVerse(String collectionId, Verse verse) async {
-    print(
-        'id: ${verse.id}, interval: ${verse.interval}, due: ${verse.nextDueDate}');
     await _database.update(
       VerseEntry.verseTable,
       {
@@ -312,5 +310,117 @@ class LocalStorage implements DataRepository {
   @override
   Future<List<Map<String, Object?>>> dumpVerses() async {
     return await _database.query(VerseEntry.verseTable);
+  }
+
+  @override
+  Future<int> restoreCollections(
+    List<Map<String, Object?>> collections,
+  ) async {
+    int collectionAddedCount = 0;
+    for (final collection in collections) {
+      final id = collection[CollectionEntry.id] as String;
+      var name = collection[CollectionEntry.name] as String;
+      final date = collection[CollectionEntry.accessedDate] as int;
+
+      // if collection id exists do nothing
+      if (await _collectionExists(id)) continue;
+
+      // add another entry for a duplicate collection name
+      if (await _collectionNameExists(name)) {
+        name = '$name (backup)';
+      }
+
+      // insert the new collection
+      await _database.insert(
+        CollectionEntry.collectionTable,
+        {
+          CollectionEntry.id: id,
+          CollectionEntry.name: name,
+          CollectionEntry.accessedDate: date,
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      collectionAddedCount++;
+    }
+    return collectionAddedCount;
+  }
+
+  Future<bool> _collectionExists(String collectionId) async {
+    final result = await _database.rawQuery(
+      'SELECT EXISTS(SELECT 1 FROM ${CollectionEntry.collectionTable} '
+      'WHERE ${CollectionEntry.id}=?)',
+      [collectionId],
+    );
+    return (Sqflite.firstIntValue(result) == 1);
+  }
+
+  Future<bool> _collectionNameExists(String name) async {
+    final result = await _database.rawQuery(
+      'SELECT EXISTS(SELECT 1 FROM ${CollectionEntry.collectionTable} '
+      'WHERE ${CollectionEntry.name}=?)',
+      [name],
+    );
+    return (Sqflite.firstIntValue(result) == 1);
+  }
+
+  @override
+  Future<(int, int)> restoreVerses(List<Map<String, Object?>> verses) async {
+    int addedCount = 0;
+    int updatedCount = 0;
+
+    for (final verse in verses) {
+      final id = verse[VerseEntry.id] as String;
+      final collectionId = verse[VerseEntry.collectionId] as String;
+      final prompt = verse[VerseEntry.prompt] as String;
+      final verseText = verse[VerseEntry.verseText] as String;
+      final modified = verse[VerseEntry.modifiedDate] as int;
+      final dueDate = verse[VerseEntry.nextDueDate] as int?;
+      final interval = verse[VerseEntry.interval] as int;
+
+      // check if verse exists
+      final existing = await _database.query(
+        VerseEntry.verseTable,
+        columns: [VerseEntry.modifiedDate],
+        where: '${VerseEntry.id} = ?',
+        whereArgs: [id],
+      );
+
+      if (existing.isNotEmpty) {
+        final date = existing.first[VerseEntry.modifiedDate] as int;
+        // if the existing verse is newer, don't update it.
+        if (date >= modified) continue;
+        // otherwise update it.
+        await _database.update(
+          VerseEntry.verseTable,
+          {
+            VerseEntry.collectionId: collectionId,
+            VerseEntry.prompt: prompt,
+            VerseEntry.verseText: verseText,
+            VerseEntry.modifiedDate: modified,
+            VerseEntry.nextDueDate: dueDate,
+            VerseEntry.interval: interval,
+          },
+          where: '${VerseEntry.id} = ?',
+          whereArgs: [id],
+        );
+        updatedCount++;
+      } else {
+        // if the verse doesn't exist then insert it.
+        await _database.insert(
+          VerseEntry.verseTable,
+          {
+            VerseEntry.id: id,
+            VerseEntry.collectionId: collectionId,
+            VerseEntry.prompt: prompt,
+            VerseEntry.verseText: verseText,
+            VerseEntry.modifiedDate: modified,
+            VerseEntry.nextDueDate: dueDate,
+            VerseEntry.interval: interval,
+          },
+        );
+        addedCount++;
+      }
+    }
+    return (addedCount, updatedCount);
   }
 }

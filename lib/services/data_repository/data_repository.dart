@@ -68,4 +68,12 @@ abstract class DataRepository {
   /// Return all of the database rows for the verses table.
   /// This is useful for backup.
   Future<List<Map<String, Object?>>> dumpVerses();
+
+  /// Restores collections from a backup in JSON form.
+  /// Returns the number of collections added.
+  Future<int> restoreCollections(List<Map<String, Object?>> collections);
+
+  /// Restores verses from a backup in JSON form.
+  /// Returns the number of verses added and updated.
+  Future<(int, int)> restoreVerses(List<Map<String, Object?>> verses);
 }
