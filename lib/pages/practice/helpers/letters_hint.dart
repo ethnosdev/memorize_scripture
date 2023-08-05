@@ -37,6 +37,7 @@ class LettersHintHelper {
           id: tokenId,
           text: firstLetter,
           textColor: textColor,
+          isHidable: false,
           onUpdate: _updateSpans,
         );
         list.add(firstLetterToken);
@@ -46,6 +47,7 @@ class LettersHintHelper {
           id: tokenId,
           text: remainingLetters,
           textColor: Colors.transparent,
+          isHidable: true,
           onUpdate: _updateSpans,
         );
         list.add(remainingLettersToken);
@@ -55,6 +57,7 @@ class LettersHintHelper {
           id: tokenId,
           text: group3,
           textColor: textColor,
+          isHidable: false,
           onUpdate: _updateSpans,
         );
         list.add(nonWord);
@@ -67,11 +70,13 @@ class LettersHintHelper {
   void _updateSpans(int id) {
     for (int index = 0; index < _tokens.length; index++) {
       final token = _tokens[index];
+
       if (token.id == id) {
         final updatedToken = _Token(
           id: id,
           text: token.text,
-          textColor: textColor,
+          textColor: _getColor(token),
+          isHidable: token.isHidable,
           onUpdate: token.onUpdate,
         );
         _tokens[index] = updatedToken;
@@ -80,6 +85,12 @@ class LettersHintHelper {
 
     onUpdate?.call(textSpan);
   }
+
+  Color _getColor(_Token token) {
+    if (!token.isHidable) return textColor;
+    if (token.textColor == Colors.transparent) return textColor;
+    return Colors.transparent;
+  }
 }
 
 class _Token {
@@ -87,11 +98,13 @@ class _Token {
     required this.id,
     required this.text,
     required this.textColor,
+    required this.isHidable,
     required this.onUpdate,
   });
   final int id;
   final String text;
   final Color textColor;
+  final bool isHidable;
   final Function(int id) onUpdate;
 
   TextSpan toTextSpan() {

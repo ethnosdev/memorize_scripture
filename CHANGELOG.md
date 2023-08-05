@@ -1,11 +1,13 @@
 ## 1.4.0
 
 - Backup and restore with .json file formatting.
+- Tap letter hint word again to hide word.
 
 ## 1.3.0 - July 26, 2023
 
 - Tap the words in the letter hints to make them visible.
 - Launch tutorial in an external application so users can switch back and forth.
+- Suggest keyboard capitalize first word of sentence for prompt, verse text, and collection name.
 
 ## 1.2.1 - July 15, 2023
 
