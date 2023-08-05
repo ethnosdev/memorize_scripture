@@ -77,4 +77,8 @@ abstract class DataRepository {
   /// Returns the number of verses added and updated.
   Future<(int added, int updated, int errorCount)> restoreVerses(
       List<Map<String, Object?>> verses);
+
+  /// Resets all the due dates in the collection and makes verses like new.
+  /// Returns the number of verses updated.
+  Future<int> resetDueDates({required String collectionId});
 }

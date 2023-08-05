@@ -437,4 +437,19 @@ class LocalStorage implements DataRepository {
       },
     );
   }
+
+  @override
+  Future<int> resetDueDates({required String collectionId}) async {
+    final now = _timestampNow();
+    return await _database.update(
+      VerseEntry.verseTable,
+      {
+        VerseEntry.modifiedDate: now,
+        VerseEntry.nextDueDate: null,
+        VerseEntry.interval: 0,
+      },
+      where: '${VerseEntry.collectionId} = ?',
+      whereArgs: [collectionId],
+    );
+  }
 }

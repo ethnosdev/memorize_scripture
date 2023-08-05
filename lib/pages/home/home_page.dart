@@ -24,10 +24,10 @@ class _HomePageState extends State<HomePage> {
     manager.init();
   }
 
-  void _onBackupRestoreResult(String message) {
-    final snackBar = SnackBar(content: Text(message));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
+  // void _onBackupRestoreResult(String message) {
+  //   final snackBar = SnackBar(content: Text(message));
+  //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +86,9 @@ class _HomePageState extends State<HomePage> {
                 case 1:
                   manager.backupCollections();
                 case 2:
-                  manager.restoreBackup(_onBackupRestoreResult);
+                  manager.restoreBackup(
+                    (message) => _showMessage(context, message),
+                  );
               }
             },
           ),
@@ -212,7 +214,7 @@ class _BodyWidgetState extends State<BodyWidget> {
             shrinkWrap: true,
             children: [
               ListTile(
-                title: const Text('View'),
+                title: const Text('Browse verses'),
                 onTap: () async {
                   Navigator.of(context).pop();
                   final collection = manager.collectionAt(index);
@@ -235,6 +237,21 @@ class _BodyWidgetState extends State<BodyWidget> {
                   await manager.renameCollection(
                     index: index,
                     newName: newName,
+                  );
+                },
+              ),
+              ListTile(
+                title: const Text('Reset due dates'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  manager.resetDueDates(
+                    index: index,
+                    onFinished: (count) {
+                      _showMessage(
+                        context,
+                        'Due dates reset on $count verses.',
+                      );
+                    },
                   );
                 },
               ),
@@ -283,6 +300,15 @@ class _BodyWidgetState extends State<BodyWidget> {
       },
     );
   }
+}
+
+void _showMessage(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+      // duration: const Duration(seconds: 1),
+    ),
+  );
 }
 
 Future<String?> _showEditNameDialog(

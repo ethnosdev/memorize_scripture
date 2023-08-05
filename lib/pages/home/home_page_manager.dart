@@ -44,6 +44,17 @@ class HomePageManager {
     collectionNotifier.value = await dataRepository.fetchCollections();
   }
 
+  Future<void> resetDueDates({
+    required int index,
+    required void Function(int numberReset) onFinished,
+  }) async {
+    final collection = collectionNotifier.value[index];
+    final count = await dataRepository.resetDueDates(
+      collectionId: collection.id,
+    );
+    onFinished.call(count);
+  }
+
   void deleteCollection(int index) {
     final list = collectionNotifier.value.toList();
     final collection = list[index];
