@@ -14,28 +14,14 @@ class HintBox extends StatelessWidget {
     return ValueListenableBuilder<bool>(
       valueListenable: manager.isShowingAnswerNotifier,
       builder: (context, isShowingAnswer, child) {
-        final lettersButton = OutlinedButton(
-          onPressed: (isShowingAnswer) ? null : manager.showFirstLettersHint,
-          child: const Text('Letters'),
-        );
-        final wordsButton = OutlinedButton(
-          onPressed: (isShowingAnswer) ? null : manager.showNextWordHint,
-          child: const Text('Words'),
-        );
-        final outlineColor = (isShowingAnswer)
-            ? Theme.of(context).disabledColor
-            : Theme.of(context).colorScheme.outline;
-        final labelStyle = Theme.of(context).textTheme.labelSmall;
-        final hintStyle = (isShowingAnswer)
-            ? labelStyle?.copyWith(color: Theme.of(context).disabledColor)
-            : labelStyle;
+        if (isShowingAnswer) return const HorizontalLine();
         return Stack(
           children: [
             Container(
               margin: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: outlineColor,
+                  color: Theme.of(context).colorScheme.outline,
                   width: 0.5,
                 ),
                 borderRadius: BorderRadius.circular(4),
@@ -46,9 +32,15 @@ class HintBox extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    lettersButton,
+                    OutlinedButton(
+                      onPressed: manager.showFirstLettersHint,
+                      child: const Text('Letters'),
+                    ),
                     const SizedBox(width: 20),
-                    wordsButton,
+                    OutlinedButton(
+                      onPressed: manager.showNextWordHint,
+                      child: const Text('Words'),
+                    ),
                   ],
                 ),
               ),
@@ -61,13 +53,27 @@ class HintBox extends StatelessWidget {
                 color: Theme.of(context).scaffoldBackgroundColor,
                 child: Text(
                   'Hints',
-                  style: hintStyle,
+                  style: Theme.of(context).textTheme.labelSmall,
                 ),
               ),
             ),
           ],
         );
       },
+    );
+  }
+}
+
+class HorizontalLine extends StatelessWidget {
+  const HorizontalLine({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      height: 0.5,
+      width: 150.0,
+      color: Theme.of(context).disabledColor,
     );
   }
 }
