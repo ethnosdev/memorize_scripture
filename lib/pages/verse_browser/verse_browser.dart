@@ -67,7 +67,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
                     extra: manager.onFinishedEditing,
                   );
                 },
-                onLongPress: () {
+                onLongPress: () async {
                   _showCollectionOptionsDialog(index);
                 },
               );
@@ -79,6 +79,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
   }
 
   Future<String?> _showCollectionOptionsDialog(int index) async {
+    final showMove = manager.shouldShowMoveMenuItem();
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -86,6 +87,14 @@ class _VerseBrowserState extends State<VerseBrowser> {
           child: ListView(
             shrinkWrap: true,
             children: [
+              if (showMove)
+                ListTile(
+                  title: const Text('Move'),
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    _showMoveDialog(index: index);
+                  },
+                ),
               ListTile(
                 title: const Text('Reset due date'),
                 onTap: () {
@@ -102,6 +111,32 @@ class _VerseBrowserState extends State<VerseBrowser> {
                 },
               )
             ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<String?> _showMoveDialog({required int index}) async {
+    final collections = manager.otherCollections();
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: collections.length,
+            itemBuilder: (context, index) {
+              final name = collections[index].name;
+              return ListTile(
+                title: Text(name),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  manager.moveVerse(index, collections[index].id);
+                  _showMessage('Verse moved to $name.');
+                },
+              );
+            },
           ),
         );
       },
