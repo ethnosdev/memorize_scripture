@@ -95,7 +95,6 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
                             vertical: 12,
                             horizontal: 8,
                           ),
-                          //hintText: 'Enter verse reference or previous verse text',
                           errorText: (alreadyExists)
                               ? 'This prompt already exists'
                               : null,

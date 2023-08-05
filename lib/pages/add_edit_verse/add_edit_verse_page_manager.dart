@@ -78,12 +78,15 @@ class AddEditVersePageManager {
     required String prompt,
     required String text,
   }) async {
+    final previous = await dataRepo.fetchVerse(verseId: verseId);
     dataRepo.updateVerse(
       _collectionId,
       Verse(
         id: verseId,
         prompt: prompt,
         text: text,
+        nextDueDate: previous?.nextDueDate,
+        interval: previous?.interval ?? Duration.zero,
       ),
     );
   }
