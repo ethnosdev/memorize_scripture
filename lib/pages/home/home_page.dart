@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/drawer.dart';
 import 'package:memorize_scripture/common/strings.dart';
+import 'package:memorize_scripture/common/widgets/icon_text_menu_row.dart';
 import 'package:memorize_scripture/go_router.dart';
 import 'package:memorize_scripture/pages/home/home_page_manager.dart';
 import 'package:memorize_scripture/service_locator.dart';
@@ -131,31 +132,6 @@ class NoCollections extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class IconTextRow extends StatelessWidget {
-  const IconTextRow({
-    super.key,
-    required this.icon,
-    required this.text,
-  });
-
-  final IconData icon;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          color: Theme.of(context).textTheme.bodyLarge?.color,
-        ),
-        const SizedBox(width: 8),
-        Text(text),
-      ],
     );
   }
 }

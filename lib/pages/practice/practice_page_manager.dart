@@ -33,15 +33,17 @@ class PracticePageManager {
   }
   late final DataRepository dataRepository;
   late final UserSettings userSettings;
-  late final WordsHintHelper wordsHintHelper;
+  WordsHintHelper? _wordsHintHelper;
 
   final uiNotifier = ValueNotifier<PracticeState>(PracticeState.loading);
   final countNotifier = ValueNotifier<String>('');
   final promptNotifier = ValueNotifier<String>('');
   final answerNotifier = ValueNotifier<TextSpan>(const TextSpan());
   final isShowingAnswerNotifier = ValueNotifier<bool>(false);
+  final appBarNotifier = AppBarNotifier();
 
   late List<Verse> _verses;
+  Verse? _undoVerse;
 
   String? get currentVerseId {
     if (_verses.isEmpty) return null;
@@ -85,7 +87,8 @@ class PracticePageManager {
     promptNotifier.value = _verses.first.prompt;
     countNotifier.value = _verses.length.toString();
     uiNotifier.value = PracticeState.practicing;
-    wordsHintHelper = WordsHintHelper()
+    appBarNotifier.update(isPracticing: true, canUndo: false);
+    _wordsHintHelper = WordsHintHelper()
       ..onFinished = _showResponseButtons
       ..init(
         text: _verses.first.text,
@@ -150,7 +153,8 @@ class PracticePageManager {
   }
 
   void showNextWordHint() {
-    answerNotifier.value = wordsHintHelper.nextWord();
+    if (_wordsHintHelper == null) return;
+    answerNotifier.value = _wordsHintHelper!.nextWord();
   }
 
   void showFirstLettersHint() {
@@ -158,10 +162,6 @@ class PracticePageManager {
       text: _verses.first.text,
       textColor: _textThemeColor,
       onUpdate: (textSpan) {
-        // for (final span in textSpan.children!) {
-        //   print(span.toPlainText());
-        //   print(span.style);
-        // }
         answerNotifier.value = textSpan;
       },
     );
@@ -175,6 +175,7 @@ class PracticePageManager {
 
   void _updateVerses(Difficulty response) {
     final verse = _verses.removeAt(0);
+    _undoVerse = verse;
     if (verse.isNew) {
       _handleNewVerse(verse, response);
     } else {
@@ -289,14 +290,18 @@ class PracticePageManager {
   }
 
   void _resetUi() {
+    final canUndo = _undoVerse != null;
     if (_verses.isEmpty) {
       uiNotifier.value = PracticeState.finished;
+      appBarNotifier.update(isPracticing: false, canUndo: canUndo);
     } else {
+      uiNotifier.value = PracticeState.practicing;
       isShowingAnswerNotifier.value = false;
       answerNotifier.value = const TextSpan();
       promptNotifier.value = _verses.first.prompt;
       countNotifier.value = _verses.length.toString();
-      wordsHintHelper.init(
+      appBarNotifier.update(isPracticing: true, canUndo: canUndo);
+      _wordsHintHelper?.init(
         text: _verses.first.text,
         textColor: _textThemeColor,
         onTap: showNextWordHint,
@@ -315,6 +320,26 @@ class PracticePageManager {
     _verses[0] = verse;
     _resetUi();
   }
+
+  void undoResponse() {
+    final verse = _undoVerse;
+    if (verse == null) return;
+    _verses.insert(0, verse);
+    dataRepository.updateVerse(_collectionId, verse);
+    _undoVerse = null;
+    _resetUi();
+  }
 }
 
 enum Difficulty { hard, ok, good, easy }
+
+class AppBarNotifier extends ValueNotifier<(bool, bool)> {
+  AppBarNotifier() : super((false, false));
+
+  bool get isPracticing => value.$1;
+  bool get canUndo => value.$2;
+
+  void update({required bool isPracticing, required bool canUndo}) {
+    value = (isPracticing, canUndo);
+  }
+}
