@@ -2,7 +2,8 @@
 
 - Backup and restore with .json file formatting.
 - Tap letter hint word again to hide word.
-- Move word to other collection
+- Move word to other collection.
+- Fix bug where editing resets progress.
 
 ## 1.3.0 - July 26, 2023
 

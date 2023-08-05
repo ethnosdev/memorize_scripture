@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/painting.dart';
 
 const transparent = Color(0x00000000);
@@ -6,13 +7,19 @@ class WordsHintHelper {
   Color _textColor = const Color(0xff000000);
   String _text = '';
   void Function()? onFinished;
+  void Function()? _onTap;
 
   int _numberHintWordsShowing = 0;
 
-  void init({required String text, required Color textColor}) {
+  void init({
+    required String text,
+    required Color textColor,
+    required void Function() onTap,
+  }) {
     _numberHintWordsShowing = 0;
     _text = text;
     _textColor = textColor;
+    _onTap = onTap;
   }
 
   TextSpan nextWord() {
@@ -31,7 +38,8 @@ class WordsHintHelper {
     final before = verseText.substring(0, index);
     final after = (index == null) ? '' : verseText.substring(index);
 
-    if (index == null) {
+    final finished = index == null;
+    if (finished) {
       onFinished?.call();
     }
 
@@ -39,10 +47,14 @@ class WordsHintHelper {
       TextSpan(
         text: before,
         style: TextStyle(color: _textColor),
+        recognizer:
+            (!finished) ? (TapGestureRecognizer()..onTap = _onTap) : null,
       ),
       TextSpan(
         text: after,
         style: const TextStyle(color: transparent),
+        recognizer:
+            (!finished) ? (TapGestureRecognizer()..onTap = _onTap) : null,
       ),
     ]);
 

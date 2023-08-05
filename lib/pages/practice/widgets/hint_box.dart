@@ -20,7 +20,7 @@ class HintBox extends StatelessWidget {
         );
         final wordsButton = OutlinedButton(
           onPressed: (isShowingAnswer) ? null : manager.showNextWordHint,
-          child: const Text('Word'),
+          child: const Text('Words'),
         );
         final outlineColor = (isShowingAnswer)
             ? Theme.of(context).disabledColor

@@ -90,6 +90,7 @@ class PracticePageManager {
       ..init(
         text: _verses.first.text,
         textColor: _textThemeColor,
+        onTap: showNextWordHint,
       );
   }
 
@@ -298,6 +299,7 @@ class PracticePageManager {
       wordsHintHelper.init(
         text: _verses.first.text,
         textColor: _textThemeColor,
+        onTap: showNextWordHint,
       );
     }
   }
