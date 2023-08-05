@@ -364,63 +364,77 @@ class LocalStorage implements DataRepository {
   }
 
   @override
-  Future<(int, int)> restoreVerses(List<Map<String, Object?>> verses) async {
+  Future<(int added, int updated, int errorCount)> restoreVerses(
+      List<Map<String, Object?>> verses) async {
     int addedCount = 0;
     int updatedCount = 0;
+    int errorCount = 0;
 
     for (final verse in verses) {
-      final id = verse[VerseEntry.id] as String;
-      final collectionId = verse[VerseEntry.collectionId] as String;
-      final prompt = verse[VerseEntry.prompt] as String;
-      final verseText = verse[VerseEntry.verseText] as String;
-      final modified = verse[VerseEntry.modifiedDate] as int;
-      final dueDate = verse[VerseEntry.nextDueDate] as int?;
-      final interval = verse[VerseEntry.interval] as int;
-
-      // check if verse exists
-      final existing = await _database.query(
-        VerseEntry.verseTable,
-        columns: [VerseEntry.modifiedDate],
-        where: '${VerseEntry.id} = ?',
-        whereArgs: [id],
-      );
-
-      if (existing.isNotEmpty) {
-        final date = existing.first[VerseEntry.modifiedDate] as int;
-        // if the existing verse is newer, don't update it.
-        if (date >= modified) continue;
-        // otherwise update it.
-        await _database.update(
-          VerseEntry.verseTable,
-          {
-            VerseEntry.collectionId: collectionId,
-            VerseEntry.prompt: prompt,
-            VerseEntry.verseText: verseText,
-            VerseEntry.modifiedDate: modified,
-            VerseEntry.nextDueDate: dueDate,
-            VerseEntry.interval: interval,
-          },
-          where: '${VerseEntry.id} = ?',
-          whereArgs: [id],
-        );
-        updatedCount++;
-      } else {
-        // if the verse doesn't exist then insert it.
-        await _database.insert(
-          VerseEntry.verseTable,
-          {
-            VerseEntry.id: id,
-            VerseEntry.collectionId: collectionId,
-            VerseEntry.prompt: prompt,
-            VerseEntry.verseText: verseText,
-            VerseEntry.modifiedDate: modified,
-            VerseEntry.nextDueDate: dueDate,
-            VerseEntry.interval: interval,
-          },
-        );
-        addedCount++;
+      try {
+        final id = verse[VerseEntry.id] as String;
+        // check if verse exists
+        final currentModified = await _existingVerseModifiedDate(id);
+        if (currentModified == null) {
+          // if it doesn't exist then insert it
+          await _insertVerse(verse);
+          addedCount++;
+        } else {
+          // if it exists but is newer or same then ignore backup
+          final backupModified = verse[VerseEntry.modifiedDate] as int;
+          if (currentModified >= backupModified) continue;
+          // otherwise update it
+          await _updateVerse(verse);
+          updatedCount++;
+        }
+      } catch (error) {
+        // ignore formatting errors with single verses
+        errorCount++;
       }
     }
-    return (addedCount, updatedCount);
+    return (addedCount, updatedCount, errorCount);
+  }
+
+  Future<int?> _existingVerseModifiedDate(String verseId) async {
+    final result = await _database.query(
+      VerseEntry.verseTable,
+      columns: [VerseEntry.modifiedDate],
+      where: '${VerseEntry.id} = ?',
+      whereArgs: [verseId],
+    );
+    if (result.isEmpty) return null;
+    return result.first[VerseEntry.modifiedDate] as int;
+  }
+
+  Future<void> _updateVerse(Map<String, Object?> verse) async {
+    final id = verse[VerseEntry.id] as String;
+    await _database.update(
+      VerseEntry.verseTable,
+      {
+        VerseEntry.collectionId: verse[VerseEntry.collectionId] as String,
+        VerseEntry.prompt: verse[VerseEntry.prompt] as String,
+        VerseEntry.verseText: verse[VerseEntry.verseText] as String,
+        VerseEntry.modifiedDate: verse[VerseEntry.modifiedDate] as int,
+        VerseEntry.nextDueDate: verse[VerseEntry.nextDueDate] as int?,
+        VerseEntry.interval: verse[VerseEntry.interval] as int,
+      },
+      where: '${VerseEntry.id} = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<void> _insertVerse(Map<String, Object?> verse) async {
+    await _database.insert(
+      VerseEntry.verseTable,
+      {
+        VerseEntry.id: verse[VerseEntry.id] as String,
+        VerseEntry.collectionId: verse[VerseEntry.collectionId] as String,
+        VerseEntry.prompt: verse[VerseEntry.prompt] as String,
+        VerseEntry.verseText: verse[VerseEntry.verseText] as String,
+        VerseEntry.modifiedDate: verse[VerseEntry.modifiedDate] as int,
+        VerseEntry.nextDueDate: verse[VerseEntry.nextDueDate] as int?,
+        VerseEntry.interval: verse[VerseEntry.interval] as int,
+      },
+    );
   }
 }

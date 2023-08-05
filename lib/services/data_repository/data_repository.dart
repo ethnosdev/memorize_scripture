@@ -75,5 +75,6 @@ abstract class DataRepository {
 
   /// Restores verses from a backup in JSON form.
   /// Returns the number of verses added and updated.
-  Future<(int, int)> restoreVerses(List<Map<String, Object?>> verses);
+  Future<(int added, int updated, int errorCount)> restoreVerses(
+      List<Map<String, Object?>> verses);
 }

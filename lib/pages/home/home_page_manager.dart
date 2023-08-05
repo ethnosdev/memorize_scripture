@@ -104,21 +104,58 @@ class HomePageManager {
           (json['collections'] as List).cast<Map<String, Object?>>();
       final verses = (json['verses'] as List).cast<Map<String, Object?>>();
       await dataRepository.restoreCollections(collections);
-      final (added, updated) = await dataRepository.restoreVerses(verses);
-      onResult.call(_resultString(added, updated));
+      final (added, updated, errorCount) =
+          await dataRepository.restoreVerses(verses);
+      onResult.call(_resultString(added, updated, errorCount));
     } on FormatException {
       onResult.call('The data in the file was in the wrong format.');
     }
     init();
   }
 
-  String _resultString(int added, int updated) {
-    if (added == 0) {
-      return '$updated verses updated';
+  String _resultString(int added, int updated, int errorCount) {
+    // 000
+    if (added == 0 && updated == 0 && errorCount == 0) {
+      return 'No verses were added or updated.';
     }
-    if (updated == 0) {
-      return '$added verses added';
+    // 001
+    if (added == 0 && updated == 0 && errorCount != 0) {
+      final verses = (errorCount == 1) ? 'verse' : 'verses';
+      return '$errorCount $verses had errors and couldn\'t be imported.';
     }
-    return '$added verses added and $updated verses updated.';
+    // 010
+    if (added == 0 && updated != 0 && errorCount == 0) {
+      return '$updated ${_versesWere(updated)} updated.';
+    }
+    // 011
+    if (added == 0 && updated != 0 && errorCount != 0) {
+      return '$updated ${_versesWere(updated)} updated, '
+          'but $errorCount ${_versesWere(errorCount)} not '
+          'added because of errors.';
+    }
+    // 100
+    if (added != 0 && updated == 0 && errorCount == 0) {
+      return '$added ${_versesWere(added)} added.';
+    }
+    // 101
+    if (added != 0 && updated == 0 && errorCount != 0) {
+      return '$added ${_versesWere(added)} added, '
+          'but $errorCount ${_versesWere(errorCount)} not '
+          'added because of errors.';
+    }
+    // 110
+    if (added != 0 && updated != 0 && errorCount == 0) {
+      return '$added verses were added, and $updated verses were updated.';
+    }
+
+    /// 111
+    return '$added ${_versesWere(added)} added, '
+        '$updated ${_versesWere(updated)} updated, '
+        'and $errorCount ${_versesWere(errorCount)} not added because of errors.';
+  }
+
+  String _versesWere(int count) {
+    if (count == 1) return 'verse was';
+    return 'verses were';
   }
 }
