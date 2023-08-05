@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
                 value: 2,
                 child: IconTextRow(
                   icon: Icons.download,
-                  text: 'Restore backup',
+                  text: 'Import',
                 ),
               ),
             ],
@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                 case 1:
                   manager.backupCollections();
                 case 2:
-                  manager.restoreBackup(
+                  manager.import(
                     (message) => _showMessage(context, message),
                   );
               }
@@ -204,19 +204,6 @@ class _BodyWidgetState extends State<BodyWidget> {
                 },
               ),
               ListTile(
-                title: const Text('Rename'),
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  final oldName = manager.collectionAt(index).name;
-                  final newName =
-                      await _showEditNameDialog(context, oldName: oldName);
-                  await manager.renameCollection(
-                    index: index,
-                    newName: newName,
-                  );
-                },
-              ),
-              ListTile(
                 title: const Text('Reset due dates'),
                 onTap: () {
                   Navigator.of(context).pop();
@@ -228,6 +215,26 @@ class _BodyWidgetState extends State<BodyWidget> {
                         'Due dates reset on $count verses.',
                       );
                     },
+                  );
+                },
+              ),
+              ListTile(
+                title: const Text('Share'),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  await manager.shareCollection(index: index);
+                },
+              ),
+              ListTile(
+                title: const Text('Rename'),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  final oldName = manager.collectionAt(index).name;
+                  final newName =
+                      await _showEditNameDialog(context, oldName: oldName);
+                  await manager.renameCollection(
+                    index: index,
+                    newName: newName,
                   );
                 },
               ),

@@ -8,6 +8,7 @@
 - Hide hint box when showing answer.
 - Reset due dates for entire collection.
 - Undo last practice response.
+- Share individual collections without progress data.
 
 ## 1.3.0 - July 26, 2023
 

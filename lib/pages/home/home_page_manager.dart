@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/data_repository/data_repository.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
@@ -67,9 +68,15 @@ class HomePageManager {
     return collectionNotifier.value[index];
   }
 
-  Future<void> backupCollections() async {
-    final collections = await dataRepository.dumpCollections();
-    final verses = await dataRepository.dumpVerses();
+  Future<void> shareCollection({required int index}) async {
+    final collection = collectionNotifier.value[index];
+    final name = collection.name.replaceAll(' ', '-');
+    await backupCollections(collectionId: collection.id, name: name);
+  }
+
+  Future<void> backupCollections({String? collectionId, String? name}) async {
+    final collections = await dataRepository.dumpCollections(collectionId);
+    var verses = await dataRepository.dumpVerses(collectionId);
 
     final backup = {
       'date': _dateToSecondsSinceEpoch(DateTime.now()),
@@ -82,10 +89,12 @@ class HomePageManager {
     final serialized = encoder.convert(backup);
     final uint8list = Uint8List.fromList(utf8.encode(serialized));
     final directory = await getTemporaryDirectory();
-    final timeString =
-        DateTime.now().toIso8601String().split('.').first.replaceAll(':', '-');
-    final fileName = 'ms-backup-$timeString.json';
-    final file = File('${directory.path}/$fileName');
+    final prefix = name ?? 'ms-backup';
+    final time = DateTime.now().toIso8601String();
+    final timeFormatted = time.split('.').first.replaceAll(':', '-');
+    final fileName = '$prefix-$timeFormatted.json';
+    final path = join(directory.path, fileName);
+    final file = File(path);
     await file.writeAsBytes(uint8list);
 
     Share.shareXFiles([XFile(file.path)]);
@@ -96,7 +105,7 @@ class HomePageManager {
     return date.millisecondsSinceEpoch ~/ 1000;
   }
 
-  void restoreBackup(void Function(String message) onResult) async {
+  void import(void Function(String message) onResult) async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['json'],

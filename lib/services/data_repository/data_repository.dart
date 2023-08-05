@@ -63,11 +63,14 @@ abstract class DataRepository {
 
   /// Return all of the database rows for the collections table.
   /// This is useful for backup.
-  Future<List<Map<String, Object?>>> dumpCollections();
+  /// If collectionId is provided then only return one row.
+  Future<List<Map<String, Object?>>> dumpCollections([String? collectionId]);
 
   /// Return all of the database rows for the verses table.
   /// This is useful for backup.
-  Future<List<Map<String, Object?>>> dumpVerses();
+  /// If collectionId is provided then only return verse rows for this
+  /// collection.
+  Future<List<Map<String, Object?>>> dumpVerses([String? collectionId]);
 
   /// Restores collections from a backup in JSON form.
   /// Returns the number of collections added.
