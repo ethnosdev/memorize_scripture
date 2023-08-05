@@ -25,7 +25,7 @@ class SharedPreferencesStorage extends UserSettings {
   }
 
   @override
-  bool get isTwoButtonMode => prefs.getBool(_twoButtonModeKey) ?? true;
+  bool get isTwoButtonMode => prefs.getBool(_twoButtonModeKey) ?? false;
 
   @override
   Future<void> setTwoButtonMode(bool value) async {

@@ -9,6 +9,7 @@
 - Reset due dates for entire collection.
 - Undo last practice response.
 - Share individual collections without progress data.
+- Make 4-button mode the default rather than 2-button mode.
 
 ## 1.3.0 - July 26, 2023
 
