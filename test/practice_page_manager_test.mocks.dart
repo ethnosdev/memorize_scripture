@@ -204,6 +204,63 @@ class MockDataRepository extends _i1.Mock implements _i2.DataRepository {
         returnValue: _i3.Future<int>.value(0),
         returnValueForMissingStub: _i3.Future<int>.value(0),
       ) as _i3.Future<int>);
+  @override
+  _i3.Future<List<Map<String, Object?>>> dumpCollections(
+          [String? collectionId]) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #dumpCollections,
+          [collectionId],
+        ),
+        returnValue: _i3.Future<List<Map<String, Object?>>>.value(
+            <Map<String, Object?>>[]),
+        returnValueForMissingStub: _i3.Future<List<Map<String, Object?>>>.value(
+            <Map<String, Object?>>[]),
+      ) as _i3.Future<List<Map<String, Object?>>>);
+  @override
+  _i3.Future<List<Map<String, Object?>>> dumpVerses([String? collectionId]) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #dumpVerses,
+          [collectionId],
+        ),
+        returnValue: _i3.Future<List<Map<String, Object?>>>.value(
+            <Map<String, Object?>>[]),
+        returnValueForMissingStub: _i3.Future<List<Map<String, Object?>>>.value(
+            <Map<String, Object?>>[]),
+      ) as _i3.Future<List<Map<String, Object?>>>);
+  @override
+  _i3.Future<int> restoreCollections(List<Map<String, Object?>>? collections) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #restoreCollections,
+          [collections],
+        ),
+        returnValue: _i3.Future<int>.value(0),
+        returnValueForMissingStub: _i3.Future<int>.value(0),
+      ) as _i3.Future<int>);
+  @override
+  _i3.Future<(int, int, int)> restoreVerses(
+          List<Map<String, Object?>>? verses) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #restoreVerses,
+          [verses],
+        ),
+        returnValue: _i3.Future<(int, int, int)>.value((0, 0, 0)),
+        returnValueForMissingStub: _i3.Future<(int, int, int)>.value((0, 0, 0)),
+      ) as _i3.Future<(int, int, int)>);
+  @override
+  _i3.Future<int> resetDueDates({required String? collectionId}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #resetDueDates,
+          [],
+          {#collectionId: collectionId},
+        ),
+        returnValue: _i3.Future<int>.value(0),
+        returnValueForMissingStub: _i3.Future<int>.value(0),
+      ) as _i3.Future<int>);
 }
 
 /// A class which mocks [UserSettings].
