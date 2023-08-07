@@ -1,8 +1,8 @@
-## 1.4.0
+## 1.4.0 - August 7, 2023
 
 - Backup and restore with .json file formatting.
 - Tap letter hint word again to hide word.
-- Move word to other collection.
+- Move verse to other collection.
 - Fix bug where editing resets progress.
 - Tap word hints area to show next word.
 - Hide hint box when showing answer.
@@ -11,6 +11,7 @@
 - Share individual collections without progress data.
 - Make 4-button mode the default rather than 2-button mode.
 - Button to practice all verses in collection regardless of due date (casual practice mode).
+- Make display name shorter on iOS.
 
 ## 1.3.0 - July 26, 2023
 
