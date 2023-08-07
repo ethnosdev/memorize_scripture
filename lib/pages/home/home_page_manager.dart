@@ -106,10 +106,12 @@ class HomePageManager {
   }
 
   void import(void Function(String message) onResult) async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['json'],
-    );
+    FilePickerResult? result;
+    try {
+      result = await FilePicker.platform.pickFiles();
+    } on Exception catch (e) {
+      onResult.call('FilePicker error: ${e.toString()}');
+    }
     if (result == null) return;
     final path = result.files.single.path;
     if (path == null) {
