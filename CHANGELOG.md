@@ -10,6 +10,7 @@
 - Undo last practice response.
 - Share individual collections without progress data.
 - Make 4-button mode the default rather than 2-button mode.
+- Button to practice all verses in collection regardless of due date (casual practice mode).
 
 ## 1.3.0 - July 26, 2023
 

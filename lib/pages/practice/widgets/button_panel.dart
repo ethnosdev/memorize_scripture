@@ -41,36 +41,72 @@ class ButtonPanel extends StatelessWidget {
         width: double.infinity,
         margin: const EdgeInsets.all(8),
         child: Row(
-          children: [
-            ResponseButton(
-              title: 'Hard',
-              subtitle: manager.hardTitle,
-              onPressed: () => manager.onResponse(Difficulty.hard),
-            ),
-            if (!manager.isTwoButtonMode) const SizedBox(width: 5),
-            if (!manager.isTwoButtonMode)
-              ResponseButton(
-                title: 'OK',
-                subtitle: manager.okTitle,
-                onPressed: () => manager.onResponse(Difficulty.ok),
-              ),
-            const SizedBox(width: 5),
-            ResponseButton(
-              title: 'Good',
-              subtitle: manager.goodTitle,
-              onPressed: () => manager.onResponse(Difficulty.good),
-            ),
-            if (!manager.isTwoButtonMode) const SizedBox(width: 5),
-            if (!manager.isTwoButtonMode)
-              ResponseButton(
-                title: 'Easy',
-                subtitle: manager.easyTitle,
-                onPressed: () => manager.onResponse(Difficulty.easy),
-              ),
-          ],
+          children: switch (manager.buttonMode) {
+            ResponseButtonMode.casualPractice => _casualPracticeButtons(),
+            ResponseButtonMode.two => _twoButtons(),
+            ResponseButtonMode.four => _fourButtons(),
+          },
         ),
       ),
     );
+  }
+
+  List<Widget> _casualPracticeButtons() {
+    return [
+      ResponseButton(
+        title: 'Again',
+        onPressed: () => manager.onResponse(Difficulty.hard),
+      ),
+      const SizedBox(width: 5),
+      ResponseButton(
+        title: 'Good',
+        onPressed: () => manager.onResponse(Difficulty.good),
+      ),
+    ];
+  }
+
+  List<Widget> _twoButtons() {
+    return [
+      ResponseButton(
+        title: 'Hard',
+        subtitle: manager.hardTitle,
+        onPressed: () => manager.onResponse(Difficulty.hard),
+      ),
+      const SizedBox(width: 5),
+      ResponseButton(
+        title: 'Good',
+        subtitle: manager.goodTitle,
+        onPressed: () => manager.onResponse(Difficulty.good),
+      ),
+    ];
+  }
+
+  List<Widget> _fourButtons() {
+    return [
+      ResponseButton(
+        title: 'Hard',
+        subtitle: manager.hardTitle,
+        onPressed: () => manager.onResponse(Difficulty.hard),
+      ),
+      const SizedBox(width: 5),
+      ResponseButton(
+        title: 'OK',
+        subtitle: manager.okTitle,
+        onPressed: () => manager.onResponse(Difficulty.ok),
+      ),
+      const SizedBox(width: 5),
+      ResponseButton(
+        title: 'Good',
+        subtitle: manager.goodTitle,
+        onPressed: () => manager.onResponse(Difficulty.good),
+      ),
+      const SizedBox(width: 5),
+      ResponseButton(
+        title: 'Easy',
+        subtitle: manager.easyTitle,
+        onPressed: () => manager.onResponse(Difficulty.easy),
+      ),
+    ];
   }
 }
 
@@ -78,12 +114,12 @@ class ResponseButton extends StatelessWidget {
   const ResponseButton({
     super.key,
     required this.title,
-    required this.subtitle,
+    this.subtitle,
     required this.onPressed,
   });
 
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final void Function() onPressed;
 
   @override
@@ -110,12 +146,13 @@ class ResponseButton extends StatelessWidget {
                       style: DefaultTextStyle.of(context).style.copyWith(
                           color: Theme.of(context).colorScheme.primary),
                     ),
-                    Text(
-                      subtitle,
-                      style: DefaultTextStyle.of(context).style.copyWith(
-                          color: Theme.of(context).colorScheme.secondary),
-                      textScaleFactor: 0.9,
-                    ),
+                    if (subtitle != null)
+                      Text(
+                        subtitle!,
+                        style: DefaultTextStyle.of(context).style.copyWith(
+                            color: Theme.of(context).colorScheme.secondary),
+                        textScaleFactor: 0.9,
+                      ),
                   ],
                 ),
               ),

@@ -6,7 +6,7 @@ const transparent = Color(0x00000000);
 class WordsHintHelper {
   Color _textColor = const Color(0xff000000);
   String _text = '';
-  void Function()? onFinished;
+  void Function()? _onFinished;
   void Function()? _onTap;
 
   int _numberHintWordsShowing = 0;
@@ -15,11 +15,13 @@ class WordsHintHelper {
     required String text,
     required Color textColor,
     required void Function() onTap,
+    required void Function() onFinished,
   }) {
     _numberHintWordsShowing = 0;
     _text = text;
     _textColor = textColor;
     _onTap = onTap;
+    _onFinished = onFinished;
   }
 
   TextSpan nextWord() {
@@ -40,7 +42,7 @@ class WordsHintHelper {
 
     final finished = index == null;
     if (finished) {
-      onFinished?.call();
+      _onFinished?.call();
     }
 
     final textSpan = TextSpan(children: [

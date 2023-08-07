@@ -50,11 +50,11 @@ class _PracticePageState extends State<PracticePage> {
             case PracticeState.emptyCollection:
               return const EmptyCollection();
             case PracticeState.noVersesDue:
-              return const NoVersesDue();
+              return NoVersesDue(manager: manager);
             case PracticeState.practicing:
               return PromptAnswerLayout(manager: manager);
             case PracticeState.finished:
-              return const Finished();
+              return Finished(manager: manager);
           }
         },
       ),
@@ -78,12 +78,25 @@ class EmptyCollection extends StatelessWidget {
 class NoVersesDue extends StatelessWidget {
   const NoVersesDue({
     super.key,
+    required this.manager,
   });
+
+  final PracticePageManager manager;
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('There are no more verses due today.'),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('There are no more verses due today.'),
+          const SizedBox(height: 100),
+          OutlinedButton(
+            onPressed: manager.practiceAllVerses,
+            child: const Text('Practice all verses'),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -91,12 +104,25 @@ class NoVersesDue extends StatelessWidget {
 class Finished extends StatelessWidget {
   const Finished({
     super.key,
+    required this.manager,
   });
+
+  final PracticePageManager manager;
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Congratulations! You\'re finished for today!'),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('Congratulations! You\'re finished for today!'),
+          const SizedBox(height: 100),
+          OutlinedButton(
+            onPressed: manager.practiceAllVerses,
+            child: const Text('Practice all verses'),
+          ),
+        ],
+      ),
     );
   }
 }

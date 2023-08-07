@@ -23,6 +23,12 @@ enum PracticeState {
   finished,
 }
 
+enum ResponseButtonMode {
+  two,
+  four,
+  casualPractice,
+}
+
 class PracticePageManager {
   PracticePageManager({
     DataRepository? dataRepository,
@@ -33,7 +39,7 @@ class PracticePageManager {
   }
   late final DataRepository dataRepository;
   late final UserSettings userSettings;
-  WordsHintHelper? _wordsHintHelper;
+  final _wordsHintHelper = WordsHintHelper();
 
   final uiNotifier = ValueNotifier<PracticeState>(PracticeState.loading);
   final countNotifier = ValueNotifier<String>('');
@@ -44,6 +50,10 @@ class PracticePageManager {
 
   late List<Verse> _verses;
   Verse? _undoVerse;
+
+  // Casual practice is when a user practices all of the verses in a collection
+  // but the responses are not saved.
+  var _isCasualPracticeMode = false;
 
   String? get currentVerseId {
     if (_verses.isEmpty) return null;
@@ -59,7 +69,12 @@ class PracticePageManager {
   String goodTitle = '';
   String easyTitle = '';
 
-  bool get isTwoButtonMode => userSettings.isTwoButtonMode;
+  //bool get isTwoButtonMode => userSettings.isTwoButtonMode;
+  ResponseButtonMode get buttonMode {
+    if (_isCasualPracticeMode) return ResponseButtonMode.casualPractice;
+    if (userSettings.isTwoButtonMode) return ResponseButtonMode.two;
+    return ResponseButtonMode.four;
+  }
 
   static const hardNewInsertionIndex = 2;
 
@@ -70,6 +85,7 @@ class PracticePageManager {
   }) async {
     uiNotifier.value = PracticeState.loading;
     _collectionId = collectionId;
+    _isCasualPracticeMode = false;
     final newVerseLimit = userSettings.getDailyLimit;
     _verses = await dataRepository.fetchTodaysVerses(
       collectionId: collectionId,
@@ -84,17 +100,29 @@ class PracticePageManager {
       }
       return;
     }
-    promptNotifier.value = _verses.first.prompt;
-    countNotifier.value = _verses.length.toString();
-    uiNotifier.value = PracticeState.practicing;
-    appBarNotifier.update(isPracticing: true, canUndo: false);
-    _wordsHintHelper = WordsHintHelper()
-      ..onFinished = _showResponseButtons
-      ..init(
+
+    _resetUi();
+  }
+
+  void _resetUi() {
+    final canUndo = _undoVerse != null;
+    if (_verses.isEmpty) {
+      uiNotifier.value = PracticeState.finished;
+      appBarNotifier.update(isPracticing: false, canUndo: canUndo);
+    } else {
+      uiNotifier.value = PracticeState.practicing;
+      isShowingAnswerNotifier.value = false;
+      answerNotifier.value = const TextSpan();
+      promptNotifier.value = _verses.first.prompt;
+      countNotifier.value = _verses.length.toString();
+      appBarNotifier.update(isPracticing: true, canUndo: canUndo);
+      _wordsHintHelper.init(
         text: _verses.first.text,
         textColor: _textThemeColor,
         onTap: showNextWordHint,
+        onFinished: _showResponseButtons,
       );
+    }
   }
 
   void show() {
@@ -106,7 +134,9 @@ class PracticePageManager {
   }
 
   void _showResponseButtons() {
-    _setResponseButtonTimeSubtitles();
+    if (!_isCasualPracticeMode) {
+      _setResponseButtonTimeSubtitles();
+    }
     isShowingAnswerNotifier.value = true;
   }
 
@@ -125,6 +155,7 @@ class PracticePageManager {
     }
 
     // good
+    final isTwoButtonMode = buttonMode == ResponseButtonMode.two;
     if (isTwoButtonMode && verse.isNew && _verses.length > 1) {
       final minutes = _verses.length - 1;
       goodTitle = _formatDuration(Duration(minutes: minutes));
@@ -153,8 +184,7 @@ class PracticePageManager {
   }
 
   void showNextWordHint() {
-    if (_wordsHintHelper == null) return;
-    answerNotifier.value = _wordsHintHelper!.nextWord();
+    answerNotifier.value = _wordsHintHelper.nextWord();
   }
 
   void showFirstLettersHint() {
@@ -176,14 +206,23 @@ class PracticePageManager {
   void _updateVerses(Difficulty response) {
     final verse = _verses.removeAt(0);
     _undoVerse = verse;
-    if (verse.isNew) {
+    if (_isCasualPracticeMode) {
+      _handleCasualPracticeVerse(verse, response);
+    } else if (verse.isNew) {
       _handleNewVerse(verse, response);
     } else {
       _handleReviewVerse(verse, response);
     }
   }
 
+  void _handleCasualPracticeVerse(Verse verse, Difficulty response) {
+    if (response == Difficulty.hard) {
+      _verses.add(verse);
+    }
+  }
+
   void _handleNewVerse(Verse verse, Difficulty response) {
+    final isTwoButtonMode = buttonMode == ResponseButtonMode.two;
     if (isTwoButtonMode) {
       switch (response) {
         case Difficulty.hard:
@@ -231,6 +270,7 @@ class PracticePageManager {
   }
 
   void _handleReviewVerse(Verse verse, Difficulty response) {
+    final isTwoButtonMode = buttonMode == ResponseButtonMode.two;
     if (isTwoButtonMode) {
       final updatedVerse = _adjustVerseStats(verse, response);
       dataRepository.updateVerse(_collectionId, updatedVerse);
@@ -289,26 +329,6 @@ class PracticePageManager {
     return days;
   }
 
-  void _resetUi() {
-    final canUndo = _undoVerse != null;
-    if (_verses.isEmpty) {
-      uiNotifier.value = PracticeState.finished;
-      appBarNotifier.update(isPracticing: false, canUndo: canUndo);
-    } else {
-      uiNotifier.value = PracticeState.practicing;
-      isShowingAnswerNotifier.value = false;
-      answerNotifier.value = const TextSpan();
-      promptNotifier.value = _verses.first.prompt;
-      countNotifier.value = _verses.length.toString();
-      appBarNotifier.update(isPracticing: true, canUndo: canUndo);
-      _wordsHintHelper?.init(
-        text: _verses.first.text,
-        textColor: _textThemeColor,
-        onTap: showNextWordHint,
-      );
-    }
-  }
-
   void onFinishedAddingEditing(String? verseId) async {
     final isAdding = verseId == null;
     if (isAdding) {
@@ -327,6 +347,12 @@ class PracticePageManager {
     _verses.insert(0, verse);
     dataRepository.updateVerse(_collectionId, verse);
     _undoVerse = null;
+    _resetUi();
+  }
+
+  Future<void> practiceAllVerses() async {
+    _verses = await dataRepository.fetchAllVerses(_collectionId);
+    _isCasualPracticeMode = true;
     _resetUi();
   }
 }

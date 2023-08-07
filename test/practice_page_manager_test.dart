@@ -296,7 +296,7 @@ void main() {
       manager.show();
       expect(manager.promptNotifier.value, 'p0');
       expect(manager.okTitle, '~3 min');
-      expect(manager.isTwoButtonMode, false);
+      expect(manager.buttonMode, ResponseButtonMode.four);
 
       manager.onResponse(Difficulty.ok);
       expect(manager.countNotifier.value, '4');
@@ -337,7 +337,7 @@ void main() {
       expect(manager.promptNotifier.value, 'p0');
       expect(manager.okTitle, '1 day');
       expect(manager.goodTitle, '4 days');
-      expect(manager.isTwoButtonMode, false);
+      expect(manager.buttonMode, ResponseButtonMode.four);
 
       manager.onResponse(Difficulty.ok);
       final verse = verify(
@@ -368,7 +368,7 @@ void main() {
       expect(manager.promptNotifier.value, 'p0');
       expect(manager.okTitle, '~1 min');
       expect(manager.goodTitle, '1 day');
-      expect(manager.isTwoButtonMode, false);
+      expect(manager.buttonMode, ResponseButtonMode.four);
 
       manager.onResponse(Difficulty.ok);
       verifyNever(mockDataRepository.updateVerse(any, any));
@@ -775,7 +775,7 @@ void main() {
       manager.show();
       expect(manager.promptNotifier.value, 'p0');
       expect(manager.goodTitle, '~3 min');
-      expect(manager.isTwoButtonMode, true);
+      expect(manager.buttonMode, ResponseButtonMode.two);
 
       manager.onResponse(Difficulty.good);
       expect(manager.countNotifier.value, '4');
@@ -807,7 +807,7 @@ void main() {
       manager.show();
       expect(manager.promptNotifier.value, 'p0');
       expect(manager.goodTitle, '1 day');
-      expect(manager.isTwoButtonMode, true);
+      expect(manager.buttonMode, ResponseButtonMode.two);
 
       manager.onResponse(Difficulty.good);
       final verse = verify(
