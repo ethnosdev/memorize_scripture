@@ -24,15 +24,14 @@ Have a look at the various parts of the verse practice screen:
 The numbers correspond to the following parts:
 
 1. **Remaining verses today**: This is the number of verses that are due to practice today. You entered three new verses earlier, so that's where this number comes from. Today they're all new, but in the future, you'll also have old verses to review.
-2. **Edit verse**: Press this button to edit the prompt and verse text.
-3. **Add new verse**: This is the same as what you did previously.
-4. **Prompt**: This is your queue to help you remember what you need to quote.
-5. **Hints**: These give you a little help if you need it. More on them shortly.
-6. **Show verse text**: Press this button to check if you quoted the verse right.
+2. **Menu**: Press this button to edit the current verse or add a new verse.
+3. **Prompt**: This is your queue to help you remember what you need to quote.
+4. **Hints**: These give you a little help if you need it. More on them shortly.
+5. **Show verse text**: Press this button to check if you quoted the verse right.
 
 
 :::note
-If you entered new verses and they aren't all showing up, check the **Max new verses per day** value in settings. You may want to increase it to something like 10.
+If you entered new verses and they aren't all showing up, check the **Max new verses per day** value in settings. The default is 10.
 :::
 
 ## Showing hints
@@ -62,9 +61,13 @@ You can see how they correspond wih the verse text you entered earlier for Hebre
 
 Knowing the first letters might be just enough information to help you with a tricky verse.
 
-### Word
+:::tip
+Tap a hidden word to reveal the whole thing.
+:::
 
-Now press the **Word** hint button. You'll see that it shows you the first word of your verse text, which in this case is "Hebrews". Continue to press **Word** and you'll incrementally reveal more words in the verse:
+### Words
+
+Now press the **Word** hint button. You'll see that it shows you the first word of your verse text, which in this case is "Hebrews". Continue to press **Word** and you'll incrementally reveal more words in the verse. You can also tap the verse area itself to reveal the next word:
 
 <div class="bordered-image">
 
@@ -73,7 +76,7 @@ Now press the **Word** hint button. You'll see that it shows you the first word 
 
 This allows you to give yourself just the amount of help that you need.
 
-If you press the Word hint button enough, it'll reveal the entire verse text, which will trigger the response buttons being shown at the bottom. That's fine, but for the sake of this tutorial, let's cancel the hints so that you can see how to show the verse text the normal way. To do that, go back out to the home screen by pressing the **<** back button. Then choose the **Hebrews 11** collection again.
+If you press the Word hint button enough, it'll reveal the entire verse text, which will hide the hint box and trigger the response buttons being shown at the bottom. That's fine, but for the sake of this tutorial, let's cancel the hints so that you can see how to show the verse text the normal way. To do that, go back out to the home screen by pressing the **<** back button. Then choose the **Hebrews 11** collection again.
 
 ## Showing the verse text
 
@@ -97,7 +100,7 @@ In the next section you'll learn what the response buttons mean.
 
 Memorize Scripture uses a spaced repetition strategy for reviewing verses. That means you'll practice the difficult verses every day while the easy verses you'll practice less frequently.
 
-You determine the verse difficulty yourself by using the response buttons. There are two of these buttons by default: Hard and Good.
+You determine the verse difficulty yourself by using the response buttons. There are four of these buttons by default: Hard, OK, Good, and Easy.
 
 <div class="bordered-image">
 
@@ -106,34 +109,34 @@ You determine the verse difficulty yourself by using the response buttons. There
 
 These are the meanings:
 
-- **Hard**: Press this button if you can't remember the verse or if you make a mistake while quoting it. For old verses, this will reset the due date so that you'll begin reviewing the verse daily again. For new verses, it schedules the verse so that you'll practice it again right away.
-- **Good**: Press this button if you quoted the verse correctly. For new verses, you still need to review it one more time today, so the button gives an approximate time in minutes until the next review. For old verses, the button will say "1 day" or "2 days", etc. Every time you review and press Good, the number of days for that verse will increase by one.
+- **Hard**: Press this button if you can't remember the verse or if you make a mistake while quoting it. The app will give it to you again in a little while.
+- **OK**: Press this button if you got the verse right, but it was a bit of a struggle. For new verses, you still need to review it one more time today, so the button gives an approximate time in minutes until the next review. Even for old verses, though, pressing OK will never schedule the next review more than 1 day away.
+- **Good**: Press this button if you quoted the verse correctly. Every time you review and press Good, the number of days before the next review will increase by one.
+- **Easy**: Press this button if you could say the verse in your sleep. This button will always schedule the next review for double the number of days of whatever Good is.
 
 :::note
-**Power users**: Do you want a little more control over when you'll practice the verse next? Go to **Settings** in the app menu and turn off **Two-button response** mode. This will give you four choices for every verse:
-
-<div class="bordered-image">
-
-![response buttons](img/practice-10.png)
-</div>
-
-No matter how high the other buttons get, the **OK** button is guaranteed to never be more than 1 day, so you can always practice again tomorrow if you like. This is equivalent to pressing Hard and then Good in the two-button mode. The **Easy** button is double the number of days as Good. Choose this if you can quote the verse in your sleep.
-:::
-
-Go through all three verses, pressing **Good** for each one. The next time you come to Hebrews 11:01, the Good response button will look a little different:
+**Simple button layout**: Are four buttons too much for you to think about? Do you want the app to worry about when to schedule the next review? Try the two-button layout. Go to **Settings** in the app menu and turn on **Two-button response** mode. This will give you only two choices for every verse:
 
 <div class="bordered-image">
 
 ![response buttons](img/practice-8.png)
 </div>
 
-Now the Good button says "1 day". If you press Good again, you're finished practicing it, and you won't see it again until tomorrow.
+Pressing Hard will give you the verse again today. It will also reset any previous progress so you'll get the verse again tomorrow, too. Pressing Good will make use of the app's spaced repetition algorithm to gradually increase the length of time between reviews.
+:::
 
-Press **Good** again for each of the three verses. You'll see the remaining verse number in the top left decrease until there are no more verses left.
+Go through all three verses, pressing **Good** for each one. You'll see the remaining verse number in the top left decrease until there are no more verses left.
+
+You'll see a congratulatory message when you're finished:
 
 <div class="bordered-image">
 
 ![response buttons](img/practice-9.png)
 </div>
+
+There are also two more buttons you haven't seen before:
+
+- **Undo**: This button is the curved arrow in the top right (to the left of the Add button). Choose Undo if you accidentally pressed the wrong response button and the verse disappeared.
+- **Practice all verses**: This is for casual practice. It'll give you all of the verses in the collection regardless of the due dates. The response buttons won't affect the due dates either.
 
 That's how practicing works. In the next section, you'll learn how to do things like rename collections and delete verses.

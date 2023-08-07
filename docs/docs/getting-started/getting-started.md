@@ -6,8 +6,8 @@ sidebar_position: 2
 
 You'll want to put the verses you memorize into collections. There are two different types of collections you can make:
 
-- **Key verse collection**: These are an assortment of verses from various parts of the Bible. For example: John 3:16, Genesis 1:1, Romans 6:36.
-- **Passage collection**: These are consecutive verses that come from the same section in the Bible. For example, a whole chapter like Hebrews 11 or a passage like Philippians 2:1-10.
+- **Key verse collections**: These are an assortment of verses from various parts of the Bible. For example: John 3:16, Genesis 1:1, Romans 6:36.
+- **Passage collections**: These are consecutive verses that come from the same section in the Bible. For example, a whole chapter like Hebrews 11 or a passage like Philippians 2:1-10.
 
 The app itself doesn't differentiate these types, but it may help you to organize your own memory work in this way.
 
@@ -63,7 +63,7 @@ The collection names are displayed alphabetically. If you want to display them i
 
 Depending on whether you are memorizing an assortment of key verses or a long passage, there are at least two different strategies for entering verses in a collection.
 
-### In a key verse collection
+### Key verse collection
 
 Start by entering verses in the Key Verse collection you made earlier. Click the **Key Verses** collection item in the list. You'll see the following screen:
 
@@ -117,7 +117,7 @@ You can continue adding as many verses as you like. When you're finished, press 
 You can use sites like [YouVersion](https://www.bible.com/) or [BibleGateway](https://www.biblegateway.com/) to look up verses so that you can copy and paste them into the app. On the other hand, entering them in by hand is good for your memory, too.
 :::
 
-### In a passage collection
+### Passage collection
 
 If you're memorizing a long passage of scripture, only using the reference as the prompt can get confusing. A better prompt is to use the previous verse to remind you of the next one.
 

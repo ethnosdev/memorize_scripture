@@ -41,18 +41,18 @@ Rather than entering a lot of new verses at once and setting the max new verses 
 
 ## Two-button response
 
-The default is to show two response buttons on the practice screen:
+The default is to show four response buttons on the practice screen:
 
 <div class="bordered-image">
 
-![settings in menu](img/practice-7.png)
+![settings in menu](img/practice-1.png)
 </div>
 
-If you turn this setting off, you'll have four buttons:
+If you turn this setting on, you'll have two buttons:
 
 <div class="bordered-image">
 
-![settings in menu](img/practice-10.png)
+![settings in menu](img/practice-2.png)
 </div>
 
 ## Conclusion
