@@ -97,8 +97,17 @@ void main() {
 
       manager.showFirstLettersHint();
 
-      var text = manager.answerNotifier.value.text;
-      expect(text, 'o t t');
+      final text = manager.answerNotifier.value.toPlainText();
+      expect(text, 'one two three');
+      final span = manager.answerNotifier.value;
+      expect(span.children![0].toPlainText(), 'o');
+      expect(span.children![1].toPlainText(), 'ne');
+      expect(span.children![2].toPlainText(), ' ');
+      expect(span.children![3].toPlainText(), 't');
+      expect(span.children![4].toPlainText(), 'wo');
+      expect(span.children![5].toPlainText(), ' ');
+      expect(span.children![6].toPlainText(), 't');
+      expect(span.children![7].toPlainText(), 'hree');
     });
   });
 
@@ -873,6 +882,62 @@ void main() {
 
       expect(verse.interval.inDays, 4);
       expect(manager.countNotifier.value, '1');
+    });
+  });
+
+  group('casual practice mode:', () {
+    test('Hard button inserts verse last in list of 4', () async {
+      when(mockDataRepository.fetchAllVerses('whatever'))
+          .thenAnswer((_) async => [
+                Verse(
+                    id: '0',
+                    prompt: 'p0',
+                    text: 'a',
+                    nextDueDate: DateTime.now()),
+                Verse(id: '1', prompt: 'p1', text: 'a'),
+                Verse(id: '2', prompt: 'p2', text: 'a'),
+                Verse(id: '3', prompt: 'p3', text: 'a'),
+              ]);
+      await manager.init(collectionId: 'whatever');
+      await manager.practiceAllVerses();
+
+      // mark as hard, then loop through to check that it is last
+      manager.show();
+      manager.onResponse(Difficulty.hard);
+      manager.show();
+      manager.onResponse(Difficulty.hard);
+      manager.show();
+      manager.onResponse(Difficulty.hard);
+      manager.show();
+      manager.onResponse(Difficulty.hard);
+
+      expect(manager.promptNotifier.value, 'p0');
+      expect(manager.countNotifier.value, '4');
+    });
+
+    test('Good button removes verse from list', () async {
+      when(mockDataRepository.fetchAllVerses('whatever'))
+          .thenAnswer((_) async => [
+                Verse(
+                    id: '0',
+                    prompt: 'p0',
+                    text: 'a',
+                    nextDueDate: DateTime.now()),
+                Verse(id: '1', prompt: 'p1', text: 'a'),
+                Verse(id: '2', prompt: 'p2', text: 'a'),
+                Verse(id: '3', prompt: 'p3', text: 'a'),
+              ]);
+      await manager.init(collectionId: 'whatever');
+      await manager.practiceAllVerses();
+
+      // mark as hard, then loop through to check that it is last
+      manager.show();
+      manager.onResponse(Difficulty.good);
+      manager.show();
+      manager.onResponse(Difficulty.good);
+
+      expect(manager.promptNotifier.value, 'p2');
+      expect(manager.countNotifier.value, '2');
     });
   });
 }
