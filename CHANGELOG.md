@@ -1,3 +1,7 @@
+## 1.4.1 - August 9, 2023
+
+- Bug fix for iOS version. File picker permissions.
+
 ## 1.4.0 - August 7, 2023
 
 - Backup and restore with .json file formatting.
