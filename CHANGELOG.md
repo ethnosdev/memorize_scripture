@@ -1,3 +1,7 @@
+## 1.4.2 - August 10, 2023
+
+- Fix practice screen not updating after editing verse.
+
 ## 1.4.1 - August 9, 2023
 
 - Bug fix for iOS version. File picker permissions.
