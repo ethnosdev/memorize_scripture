@@ -79,7 +79,7 @@ class AddEditVersePageManager {
     required String text,
   }) async {
     final previous = await dataRepo.fetchVerse(verseId: verseId);
-    dataRepo.updateVerse(
+    await dataRepo.updateVerse(
       _collectionId,
       Verse(
         id: verseId,

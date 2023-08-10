@@ -133,12 +133,12 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
 
   Future<void> _saveVerse() async {
     if (isEditing) {
-      manager.updateVerse(
+      Navigator.of(context).pop();
+      await manager.updateVerse(
         verseId: widget.verseId!,
         prompt: promptController.text,
         text: verseTextController.text,
       );
-      Navigator.of(context).pop();
     } else {
       await manager.addVerse(
         prompt: promptController.text,
