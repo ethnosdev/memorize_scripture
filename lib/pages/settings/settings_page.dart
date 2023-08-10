@@ -24,6 +24,7 @@ class _SettingsPageState extends State<SettingsPage> {
           return SettingsList(
             sections: [
               SettingsSection(
+                title: const Text('Appearance'),
                 tiles: [
                   SettingsTile.switchTile(
                     activeSwitchColor: Theme.of(context).colorScheme.primary,
@@ -34,6 +35,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ],
               ),
               SettingsSection(
+                title: const Text('Practice'),
                 tiles: [
                   SettingsTile(
                     title: const Text('Max new verses per day'),
@@ -42,18 +44,46 @@ class _SettingsPageState extends State<SettingsPage> {
                       _showDailyLimitDialog();
                     },
                   ),
+                  SettingsTile.switchTile(
+                    activeSwitchColor: Theme.of(context).colorScheme.primary,
+                    title: const Text('Two-button mode'),
+                    // description: (manager.isTwoButtonMode)
+                    //     ? const Text('Hard, Good')
+                    //     : const Text('Hard, OK, Good, Easy'),
+                    initialValue: manager.isTwoButtonMode,
+                    onToggle: manager.setTwoButtonMode,
+                  ),
                 ],
               ),
+              // SettingsSection(
+              //   tiles: [
+              //     SettingsTile.switchTile(
+              //       activeSwitchColor: Theme.of(context).colorScheme.primary,
+              //       title: const Text('Two-button response'),
+              //       description: (manager.isTwoButtonMode)
+              //           ? const Text('Hard, Good')
+              //           : const Text('Hard, OK, Good, Easy'),
+              //       initialValue: manager.isTwoButtonMode,
+              //       onToggle: manager.setTwoButtonMode,
+              //     ),
+              //   ],
+              // ),
               SettingsSection(
+                title: const Text('Notifications'),
                 tiles: [
                   SettingsTile.switchTile(
                     activeSwitchColor: Theme.of(context).colorScheme.primary,
-                    title: const Text('Two-button response'),
-                    description: (manager.isTwoButtonMode)
-                        ? const Text('Hard, Good')
-                        : const Text('Hard, OK, Good, Easy'),
-                    initialValue: manager.isTwoButtonMode,
-                    onToggle: manager.setTwoButtonMode,
+                    title: const Text('Daily reminder'),
+                    // description: const Text('A daily reminder to practice your '
+                    //     'verses if you haven\'t already.'),
+                    initialValue: false,
+                    onToggle: (value) {},
+                  ),
+                  SettingsTile(
+                    enabled: false,
+                    title: const Text('Time'),
+                    value: const Text('8pm'),
+                    onPressed: null,
                   ),
                 ],
               ),
