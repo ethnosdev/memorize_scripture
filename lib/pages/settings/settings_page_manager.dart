@@ -7,11 +7,30 @@ class SettingsPageManager extends ChangeNotifier {
   final themeManager = getIt<AppManager>();
   final userSettings = getIt<UserSettings>();
 
+  void init() {
+    final (hour, minute) = userSettings.getNotificationTime;
+    _notificationHour = hour;
+    _notificationMinute = minute;
+  }
+
   bool get isDarkMode => userSettings.isDarkMode;
 
   int get dailyLimit => userSettings.getDailyLimit;
 
   bool get isTwoButtonMode => userSettings.isTwoButtonMode;
+
+  bool get isNotificationsOn => userSettings.isNotificationsOn;
+
+  String get notificationTimeDisplay {
+    String paddedMinute = '$_notificationMinute'.padLeft(2, '0');
+    return '$_notificationHour:$paddedMinute';
+  }
+
+  late int _notificationHour;
+  int get notificationTimeHour => _notificationHour;
+
+  late int _notificationMinute;
+  int get notificationTimeMinute => _notificationMinute;
 
   Future<void> setDarkMode(bool value) async {
     themeManager.setDarkTheme(value);
@@ -24,14 +43,29 @@ class SettingsPageManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  int validateDailyLimit(String value) {
+    int result = int.tryParse(value) ?? UserSettings.defaultDailyLimit;
+    if (result < 0) return UserSettings.defaultDailyLimit;
+    return result;
+  }
+
   Future<void> setTwoButtonMode(bool value) async {
     await userSettings.setTwoButtonMode(value);
     notifyListeners();
   }
 
-  int validateDailyLimit(String value) {
-    int result = int.tryParse(value) ?? UserSettings.defaultDailyLimit;
-    if (result < 0) return UserSettings.defaultDailyLimit;
-    return result;
+  Future<void> setNotifications(bool value) async {
+    await userSettings.setNotifications(value);
+    notifyListeners();
+  }
+
+  Future<void> setNotificationTime({
+    required int hour,
+    required int minute,
+  }) async {
+    _notificationHour = hour;
+    _notificationMinute = minute;
+    await userSettings.setNotificationTime(hour: hour, minute: minute);
+    notifyListeners();
   }
 }

@@ -13,6 +13,12 @@ class _SettingsPageState extends State<SettingsPage> {
   final manager = SettingsPageManager();
 
   @override
+  void initState() {
+    super.initState();
+    manager.init();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -47,43 +53,38 @@ class _SettingsPageState extends State<SettingsPage> {
                   SettingsTile.switchTile(
                     activeSwitchColor: Theme.of(context).colorScheme.primary,
                     title: const Text('Two-button mode'),
-                    // description: (manager.isTwoButtonMode)
-                    //     ? const Text('Hard, Good')
-                    //     : const Text('Hard, OK, Good, Easy'),
                     initialValue: manager.isTwoButtonMode,
                     onToggle: manager.setTwoButtonMode,
                   ),
                 ],
               ),
-              // SettingsSection(
-              //   tiles: [
-              //     SettingsTile.switchTile(
-              //       activeSwitchColor: Theme.of(context).colorScheme.primary,
-              //       title: const Text('Two-button response'),
-              //       description: (manager.isTwoButtonMode)
-              //           ? const Text('Hard, Good')
-              //           : const Text('Hard, OK, Good, Easy'),
-              //       initialValue: manager.isTwoButtonMode,
-              //       onToggle: manager.setTwoButtonMode,
-              //     ),
-              //   ],
-              // ),
               SettingsSection(
                 title: const Text('Notifications'),
                 tiles: [
                   SettingsTile.switchTile(
                     activeSwitchColor: Theme.of(context).colorScheme.primary,
                     title: const Text('Daily reminder'),
-                    // description: const Text('A daily reminder to practice your '
-                    //     'verses if you haven\'t already.'),
-                    initialValue: false,
-                    onToggle: (value) {},
+                    initialValue: manager.isNotificationsOn,
+                    onToggle: manager.setNotifications,
                   ),
                   SettingsTile(
-                    enabled: false,
+                    enabled: manager.isNotificationsOn,
                     title: const Text('Time'),
-                    value: const Text('8pm'),
-                    onPressed: null,
+                    value: Text(manager.notificationTimeDisplay),
+                    onPressed: (context) async {
+                      final pickedTime = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay(
+                          hour: manager.notificationTimeHour,
+                          minute: manager.notificationTimeMinute,
+                        ),
+                      );
+                      if (pickedTime == null) return;
+                      manager.setNotificationTime(
+                        hour: pickedTime.hour,
+                        minute: pickedTime.minute,
+                      );
+                    },
                   ),
                 ],
               ),
