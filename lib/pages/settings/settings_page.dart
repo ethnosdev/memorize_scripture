@@ -20,6 +20,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final disabledColor = Theme.of(context).disabledColor;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -28,12 +30,24 @@ class _SettingsPageState extends State<SettingsPage> {
         listenable: manager,
         builder: (context, widget) {
           return SettingsList(
+            lightTheme: SettingsThemeData(
+              settingsListBackground: colorScheme.background,
+              settingsSectionBackground: colorScheme.surfaceVariant,
+              dividerColor: colorScheme.background,
+              titleTextColor: colorScheme.secondary,
+            ),
+            darkTheme: SettingsThemeData(
+              settingsListBackground: colorScheme.background,
+              settingsSectionBackground: colorScheme.surfaceVariant,
+              dividerColor: colorScheme.background,
+              titleTextColor: colorScheme.secondary,
+            ),
             sections: [
               SettingsSection(
                 title: const Text('Appearance'),
                 tiles: [
                   SettingsTile.switchTile(
-                    activeSwitchColor: Theme.of(context).colorScheme.primary,
+                    activeSwitchColor: colorScheme.primary,
                     title: const Text('Dark mode'),
                     initialValue: manager.isDarkMode,
                     onToggle: manager.setDarkMode,
@@ -51,7 +65,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     },
                   ),
                   SettingsTile.switchTile(
-                    activeSwitchColor: Theme.of(context).colorScheme.primary,
+                    activeSwitchColor: colorScheme.primary,
                     title: const Text('Two-button mode'),
                     initialValue: manager.isTwoButtonMode,
                     onToggle: manager.setTwoButtonMode,
@@ -62,15 +76,25 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: const Text('Notifications'),
                 tiles: [
                   SettingsTile.switchTile(
-                    activeSwitchColor: Theme.of(context).colorScheme.primary,
+                    activeSwitchColor: colorScheme.primary,
                     title: const Text('Daily reminder'),
                     initialValue: manager.isNotificationsOn,
                     onToggle: manager.setNotifications,
                   ),
                   SettingsTile(
                     enabled: manager.isNotificationsOn,
-                    title: const Text('Time'),
-                    value: Text(manager.notificationTimeDisplay),
+                    title: Text(
+                      'Time',
+                      style: (!manager.isNotificationsOn)
+                          ? TextStyle(color: disabledColor)
+                          : null,
+                    ),
+                    value: Text(
+                      manager.notificationTimeDisplay,
+                      style: (!manager.isNotificationsOn)
+                          ? TextStyle(color: disabledColor)
+                          : null,
+                    ),
                     onPressed: (context) async {
                       final pickedTime = await showTimePicker(
                         context: context,

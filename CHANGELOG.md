@@ -1,3 +1,7 @@
+## 1.5.0
+
+- Apply color theme to settings screen.
+
 ## 1.4.2 - August 10, 2023
 
 - Fix practice screen not updating after editing verse.
