@@ -1,3 +1,4 @@
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import 'package:memorize_scripture/pages/home/home_page_manager.dart';
 import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
@@ -11,6 +12,8 @@ final getIt = GetIt.instance;
 void setupServiceLocator() {
   getIt.registerLazySingleton<UserSettings>(() => SharedPreferencesStorage());
   getIt.registerLazySingleton<DataRepository>(() => LocalStorage());
+  getIt.registerLazySingleton<FlutterLocalNotificationsPlugin>(
+      () => FlutterLocalNotificationsPlugin());
   getIt.registerFactory<PracticePageManager>(() => PracticePageManager());
   getIt.registerLazySingleton<AppManager>(() => AppManager());
   getIt.registerLazySingleton<HomePageManager>(() => HomePageManager());
