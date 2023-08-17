@@ -1,6 +1,7 @@
 ## 1.5.0
 
 - Apply color theme to settings screen.
+- Show loading indicator while collection list is loading.
 
 ## 1.4.2 - August 10, 2023
 

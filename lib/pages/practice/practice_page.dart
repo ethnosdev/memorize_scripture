@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memorize_scripture/common/widgets/loading_screen.dart';
 import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
 import 'package:memorize_scripture/pages/practice/widgets/app_bar.dart';
 import 'package:memorize_scripture/pages/practice/widgets/prompt_answer_layout.dart';
@@ -124,14 +125,5 @@ class Finished extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class LoadingIndicator extends StatelessWidget {
-  const LoadingIndicator({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const LinearProgressIndicator(minHeight: 2);
   }
 }

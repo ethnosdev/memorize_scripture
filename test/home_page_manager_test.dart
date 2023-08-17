@@ -27,7 +27,7 @@ void main() {
 
     await manager.init();
 
-    final list = manager.collectionNotifier.value;
+    final list = (manager.collectionNotifier.value as LoadedCollections).list;
     expect(list.isEmpty, true);
   });
 
@@ -39,7 +39,7 @@ void main() {
 
     final collection = manager.collectionAt(0);
 
-    final list = manager.collectionNotifier.value;
+    final list = (manager.collectionNotifier.value as LoadedCollections).list;
     expect(list.length, 1);
     expect(collection.name, 'name');
   });

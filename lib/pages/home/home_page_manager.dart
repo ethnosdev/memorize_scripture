@@ -18,11 +18,15 @@ class HomePageManager {
   }
   late final DataRepository dataRepository;
 
-  final collectionNotifier = ValueNotifier<List<Collection>>([]);
+  final collectionNotifier =
+      ValueNotifier<HomePageUiState>(LoadingCollections());
+
+  List<Collection> get _getList =>
+      (collectionNotifier.value as LoadedCollections).list;
 
   Future<void> init() async {
     final collections = await dataRepository.fetchCollections();
-    collectionNotifier.value = collections;
+    collectionNotifier.value = LoadedCollections(collections);
   }
 
   Future<void> addCollection(String? name) async {
@@ -33,23 +37,24 @@ class HomePageManager {
     );
     await dataRepository.insertCollection(collection);
     final collections = await dataRepository.fetchCollections();
-    collectionNotifier.value = collections;
+    collectionNotifier.value = LoadedCollections(collections);
   }
 
   Future<void> renameCollection({required int index, String? newName}) async {
     if (newName == null || newName.isEmpty) return;
-    final oldCollection = collectionNotifier.value[index];
+    final oldCollection = _getList[index];
     await dataRepository.updateCollection(
       oldCollection.copyWith(name: newName),
     );
-    collectionNotifier.value = await dataRepository.fetchCollections();
+    final collections = await dataRepository.fetchCollections();
+    collectionNotifier.value = LoadedCollections(collections);
   }
 
   Future<void> resetDueDates({
     required int index,
     required void Function(int numberReset) onFinished,
   }) async {
-    final collection = collectionNotifier.value[index];
+    final collection = _getList[index];
     final count = await dataRepository.resetDueDates(
       collectionId: collection.id,
     );
@@ -57,19 +62,19 @@ class HomePageManager {
   }
 
   void deleteCollection(int index) {
-    final list = collectionNotifier.value.toList();
+    final list = _getList.toList();
     final collection = list[index];
     list.removeAt(index);
     dataRepository.deleteCollection(collectionId: collection.id);
-    collectionNotifier.value = list;
+    collectionNotifier.value = LoadedCollections(list);
   }
 
   Collection collectionAt(int index) {
-    return collectionNotifier.value[index];
+    return (collectionNotifier.value as LoadedCollections).list[index];
   }
 
   Future<void> shareCollection({required int index}) async {
-    final collection = collectionNotifier.value[index];
+    final collection = _getList[index];
     final name = collection.name.replaceAll(' ', '-');
     await backupCollections(collectionId: collection.id, name: name);
   }
@@ -180,4 +185,13 @@ class HomePageManager {
     if (count == 1) return 'verse was';
     return 'verses were';
   }
+}
+
+sealed class HomePageUiState {}
+
+class LoadingCollections extends HomePageUiState {}
+
+class LoadedCollections extends HomePageUiState {
+  LoadedCollections(this.list);
+  final List<Collection> list;
 }

@@ -4,6 +4,7 @@ import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/drawer.dart';
 import 'package:memorize_scripture/common/strings.dart';
 import 'package:memorize_scripture/common/widgets/icon_text_menu_row.dart';
+import 'package:memorize_scripture/common/widgets/loading_screen.dart';
 import 'package:memorize_scripture/go_router.dart';
 import 'package:memorize_scripture/pages/home/home_page_manager.dart';
 import 'package:memorize_scripture/service_locator.dart';
@@ -96,13 +97,15 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       drawer: const MenuDrawer(),
-      body: ValueListenableBuilder<List<Collection>>(
+      body: ValueListenableBuilder<HomePageUiState>(
         valueListenable: manager.collectionNotifier,
-        builder: (context, collections, child) {
-          if (collections.isEmpty) {
-            return const NoCollections();
-          } else {
-            return BodyWidget(collections: collections);
+        builder: (context, uiState, child) {
+          switch (uiState) {
+            case LoadingCollections():
+              return const LoadingIndicator();
+            case LoadedCollections(:final list):
+              if (list.isEmpty) return const NoCollections();
+              return BodyWidget(collections: list);
           }
         },
       ),
