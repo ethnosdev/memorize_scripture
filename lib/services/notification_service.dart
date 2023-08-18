@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:clock/clock.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:memorize_scripture/service_locator.dart';
@@ -59,8 +58,6 @@ class NotificationService {
     final (hour, minute) = userSettings.getNotificationTime;
     const type = UILocalNotificationDateInterpretation.wallClockTime;
 
-    print('scheduling notifications');
-
     for (int i = 1; i <= days; i++) {
       final date = DateTime.now().add(Duration(days: i));
 
@@ -82,7 +79,6 @@ class NotificationService {
   }
 
   Future<void> clearNotifications() async {
-    print('clearing notifications');
     await plugin.cancelAll();
   }
 }

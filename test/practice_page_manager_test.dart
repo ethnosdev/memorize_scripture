@@ -788,7 +788,7 @@ void main() {
 
       manager.onResponse(Difficulty.good);
       expect(manager.countNotifier.value, '4');
-      verifyNever(mockDataRepository.updateVerse(any, any));
+      verify(mockDataRepository.updateVerse(any, any));
 
       manager.show();
       manager.onResponse(Difficulty.good);

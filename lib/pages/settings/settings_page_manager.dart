@@ -67,7 +67,6 @@ class SettingsPageManager extends ChangeNotifier {
       return;
     }
     final isGranted = await _requestNotificationPermission();
-    print('isGranted: $isGranted');
     if (isGranted) {
       await service.scheduleNotifications();
     } else {
