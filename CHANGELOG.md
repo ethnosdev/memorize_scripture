@@ -4,6 +4,7 @@
 - Apply color theme to settings screen.
 - Show loading indicator while collection list is loading.
 - Revert hiding the hint buttons when showing the verse text (from version 1.4.0). Just remove the box around the buttons to save space.
+- Fix bug where editing a new verse on the second pass loses progress.
 
 ## 1.4.2 - August 10, 2023
 

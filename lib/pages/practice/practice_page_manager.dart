@@ -240,9 +240,8 @@ class PracticePageManager {
             dataRepository.updateVerse(_collectionId, updated);
           } else {
             // Giving it a due date will make it no longer new.
-            // However, we won't save it to the data repo yet.
-            // Just put it at the back of today's list.
             final updated = verse.copyWith(nextDueDate: DateTime.now());
+            dataRepository.updateVerse(_collectionId, updated);
             _verses.add(updated);
           }
         default:
