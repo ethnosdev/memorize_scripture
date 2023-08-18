@@ -1,5 +1,6 @@
 ## 1.5.0
 
+- Optional daily reminder notifications available in settings.
 - Apply color theme to settings screen.
 - Show loading indicator while collection list is loading.
 - Revert hiding the hint buttons when showing the verse text (from version 1.4.0). Just remove the box around the buttons to save space.

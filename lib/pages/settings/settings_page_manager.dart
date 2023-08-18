@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:memorize_scripture/service_locator.dart';
+import 'package:memorize_scripture/services/notification_service.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:memorize_scripture/app_manager.dart';
 
@@ -59,11 +60,17 @@ class SettingsPageManager extends ChangeNotifier {
 
   Future<void> setNotifications(bool isOn) async {
     await userSettings.setNotifications(isOn);
+    final service = getIt<NotificationService>();
     notifyListeners();
-    if (!isOn) return;
+    if (!isOn) {
+      await service.clearNotifications();
+      return;
+    }
     final isGranted = await _requestNotificationPermission();
     print('isGranted: $isGranted');
-    if (!isGranted) {
+    if (isGranted) {
+      await service.scheduleNotifications();
+    } else {
       await userSettings.setNotifications(isGranted);
       notifyListeners();
     }
