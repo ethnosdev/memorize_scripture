@@ -55,6 +55,10 @@ If you turn this setting on, you'll have two buttons:
 ![settings in menu](img/practice-2.png)
 </div>
 
+## Notifications
+
+Turn on the **Daily reminder** to get daily notifications reminding you to review your verses. Once on, chose the **Time** option to set the notification time.
+
 ## Conclusion
 
 Congratulations! You've finished the tutorial!
