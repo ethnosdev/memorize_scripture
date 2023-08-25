@@ -8,11 +8,13 @@ class AddEditVersePageManager {
   final verseNotifier = ValueNotifier<Verse?>(null);
   final canAddNotifier = ValueNotifier<bool>(false);
   final alreadyExistsNotifier = ValueNotifier<bool>(false);
+  final showHintBoxNotifier = ValueNotifier<bool>(false);
 
   final dataRepo = getIt<DataRepository>();
 
   String _prompt = '';
   String _verseText = '';
+  String _hint = '';
   late String _collectionId;
   Verse? _initialVerse;
 
@@ -29,6 +31,7 @@ class AddEditVersePageManager {
     _initialVerse = verse;
     _prompt = verse?.prompt ?? '';
     _verseText = verse?.text ?? '';
+    _hint = verse?.hint ?? '';
   }
 
   void onPromptChanged({
@@ -42,25 +45,36 @@ class AddEditVersePageManager {
       if (_initialVerse?.prompt != prompt) {
         alreadyExistsNotifier.value = exists;
       }
-      canAddNotifier.value = !exists && _bothNotEmpty && _changesMade;
+      canAddNotifier.value = !exists && _promptVerseNotEmpty && _changesMade;
     });
   }
 
   void onAnswerChanged(String verseText) {
     _verseText = verseText;
-    canAddNotifier.value = _bothNotEmpty && _changesMade;
+    canAddNotifier.value = _promptVerseNotEmpty && _changesMade;
   }
 
   bool get _changesMade {
     return _prompt != _initialVerse?.prompt ||
-        _verseText != _initialVerse?.text;
+        _verseText != _initialVerse?.text ||
+        _hint != _initialVerse?.hint;
   }
 
-  bool get _bothNotEmpty => _prompt.isNotEmpty && _verseText.isNotEmpty;
+  bool get _promptVerseNotEmpty => _prompt.isNotEmpty && _verseText.isNotEmpty;
+
+  void onHintChanged(String hintText) {
+    _hint = hintText;
+    canAddNotifier.value = _promptVerseNotEmpty && _changesMade;
+  }
+
+  void onAddHintButtonPressed() {
+    showHintBoxNotifier.value = true;
+  }
 
   Future<void> addVerse({
     required String prompt,
     required String verseText,
+    required String hint,
   }) async {
     dataRepo.insertVerse(
       _collectionId,
@@ -68,6 +82,7 @@ class AddEditVersePageManager {
         id: const Uuid().v4(),
         prompt: prompt,
         text: verseText,
+        hint: hint,
       ),
     );
     canAddNotifier.value = false;
@@ -77,6 +92,7 @@ class AddEditVersePageManager {
     required String verseId,
     required String prompt,
     required String text,
+    required String hint,
   }) async {
     final previous = await dataRepo.fetchVerse(verseId: verseId);
     await dataRepo.updateVerse(
@@ -85,6 +101,7 @@ class AddEditVersePageManager {
         id: verseId,
         prompt: prompt,
         text: text,
+        hint: hint,
         nextDueDate: previous?.nextDueDate,
         interval: previous?.interval ?? Duration.zero,
       ),

@@ -16,20 +16,25 @@ class HintBox extends StatelessWidget {
       builder: (context, isShowingAnswer, child) {
         return Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 16,
+            runSpacing: 10,
             children: [
               OutlinedButton(
                 onPressed:
                     (isShowingAnswer) ? null : manager.showFirstLettersHint,
                 child: const Text('Letters'),
               ),
-              const SizedBox(width: 20),
               OutlinedButton(
                 onPressed: (isShowingAnswer) ? null : manager.showNextWordHint,
                 child: const Text('Words'),
               ),
+              if (manager.verseHasHint)
+                OutlinedButton(
+                  onPressed: (isShowingAnswer) ? null : manager.showCustomHint,
+                  child: const Text('Hint'),
+                ),
             ],
           ),
         );

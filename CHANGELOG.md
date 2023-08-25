@@ -1,4 +1,8 @@
-## 1.5.0
+## 1.6.0
+
+- Add custom verse hint.
+
+## 1.5.0 - August 19, 2023
 
 - Optional daily reminder notifications available in settings.
 - Apply color theme to settings screen.

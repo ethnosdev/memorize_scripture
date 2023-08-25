@@ -3,6 +3,7 @@ class Verse {
     required this.id,
     required this.prompt,
     required this.text,
+    this.hint = '',
     this.nextDueDate,
     this.interval = Duration.zero,
   });
@@ -17,6 +18,9 @@ class Verse {
   /// The verse text to show the user when they ask for the answer to
   /// the prompt.
   final String text;
+
+  /// The hint to show the user when they press the Hint button.
+  final String hint;
 
   /// The day this verse is due.
   ///
@@ -35,6 +39,7 @@ class Verse {
     String? id,
     String? prompt,
     String? text,
+    String? hint,
     DateTime? nextDueDate,
     Duration? interval,
   }) {
@@ -42,6 +47,7 @@ class Verse {
       id: id ?? this.id,
       prompt: prompt ?? this.prompt,
       text: text ?? this.text,
+      hint: hint ?? this.hint,
       nextDueDate: nextDueDate ?? this.nextDueDate,
       interval: interval ?? this.interval,
     );

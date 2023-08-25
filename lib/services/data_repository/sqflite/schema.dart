@@ -7,6 +7,7 @@ class VerseEntry {
   static const String collectionId = 'collection_id';
   static const String prompt = 'prompt';
   static const String verseText = 'answer';
+  static const String hint = 'hint';
   // seconds since epoch, new verses default to null
   static const String modifiedDate = 'modified_date';
   static const String nextDueDate = 'next_due_date';
@@ -20,6 +21,7 @@ class VerseEntry {
     $collectionId TEXT NOT NULL,
     $prompt TEXT NOT NULL,
     $verseText TEXT,
+    $hint TEXT,
     $modifiedDate INTEGER,
     $nextDueDate INTEGER,
     $interval INTEGER DEFAULT 0,
@@ -38,13 +40,13 @@ class CollectionEntry {
   static const String id = '_id';
   static const String name = 'name';
   // seconds since epoch
-  static const String accessedDate = 'access_date';
+  static const String modifiedDate = 'access_date'; // repurpose unused column
 
   // SQL statements
   static const String createCollectionTable = '''
   CREATE TABLE $collectionTable (
     $id TEXT PRIMARY KEY,
     $name TEXT NOT NULL UNIQUE,
-    $accessedDate INTEGER)
+    $modifiedDate INTEGER)
   ''';
 }

@@ -60,6 +60,8 @@ class PracticePageManager {
     return _verses.first.id;
   }
 
+  bool get verseHasHint => _verses.first.hint.isNotEmpty;
+
   Color _textThemeColor = Colors.black;
   set textThemeColor(Color? value) => _textThemeColor = value ?? Colors.black;
 
@@ -183,10 +185,6 @@ class PracticePageManager {
     return '~$rounded min';
   }
 
-  void showNextWordHint() {
-    answerNotifier.value = _wordsHintHelper.nextWord();
-  }
-
   void showFirstLettersHint() {
     final helper = LettersHintHelper(
       text: _verses.first.text,
@@ -196,6 +194,17 @@ class PracticePageManager {
       },
     );
     answerNotifier.value = helper.textSpan;
+  }
+
+  void showNextWordHint() {
+    answerNotifier.value = _wordsHintHelper.nextWord();
+  }
+
+  void showCustomHint() {
+    final hint = _verses.first.hint;
+    final currentText = answerNotifier.value.text;
+    answerNotifier.value =
+        (currentText == hint) ? const TextSpan() : TextSpan(text: hint);
   }
 
   void onResponse(Difficulty response) {

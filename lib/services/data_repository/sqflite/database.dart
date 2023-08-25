@@ -8,7 +8,8 @@ import 'package:path/path.dart';
 
 class LocalStorage implements DataRepository {
   final String _databaseName = "database.db";
-  static const int _databaseVersion = 1;
+  // If you change the database version, also update the json backup version.
+  static const int _databaseVersion = 2;
   late Database _database;
 
   @override
@@ -18,6 +19,7 @@ class LocalStorage implements DataRepository {
     _database = await openDatabase(
       path,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
       version: _databaseVersion,
     );
   }
@@ -25,6 +27,17 @@ class LocalStorage implements DataRepository {
   Future<void> _onCreate(Database db, int version) async {
     await db.execute(CollectionEntry.createCollectionTable);
     await db.execute(VerseEntry.createVocabTable);
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    debugPrint('upgrading database version from $oldVersion to $newVersion');
+    if (oldVersion == 1) {
+      await _upgradeFrom1to2(db);
+    }
+  }
+
+  Future<void> _upgradeFrom1to2(Database db) async {
+    await db.execute('ALTER TABLE verses ADD COLUMN hint TEXT');
   }
 
   @override
@@ -59,20 +72,11 @@ class LocalStorage implements DataRepository {
         id: verse[VerseEntry.id] as String,
         prompt: verse[VerseEntry.prompt] as String,
         text: verse[VerseEntry.verseText] as String,
+        hint: (verse[VerseEntry.hint] as String?) ?? '',
         nextDueDate: _dbVerseToDate(verse),
         interval: _dbVerseToInterval(verse),
       );
     });
-  }
-
-  Future<void> _updateCollectionAccessTime(String collectionId) async {
-    final timestamp = _timestampNow();
-    await _database.update(
-      CollectionEntry.collectionTable,
-      {CollectionEntry.accessedDate: timestamp},
-      where: '${CollectionEntry.id} = ?',
-      whereArgs: [collectionId],
-    );
   }
 
   DateTime? _dbVerseToDate(Map<String, Object?> verse) {
@@ -93,7 +97,6 @@ class LocalStorage implements DataRepository {
   }) async {
     final newVerses = await _fetchNewVerses(collectionId, newVerseLimit);
     final reviewVerses = await _fetchReviewVerses(collectionId);
-    _updateCollectionAccessTime(collectionId);
     final verses = [...newVerses, ...reviewVerses];
     return List.generate(verses.length, (i) {
       final verse = verses[i];
@@ -101,6 +104,7 @@ class LocalStorage implements DataRepository {
         id: verse[VerseEntry.id] as String,
         prompt: verse[VerseEntry.prompt] as String,
         text: verse[VerseEntry.verseText] as String,
+        hint: (verse[VerseEntry.hint] as String?) ?? '',
         nextDueDate: _dbVerseToDate(verse),
         interval: _dbVerseToInterval(verse),
       );
@@ -146,6 +150,7 @@ class LocalStorage implements DataRepository {
       id: verse[VerseEntry.id] as String,
       prompt: verse[VerseEntry.prompt] as String,
       text: verse[VerseEntry.verseText] as String,
+      hint: (verse[VerseEntry.hint] as String?) ?? '',
       nextDueDate: _dbVerseToDate(verse),
       interval: _dbVerseToInterval(verse),
     );
@@ -160,6 +165,7 @@ class LocalStorage implements DataRepository {
         VerseEntry.collectionId: collectionId,
         VerseEntry.prompt: verse.prompt,
         VerseEntry.verseText: verse.text,
+        VerseEntry.hint: verse.hint,
         VerseEntry.modifiedDate: _timestampNow(),
         VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
         VerseEntry.interval: verse.interval.inDays,
@@ -175,6 +181,7 @@ class LocalStorage implements DataRepository {
         VerseEntry.collectionId: collectionId,
         VerseEntry.prompt: verse.prompt,
         VerseEntry.verseText: verse.text,
+        VerseEntry.hint: verse.hint,
         VerseEntry.modifiedDate: _timestampNow(),
         VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
         VerseEntry.interval: verse.interval.inDays,
@@ -208,6 +215,7 @@ class LocalStorage implements DataRepository {
           VerseEntry.collectionId: collection.id,
           VerseEntry.prompt: verse.prompt,
           VerseEntry.verseText: verse.text,
+          VerseEntry.hint: verse.hint,
           VerseEntry.modifiedDate: timestamp,
           VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
           VerseEntry.interval: verse.interval.inDays,
@@ -256,7 +264,7 @@ class LocalStorage implements DataRepository {
       {
         CollectionEntry.id: collection.id,
         CollectionEntry.name: collection.name.trim(),
-        CollectionEntry.accessedDate: _timestampNow(),
+        CollectionEntry.modifiedDate: _timestampNow(),
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -330,6 +338,7 @@ class LocalStorage implements DataRepository {
         VerseEntry.collectionId,
         VerseEntry.prompt,
         VerseEntry.verseText,
+        VerseEntry.hint,
       ],
       where: '${VerseEntry.collectionId} = ?',
       whereArgs: [collectionId],
@@ -340,33 +349,45 @@ class LocalStorage implements DataRepository {
   Future<int> restoreCollections(
     List<Map<String, Object?>> collections,
   ) async {
-    int collectionAddedCount = 0;
+    int collectionAddedUpdatedCount = 0;
     for (final collection in collections) {
-      final id = collection[CollectionEntry.id] as String;
-      var name = collection[CollectionEntry.name] as String;
-      final date = collection[CollectionEntry.accessedDate] as int;
+      try {
+        final id = collection[CollectionEntry.id] as String;
+        var name = collection[CollectionEntry.name] as String;
+        final modifiedDate = collection[CollectionEntry.modifiedDate] as int?;
 
-      // if collection id exists do nothing
-      if (await _collectionExists(id)) continue;
+        // if collection id exists do nothing
+        if (await _collectionExists(id)) {
+          // don't bother updating current if backup doesn't have modified date.
+          if (modifiedDate == null) continue;
+          // if current is newer or same then ignore backup
+          final currentModified = await _collectionModifiedDate(id);
+          if (currentModified != null && currentModified >= modifiedDate) {
+            continue;
+          }
+        }
 
-      // add another entry for a duplicate collection name
-      if (await _collectionNameExists(name)) {
-        name = '$name (backup)';
+        // add another entry for a duplicate collection name
+        if (await _collectionNameExists(name)) {
+          name = '$name (backup)';
+        }
+
+        // insert/update the new collection
+        await _database.insert(
+          CollectionEntry.collectionTable,
+          {
+            CollectionEntry.id: id,
+            CollectionEntry.name: name,
+            CollectionEntry.modifiedDate: modifiedDate ?? _timestampNow(),
+          },
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+        collectionAddedUpdatedCount++;
+      } catch (e) {
+        // discard errors
       }
-
-      // insert the new collection
-      await _database.insert(
-        CollectionEntry.collectionTable,
-        {
-          CollectionEntry.id: id,
-          CollectionEntry.name: name,
-          CollectionEntry.accessedDate: date,
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-      collectionAddedCount++;
     }
-    return collectionAddedCount;
+    return collectionAddedUpdatedCount;
   }
 
   Future<bool> _collectionExists(String collectionId) async {
@@ -376,6 +397,17 @@ class LocalStorage implements DataRepository {
       [collectionId],
     );
     return (Sqflite.firstIntValue(result) == 1);
+  }
+
+  Future<int?> _collectionModifiedDate(String collectionId) async {
+    final result = await _database.query(
+      CollectionEntry.collectionTable,
+      columns: [CollectionEntry.modifiedDate],
+      where: '${CollectionEntry.id} = ?',
+      whereArgs: [collectionId],
+    );
+    if (result.isEmpty) return null;
+    return result.first[CollectionEntry.modifiedDate] as int?;
   }
 
   Future<bool> _collectionNameExists(String name) async {
@@ -400,6 +432,7 @@ class LocalStorage implements DataRepository {
         final collectionId = verse[VerseEntry.collectionId] as String;
         final prompt = verse[VerseEntry.prompt] as String;
         final verseText = verse[VerseEntry.verseText] as String;
+        final hint = (verse[VerseEntry.hint] as String?) ?? '';
         final modifiedDate = verse[VerseEntry.modifiedDate] as int?;
         final dueDate = verse[VerseEntry.nextDueDate] as int?;
         final interval = (verse[VerseEntry.interval] as int?) ?? 0;
@@ -413,6 +446,7 @@ class LocalStorage implements DataRepository {
             collectionId: collectionId,
             prompt: prompt,
             verseText: verseText,
+            hint: hint,
             modifiedDate: modifiedDate ?? _timestampNow(),
             dueDate: dueDate,
             interval: interval,
@@ -429,6 +463,7 @@ class LocalStorage implements DataRepository {
             collectionId: collectionId,
             prompt: prompt,
             verseText: verseText,
+            hint: hint,
             modifiedDate: modifiedDate,
             dueDate: dueDate,
             interval: interval,
@@ -459,6 +494,7 @@ class LocalStorage implements DataRepository {
     required String collectionId,
     required String prompt,
     required String verseText,
+    required String hint,
     required int modifiedDate,
     required int? dueDate,
     required int interval,
@@ -469,6 +505,7 @@ class LocalStorage implements DataRepository {
         VerseEntry.collectionId: collectionId,
         VerseEntry.prompt: prompt,
         VerseEntry.verseText: verseText,
+        VerseEntry.hint: hint,
         VerseEntry.modifiedDate: modifiedDate,
         VerseEntry.nextDueDate: dueDate,
         VerseEntry.interval: interval,
@@ -483,6 +520,7 @@ class LocalStorage implements DataRepository {
     required String collectionId,
     required String prompt,
     required String verseText,
+    required String hint,
     required int modifiedDate,
     required int? dueDate,
     required int interval,
@@ -494,6 +532,7 @@ class LocalStorage implements DataRepository {
         VerseEntry.collectionId: collectionId,
         VerseEntry.prompt: prompt,
         VerseEntry.verseText: verseText,
+        VerseEntry.hint: hint,
         VerseEntry.modifiedDate: modifiedDate,
         VerseEntry.nextDueDate: dueDate,
         VerseEntry.interval: interval,

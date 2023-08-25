@@ -85,7 +85,7 @@ class HomePageManager {
 
     final backup = {
       'date': _dateToSecondsSinceEpoch(DateTime.now()),
-      'version': 1, // should match the database version
+      'version': 2, // should match the database version
       'collections': collections,
       'verses': verses,
     };

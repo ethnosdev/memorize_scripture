@@ -73,7 +73,7 @@ abstract class DataRepository {
   Future<List<Map<String, Object?>>> dumpVerses([String? collectionId]);
 
   /// Restores collections from a backup in JSON form.
-  /// Returns the number of collections added.
+  /// Returns the number of collections added or updated.
   Future<int> restoreCollections(List<Map<String, Object?>> collections);
 
   /// Restores verses from a backup in JSON form.

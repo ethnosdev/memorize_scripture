@@ -22,7 +22,9 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
   final manager = AddEditVersePageManager();
   final promptController = TextEditingController();
   final verseTextController = TextEditingController();
+  final hintController = TextEditingController();
   final promptFocus = FocusNode();
+  final hintFocus = FocusNode();
 
   bool get isEditing => widget.verseId != null;
 
@@ -73,6 +75,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
         builder: (context, verse, child) {
           promptController.text = verse?.prompt ?? '';
           verseTextController.text = verse?.text ?? '';
+          hintController.text = verse?.hint ?? '';
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -122,6 +125,37 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
                     ),
                     onChanged: manager.onAnswerChanged,
                   ),
+                  const SizedBox(height: 10),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: manager.showHintBoxNotifier,
+                    builder: (context, showHintBox, child) {
+                      if (showHintBox || hintController.text.isNotEmpty) {
+                        return TextField(
+                          textCapitalization: TextCapitalization.sentences,
+                          maxLines: 5,
+                          focusNode: hintFocus,
+                          controller: hintController,
+                          decoration: const InputDecoration(
+                            labelText: 'Hint',
+                            floatingLabelBehavior: FloatingLabelBehavior.always,
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 8,
+                            ),
+                          ),
+                          onChanged: manager.onHintChanged,
+                        );
+                      }
+                      return OutlinedButton(
+                        onPressed: () {
+                          manager.onAddHintButtonPressed();
+                          hintFocus.requestFocus();
+                        },
+                        child: const Text('Add hint'),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -138,14 +172,17 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
         verseId: widget.verseId!,
         prompt: promptController.text,
         text: verseTextController.text,
+        hint: hintController.text,
       );
     } else {
       await manager.addVerse(
         prompt: promptController.text,
         verseText: verseTextController.text,
+        hint: hintController.text,
       );
       promptController.text = '';
       verseTextController.text = '';
+      hintController.text = '';
       promptFocus.requestFocus();
       _showMessage('Verse added');
     }
