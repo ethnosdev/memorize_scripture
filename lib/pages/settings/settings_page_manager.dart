@@ -19,7 +19,13 @@ class SettingsPageManager extends ChangeNotifier {
 
   bool get isDarkMode => userSettings.isDarkMode;
 
-  int get dailyLimit => userSettings.getDailyLimit;
+  String get dailyLimit => userSettings.getDailyLimit.toString();
+
+  String get maxInterval {
+    final value = userSettings.getMaxInterval;
+    if (value >= UserSettings.defaultMaxInterval) return '';
+    return value.toString();
+  }
 
   bool get isTwoButtonMode => userSettings.isTwoButtonMode;
 
@@ -42,15 +48,30 @@ class SettingsPageManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateDailyLimit(int number) async {
-    await userSettings.setDailyLimit(number);
+  String validateDailyLimit(String value) {
+    int result = int.tryParse(value) ?? UserSettings.defaultDailyLimit;
+    if (result < 0) return UserSettings.defaultDailyLimit.toString();
+    return result.toString();
+  }
+
+  Future<void> updateDailyLimit(String number) async {
+    final limit = int.tryParse(number);
+    if (limit == null) return;
+    await userSettings.setDailyLimit(limit);
     notifyListeners();
   }
 
-  int validateDailyLimit(String value) {
-    int result = int.tryParse(value) ?? UserSettings.defaultDailyLimit;
-    if (result < 0) return UserSettings.defaultDailyLimit;
-    return result;
+  String validateMaxInterval(String value) {
+    int result = int.tryParse(value) ?? UserSettings.defaultMaxInterval;
+    if (result < 1) return UserSettings.defaultMaxInterval.toString();
+    return result.toString();
+  }
+
+  Future<void> updateMaxInterval(String number) async {
+    final interval = int.tryParse(number);
+    if (interval == null) return;
+    await userSettings.setMaxInterval(interval);
+    notifyListeners();
   }
 
   Future<void> setTwoButtonMode(bool value) async {

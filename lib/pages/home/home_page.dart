@@ -26,11 +26,6 @@ class _HomePageState extends State<HomePage> {
     manager.init();
   }
 
-  // void _onBackupRestoreResult(String message) {
-  //   final snackBar = SnackBar(content: Text(message));
-  //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,27 +42,6 @@ class _HomePageState extends State<HomePage> {
           ),
           PopupMenuButton(
             itemBuilder: (BuildContext context) => [
-              // const PopupMenuItem(
-              //   value: 1,
-              //   child: IconTextRow(
-              //     icon: Icons.play_arrow,
-              //     text: 'Play all',
-              //   ),
-              // ),
-              // const PopupMenuItem(
-              //   value: 1,
-              //   child: IconTextRow(
-              //     icon: Icons.sync,
-              //     text: 'Sync',
-              //   ),
-              // ),
-              // const PopupMenuItem(
-              //   value: 1,
-              //   child: IconTextRow(
-              //     icon: Icons.add,
-              //     text: 'Add collection',
-              //   ),
-              // ),
               const PopupMenuItem(
                 value: 1,
                 child: IconTextRow(
@@ -292,7 +266,6 @@ void _showMessage(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(message),
-      // duration: const Duration(seconds: 1),
     ),
   );
 }

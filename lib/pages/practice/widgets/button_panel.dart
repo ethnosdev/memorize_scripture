@@ -100,12 +100,14 @@ class ButtonPanel extends StatelessWidget {
         subtitle: manager.goodTitle,
         onPressed: () => manager.onResponse(Difficulty.good),
       ),
-      const SizedBox(width: 5),
-      ResponseButton(
-        title: 'Easy',
-        subtitle: manager.easyTitle,
-        onPressed: () => manager.onResponse(Difficulty.easy),
-      ),
+      if (manager.shouldShowEasyButton) ...[
+        const SizedBox(width: 5),
+        ResponseButton(
+          title: 'Easy',
+          subtitle: manager.easyTitle,
+          onPressed: () => manager.onResponse(Difficulty.easy),
+        ),
+      ]
     ];
   }
 }

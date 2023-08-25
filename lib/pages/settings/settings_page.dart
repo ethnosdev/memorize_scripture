@@ -59,9 +59,26 @@ class _SettingsPageState extends State<SettingsPage> {
                 tiles: [
                   SettingsTile(
                     title: const Text('Max new verses per day'),
-                    value: Text('${manager.dailyLimit}'),
+                    value: Text(manager.dailyLimit),
                     onPressed: (BuildContext context) {
-                      _showDailyLimitDialog();
+                      _showDailyLimitDialog(
+                        title: 'Daily limit',
+                        oldValue: manager.dailyLimit,
+                        onValidate: manager.validateDailyLimit,
+                        onConfirm: manager.updateDailyLimit,
+                      );
+                    },
+                  ),
+                  SettingsTile(
+                    title: const Text('Max days between reviews'),
+                    value: Text(manager.maxInterval),
+                    onPressed: (BuildContext context) {
+                      _showDailyLimitDialog(
+                        title: 'Max days',
+                        oldValue: manager.maxInterval,
+                        onValidate: manager.validateMaxInterval,
+                        onConfirm: manager.updateMaxInterval,
+                      );
                     },
                   ),
                   SettingsTile.switchTile(
@@ -119,25 +136,30 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Future<String?> _showDailyLimitDialog() async {
-    int count = manager.dailyLimit;
-    final controller = TextEditingController(text: count.toString());
+  Future<String?> _showDailyLimitDialog({
+    required String title,
+    required String oldValue,
+    required void Function(String) onConfirm,
+    required String Function(String) onValidate,
+  }) async {
+    var newValue = oldValue;
+    final controller = TextEditingController(text: oldValue);
     Widget okButton = TextButton(
       child: const Text("OK"),
       onPressed: () {
-        manager.updateDailyLimit(count);
+        onConfirm(newValue);
         Navigator.of(context).pop(controller.text);
       },
     );
 
     AlertDialog alert = AlertDialog(
-      title: const Text("Daily limit"),
+      title: Text(title),
       content: TextField(
         autofocus: true,
         keyboardType: TextInputType.number,
         controller: controller,
         onChanged: (value) {
-          count = manager.validateDailyLimit(value);
+          newValue = onValidate(value);
         },
         onTap: () {
           controller.selection = TextSelection(

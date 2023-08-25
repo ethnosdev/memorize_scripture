@@ -2,6 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class UserSettings {
   static const defaultDailyLimit = 10;
+  static const defaultMaxInterval = 100000;
   Future<void> init();
   bool get isTwoButtonMode;
   Future<void> setTwoButtonMode(bool value);
@@ -9,6 +10,8 @@ abstract class UserSettings {
   Future<void> setDarkMode(bool value);
   int get getDailyLimit;
   Future<void> setDailyLimit(int value);
+  int get getMaxInterval;
+  Future<void> setMaxInterval(int value);
   bool get isNotificationsOn;
   Future<void> setNotifications(bool value);
   (int hour, int minute) get getNotificationTime;
@@ -19,6 +22,7 @@ class SharedPreferencesStorage extends UserSettings {
   static const String _twoButtonModeKey = 'twoButtonMode';
   static const String _darkModeKey = 'darkMode';
   static const String _dailyLimitKey = 'dailyLimit';
+  static const String _maxIntervalKey = 'maxInterval';
   static const String _notificationsKey = 'notifications';
   static const String _notificationTimeKey = 'notificationTime';
 
@@ -54,6 +58,16 @@ class SharedPreferencesStorage extends UserSettings {
   @override
   Future<void> setDailyLimit(int value) async {
     await prefs.setInt(_dailyLimitKey, value);
+  }
+
+  @override
+  int get getMaxInterval {
+    return prefs.getInt(_maxIntervalKey) ?? UserSettings.defaultMaxInterval;
+  }
+
+  @override
+  Future<void> setMaxInterval(int value) async {
+    await prefs.setInt(_maxIntervalKey, value);
   }
 
   @override

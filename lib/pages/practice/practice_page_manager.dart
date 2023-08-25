@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/pages/practice/helpers/letters_hint.dart';
@@ -61,6 +63,12 @@ class PracticePageManager {
   }
 
   bool get verseHasHint => _verses.first.hint.isNotEmpty;
+
+  bool get shouldShowEasyButton {
+    print('_verses.first.interval.inDays: ${_verses.first.interval.inDays}');
+    print('userSettings.getMaxInterval: ${userSettings.getMaxInterval}');
+    return _verses.first.interval.inDays < userSettings.getMaxInterval - 1;
+  }
 
   Color _textThemeColor = Colors.black;
   set textThemeColor(Color? value) => _textThemeColor = value ?? Colors.black;
@@ -334,7 +342,7 @@ class PracticePageManager {
       case Difficulty.easy:
         days = 2 * (days + 1);
     }
-    return days;
+    return math.min(days, userSettings.getMaxInterval);
   }
 
   void onFinishedAddingEditing(String? verseId) async {
