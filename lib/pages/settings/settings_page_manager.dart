@@ -123,5 +123,7 @@ class SettingsPageManager extends ChangeNotifier {
     _notificationMinute = minute;
     await userSettings.setNotificationTime(hour: hour, minute: minute);
     notifyListeners();
+    final service = getIt<NotificationService>();
+    await service.scheduleNotifications();
   }
 }

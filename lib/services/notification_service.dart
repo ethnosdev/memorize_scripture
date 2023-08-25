@@ -68,8 +68,8 @@ class NotificationService {
       final id = date.day;
       await plugin.zonedSchedule(
         id,
-        'Memorize Scripture',
-        'Remember to review your old verses or learn a new one today.',
+        'Daily reminder',
+        "Don't forget to review your old verses or learn a new one today.",
         scheduledTime,
         specifics,
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,

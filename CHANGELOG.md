@@ -2,6 +2,8 @@
 
 - Add custom verse hint.
 - Settings: Max days between reviews.
+- Fix bug where notification time not updated.
+- Update notification message.
 
 ## 1.5.0 - August 19, 2023
 
