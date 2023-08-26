@@ -22,18 +22,27 @@ class HintBox extends StatelessWidget {
             spacing: 16,
             runSpacing: 10,
             children: [
-              OutlinedButton(
-                onPressed: (enabled) ? manager.showFirstLettersHint : null,
-                child: const Text('Letters'),
+              SizedBox(
+                width: 100,
+                child: OutlinedButton(
+                  onPressed: (enabled) ? manager.showFirstLettersHint : null,
+                  child: const Text('Letters'),
+                ),
               ),
-              OutlinedButton(
-                onPressed: (enabled) ? manager.showNextWordHint : null,
-                child: const Text('Words'),
+              SizedBox(
+                width: 100,
+                child: OutlinedButton(
+                  onPressed: (enabled) ? manager.showNextWordHint : null,
+                  child: const Text('Words'),
+                ),
               ),
               if (buttonState.hasCustomHint)
-                OutlinedButton(
-                  onPressed: (enabled) ? manager.showCustomHint : null,
-                  child: const Text('Hint'),
+                SizedBox(
+                  width: 100,
+                  child: OutlinedButton(
+                    onPressed: (enabled) ? manager.showCustomHint : null,
+                    child: const Text('Hint'),
+                  ),
                 ),
             ],
           ),

@@ -1,4 +1,4 @@
-## 1.6.0
+## 1.6.0 - August 26, 2023
 
 - Add custom verse hint.
 - Settings: Max days between reviews.
