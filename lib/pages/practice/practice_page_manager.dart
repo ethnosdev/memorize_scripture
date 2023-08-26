@@ -31,6 +31,15 @@ enum ResponseButtonMode {
   casualPractice,
 }
 
+class HintButtonState {
+  final bool isEnabled;
+  final bool hasCustomHint;
+
+  HintButtonState({required this.isEnabled, required this.hasCustomHint});
+
+  HintButtonState.initial() : this(isEnabled: true, hasCustomHint: false);
+}
+
 class PracticePageManager {
   PracticePageManager({
     DataRepository? dataRepository,
@@ -48,6 +57,8 @@ class PracticePageManager {
   final promptNotifier = ValueNotifier<String>('');
   final answerNotifier = ValueNotifier<TextSpan>(const TextSpan());
   final isShowingAnswerNotifier = ValueNotifier<bool>(false);
+  final hintButtonNotifier =
+      ValueNotifier<HintButtonState>(HintButtonState.initial());
   final appBarNotifier = AppBarNotifier();
 
   late List<Verse> _verses;
@@ -62,11 +73,7 @@ class PracticePageManager {
     return _verses.first.id;
   }
 
-  bool get verseHasHint => _verses.first.hint.isNotEmpty;
-
   bool get shouldShowEasyButton {
-    print('_verses.first.interval.inDays: ${_verses.first.interval.inDays}');
-    print('userSettings.getMaxInterval: ${userSettings.getMaxInterval}');
     return _verses.first.interval.inDays < userSettings.getMaxInterval - 1;
   }
 
@@ -122,6 +129,10 @@ class PracticePageManager {
     } else {
       uiNotifier.value = PracticeState.practicing;
       isShowingAnswerNotifier.value = false;
+      hintButtonNotifier.value = HintButtonState(
+        isEnabled: true,
+        hasCustomHint: _verses.first.hint.isNotEmpty,
+      );
       answerNotifier.value = const TextSpan();
       promptNotifier.value = _verses.first.prompt;
       countNotifier.value = _verses.length.toString();
@@ -148,6 +159,10 @@ class PracticePageManager {
       _setResponseButtonTimeSubtitles();
     }
     isShowingAnswerNotifier.value = true;
+    hintButtonNotifier.value = HintButtonState(
+      isEnabled: false,
+      hasCustomHint: _verses.first.hint.isNotEmpty,
+    );
   }
 
   void _setResponseButtonTimeSubtitles() {
@@ -345,7 +360,7 @@ class PracticePageManager {
     return math.min(days, userSettings.getMaxInterval);
   }
 
-  void onFinishedAddingEditing(String? verseId) async {
+  Future<void> onFinishedAddingEditing(String? verseId) async {
     final isAdding = verseId == null;
     if (isAdding) {
       init(collectionId: _collectionId);

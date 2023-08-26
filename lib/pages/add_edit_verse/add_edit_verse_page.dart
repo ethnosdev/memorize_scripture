@@ -50,7 +50,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
             }
             final shouldSave = await _showShouldSaveDialog() ?? false;
             if (shouldSave) {
-              _saveVerse();
+              await _saveVerse();
             }
             if (context.mounted) {
               Navigator.of(context).pop();

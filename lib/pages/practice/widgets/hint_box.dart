@@ -11,9 +11,10 @@ class HintBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: manager.isShowingAnswerNotifier,
-      builder: (context, isShowingAnswer, child) {
+    return ValueListenableBuilder<HintButtonState>(
+      valueListenable: manager.hintButtonNotifier,
+      builder: (context, buttonState, child) {
+        final enabled = buttonState.isEnabled;
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Wrap(
@@ -22,17 +23,16 @@ class HintBox extends StatelessWidget {
             runSpacing: 10,
             children: [
               OutlinedButton(
-                onPressed:
-                    (isShowingAnswer) ? null : manager.showFirstLettersHint,
+                onPressed: (enabled) ? manager.showFirstLettersHint : null,
                 child: const Text('Letters'),
               ),
               OutlinedButton(
-                onPressed: (isShowingAnswer) ? null : manager.showNextWordHint,
+                onPressed: (enabled) ? manager.showNextWordHint : null,
                 child: const Text('Words'),
               ),
-              if (manager.verseHasHint)
+              if (buttonState.hasCustomHint)
                 OutlinedButton(
-                  onPressed: (isShowingAnswer) ? null : manager.showCustomHint,
+                  onPressed: (enabled) ? manager.showCustomHint : null,
                   child: const Text('Hint'),
                 ),
             ],
