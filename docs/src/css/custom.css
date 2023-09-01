@@ -30,11 +30,12 @@
 
 .bordered-image {
   margin: 10px;
-  width: 350px;
-/*   
-  border: 4px solid #ddd;
-  border-radius: 8px;
-  display:block; */
+  max-width: 350px;
+}
+
+.bordered-image img{
+  border: 2px solid #acacac;
+  border-radius: 6px;
 }
 
 /* https://stackoverflow.com/a/69114751/3681880 */
