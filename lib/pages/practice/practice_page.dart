@@ -109,6 +109,7 @@ class Finished extends StatelessWidget {
   });
 
   final PracticePageManager manager;
+  static const message = "Congratulations!\nYou're finished for today!";
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +117,13 @@ class Finished extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('Congratulations! You\'re finished for today!'),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: Text(
+              message,
+              textAlign: TextAlign.center,
+            ),
+          ),
           const SizedBox(height: 100),
           OutlinedButton(
             onPressed: manager.practiceAllVerses,
