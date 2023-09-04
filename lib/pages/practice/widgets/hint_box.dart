@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
+import 'package:memorize_scripture/pages/practice/widgets/buttons.dart';
 
 class HintBox extends StatelessWidget {
   const HintBox({
@@ -8,6 +9,7 @@ class HintBox extends StatelessWidget {
   });
 
   final PracticePageManager manager;
+  static const _buttonWidth = 100.0;
 
   @override
   Widget build(BuildContext context) {
@@ -23,25 +25,25 @@ class HintBox extends StatelessWidget {
             runSpacing: 10,
             children: [
               SizedBox(
-                width: 100,
-                child: OutlinedButton(
+                width: _buttonWidth,
+                child: ResponseButton(
+                  title: 'Letters',
                   onPressed: (enabled) ? manager.showFirstLettersHint : null,
-                  child: const Text('Letters'),
                 ),
               ),
               SizedBox(
-                width: 100,
-                child: OutlinedButton(
+                width: _buttonWidth,
+                child: ResponseButton(
+                  title: 'Words',
                   onPressed: (enabled) ? manager.showNextWordHint : null,
-                  child: const Text('Words'),
                 ),
               ),
               if (buttonState.hasCustomHint)
                 SizedBox(
-                  width: 100,
-                  child: OutlinedButton(
+                  width: _buttonWidth,
+                  child: ResponseButton(
+                    title: 'Hint',
                     onPressed: (enabled) ? manager.showCustomHint : null,
-                    child: const Text('Hint'),
                   ),
                 ),
             ],
