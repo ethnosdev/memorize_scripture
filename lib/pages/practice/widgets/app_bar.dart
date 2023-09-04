@@ -23,7 +23,10 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       builder: (context, value, child) {
         final (isPracticing, canUndo) = value;
         return AppBar(
-          title: Text(collectionName),
+          title: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(collectionName),
+          ),
           actions: [
             if (canUndo)
               IconButton(
