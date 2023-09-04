@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/common/collection.dart';
-import 'package:memorize_scripture/common/drawer.dart';
+import 'package:memorize_scripture/pages/home/widgets/drawer.dart';
 import 'package:memorize_scripture/common/strings.dart';
 import 'package:memorize_scripture/common/widgets/icon_text_menu_row.dart';
 import 'package:memorize_scripture/common/widgets/loading_screen.dart';
@@ -30,7 +30,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Memorize Scripture'),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),

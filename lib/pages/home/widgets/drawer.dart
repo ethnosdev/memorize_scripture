@@ -19,14 +19,27 @@ class MenuDrawer extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              child: SvgPicture.asset(
-                colorFilter: ColorFilter.mode(
-                  Theme.of(context).colorScheme.primary,
-                  BlendMode.srcIn,
-                ),
-                'assets/logo.svg',
-                width: 100,
-                height: 100,
+              child: Column(
+                children: [
+                  SvgPicture.asset(
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).colorScheme.primary,
+                      BlendMode.srcIn,
+                    ),
+                    'assets/logo.svg',
+                    width: 100,
+                    height: 100,
+                  ),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      'Memorize Scripture',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
             ListTile(
