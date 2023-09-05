@@ -3,9 +3,7 @@ import 'package:memorize_scripture/common/version.dart';
 
 class BibleData {
   /// Returns a list of the available Bible versions to import.
-  List<Version> fetchAvailableVersions() {
-    return _versions;
-  }
+  List<Version> fetchAvailableVersions() => _versions;
 
   List<Book> fetchOtBooks() {
     return _books.where((book) => book.testament == Testament.ot).toList();
@@ -14,6 +12,8 @@ class BibleData {
   List<Book> fetchNtBooks() {
     return _books.where((book) => book.testament == Testament.nt).toList();
   }
+
+  List<Book> fetchBooks() => _books;
 }
 
 Uri _biblePortalUrl(Book book, int chapter, String version) {

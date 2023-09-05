@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class UserSettings {
@@ -16,6 +18,12 @@ abstract class UserSettings {
   Future<void> setNotifications(bool value);
   (int hour, int minute) get getNotificationTime;
   Future<void> setNotificationTime({required int hour, required int minute});
+  (String? version, String? book, int? chapter) getRecentReference();
+  Future<void> setRecentReference({
+    required String? version,
+    required String? book,
+    required int? chapter,
+  });
 }
 
 class SharedPreferencesStorage extends UserSettings {
@@ -25,6 +33,7 @@ class SharedPreferencesStorage extends UserSettings {
   static const String _maxIntervalKey = 'maxInterval';
   static const String _notificationsKey = 'notifications';
   static const String _notificationTimeKey = 'notificationTime';
+  static const String _recentReferenceKey = 'recentReference';
 
   // getters cache
   late final SharedPreferences prefs;
@@ -95,5 +104,31 @@ class SharedPreferencesStorage extends UserSettings {
   }) async {
     final value = '$hour:$minute';
     await prefs.setString(_notificationTimeKey, value);
+  }
+
+  @override
+  (String? version, String? book, int? chapter) getRecentReference() {
+    final json = prefs.getString(_recentReferenceKey);
+    if (json == null) return (null, null, null);
+    final map = jsonDecode(json);
+    final version = map['version'];
+    final book = map['book'];
+    final chapter = map['chapter'];
+    return (version, book, chapter);
+  }
+
+  @override
+  Future<void> setRecentReference({
+    required String? version,
+    required String? book,
+    required int? chapter,
+  }) async {
+    final map = {
+      'version': version,
+      'book': book,
+      'chapter': chapter,
+    };
+    final json = jsonEncode(map);
+    await prefs.setString(_recentReferenceKey, json);
   }
 }

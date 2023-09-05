@@ -15,6 +15,13 @@ class ImportPage extends StatefulWidget {
 
 class _ImportPageState extends State<ImportPage> {
   final manager = ImportPageManager();
+
+  @override
+  void initState() {
+    super.initState();
+    manager.init();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

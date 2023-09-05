@@ -3,10 +3,30 @@ import 'package:memorize_scripture/common/book.dart';
 import 'package:memorize_scripture/common/version.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/book_data/bible_data.dart';
+import 'package:memorize_scripture/services/user_settings.dart';
 
 class ImportPageManager {
   final referenceNotifier = ValueNotifier<Reference>(const Reference());
   final bibleData = getIt<BibleData>();
+  final userSettings = getIt<UserSettings>();
+
+  Future<void> init() async {
+    final (version, book, chapter) = userSettings.getRecentReference();
+    if (version != null) {
+      _currentVersion = bibleData
+          .fetchAvailableVersions()
+          .firstWhere((v) => v.abbreviation == version);
+    }
+    if (book != null) {
+      _currentBook = bibleData.fetchBooks().firstWhere((b) => b.name == book);
+    }
+    _currentChapter = chapter;
+    referenceNotifier.value = Reference(
+      version: _currentVersion?.name ?? 'Version',
+      book: _currentBook?.name ?? 'Book',
+      chapter: _currentChapter?.toString(),
+    );
+  }
 
   List<Version> get availableVersions {
     return bibleData.fetchAvailableVersions();
@@ -25,6 +45,11 @@ class ImportPageManager {
 
   void setVersion(Version? version) {
     _currentVersion = version;
+    userSettings.setRecentReference(
+      version: _currentVersion?.abbreviation,
+      book: _currentBook?.name,
+      chapter: _currentChapter,
+    );
     referenceNotifier.value = referenceNotifier.value.copyWith(
       version: version?.name,
     );
@@ -33,6 +58,11 @@ class ImportPageManager {
   void setBook(Book? book) {
     _currentBook = book;
     _currentChapter = (book?.numberChapters == 1) ? null : 1;
+    userSettings.setRecentReference(
+      version: _currentVersion?.abbreviation,
+      book: _currentBook?.name,
+      chapter: _currentChapter,
+    );
     referenceNotifier.value = referenceNotifier.value.copyWith(
       book: book?.name,
       chapter: _currentChapter?.toString(),
@@ -41,6 +71,11 @@ class ImportPageManager {
 
   void setChapter(int chapter) {
     _currentChapter = chapter;
+    userSettings.setRecentReference(
+      version: _currentVersion?.abbreviation,
+      book: _currentBook?.name,
+      chapter: _currentChapter,
+    );
     referenceNotifier.value = referenceNotifier.value.copyWith(
       chapter: chapter.toString(),
     );
