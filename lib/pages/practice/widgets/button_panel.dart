@@ -68,45 +68,57 @@ class ButtonPanel extends StatelessWidget {
 
   List<Widget> _twoButtons() {
     return [
-      ResponseButton(
-        title: 'Hard',
-        subtitle: manager.hardTitle,
-        onPressed: () => manager.onResponse(Difficulty.hard),
+      Expanded(
+        child: ResponseButton(
+          title: 'Hard',
+          subtitle: manager.hardTitle,
+          onPressed: () => manager.onResponse(Difficulty.hard),
+        ),
       ),
       const SizedBox(width: 5),
-      ResponseButton(
-        title: 'Good',
-        subtitle: manager.goodTitle,
-        onPressed: () => manager.onResponse(Difficulty.good),
+      Expanded(
+        child: ResponseButton(
+          title: 'Good',
+          subtitle: manager.goodTitle,
+          onPressed: () => manager.onResponse(Difficulty.good),
+        ),
       ),
     ];
   }
 
   List<Widget> _fourButtons() {
     return [
-      ResponseButton(
-        title: 'Hard',
-        subtitle: manager.hardTitle,
-        onPressed: () => manager.onResponse(Difficulty.hard),
+      Expanded(
+        child: ResponseButton(
+          title: 'Hard',
+          subtitle: manager.hardTitle,
+          onPressed: () => manager.onResponse(Difficulty.hard),
+        ),
       ),
       const SizedBox(width: 5),
-      ResponseButton(
-        title: 'OK',
-        subtitle: manager.okTitle,
-        onPressed: () => manager.onResponse(Difficulty.ok),
+      Expanded(
+        child: ResponseButton(
+          title: 'OK',
+          subtitle: manager.okTitle,
+          onPressed: () => manager.onResponse(Difficulty.ok),
+        ),
       ),
       const SizedBox(width: 5),
-      ResponseButton(
-        title: 'Good',
-        subtitle: manager.goodTitle,
-        onPressed: () => manager.onResponse(Difficulty.good),
+      Expanded(
+        child: ResponseButton(
+          title: 'Good',
+          subtitle: manager.goodTitle,
+          onPressed: () => manager.onResponse(Difficulty.good),
+        ),
       ),
       if (manager.shouldShowEasyButton) ...[
         const SizedBox(width: 5),
-        ResponseButton(
-          title: 'Easy',
-          subtitle: manager.easyTitle,
-          onPressed: () => manager.onResponse(Difficulty.easy),
+        Expanded(
+          child: ResponseButton(
+            title: 'Easy',
+            subtitle: manager.easyTitle,
+            onPressed: () => manager.onResponse(Difficulty.easy),
+          ),
         ),
       ]
     ];

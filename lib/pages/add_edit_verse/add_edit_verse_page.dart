@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/common/verse.dart';
+import 'package:memorize_scripture/go_router.dart';
 import 'package:memorize_scripture/pages/add_edit_verse/add_edit_verse_page_manager.dart';
 
 class AddEditVersePage extends StatefulWidget {
@@ -81,6 +83,16 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: OutlinedButton(
+                      child: const Text('Search online'),
+                      onPressed: () {
+                        context.pushNamed(RouteName.import);
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 10),
                   ValueListenableBuilder<bool>(
                     valueListenable: manager.alreadyExistsNotifier,
                     builder: (context, alreadyExists, child) {

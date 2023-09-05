@@ -14,41 +14,40 @@ class ResponseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: SizedBox(
-        height: 48,
-        child: Stack(
-          children: [
-            OutlinedButton(
-              onPressed: onPressed,
-              child: const SizedBox(
-                height: double.infinity,
-                width: double.infinity,
-              ),
+    return SizedBox(
+      height: 48,
+      child: Stack(
+        children: [
+          OutlinedButton(
+            onPressed: onPressed,
+            child: const SizedBox(
+              height: double.infinity,
+              width: double.infinity,
             ),
-            Center(
-              child: IgnorePointer(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+          ),
+          Center(
+            child: IgnorePointer(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title,
+                    style: DefaultTextStyle.of(context)
+                        .style
+                        .copyWith(color: Theme.of(context).colorScheme.primary),
+                  ),
+                  if (subtitle != null)
                     Text(
-                      title,
+                      subtitle!,
                       style: DefaultTextStyle.of(context).style.copyWith(
-                          color: Theme.of(context).colorScheme.primary),
+                          color: Theme.of(context).colorScheme.secondary),
+                      textScaleFactor: 0.9,
                     ),
-                    if (subtitle != null)
-                      Text(
-                        subtitle!,
-                        style: DefaultTextStyle.of(context).style.copyWith(
-                            color: Theme.of(context).colorScheme.secondary),
-                        textScaleFactor: 0.9,
-                      ),
-                  ],
-                ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

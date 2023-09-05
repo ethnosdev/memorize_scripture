@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:memorize_scripture/pages/home/home_page_manager.dart';
 import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
+import 'package:memorize_scripture/services/book_data/bible_data.dart';
 import 'package:memorize_scripture/services/data_repository/data_repository.dart';
 import 'package:memorize_scripture/services/data_repository/sqflite/database.dart';
 import 'package:memorize_scripture/services/notification_service.dart';
@@ -16,4 +17,5 @@ void setupServiceLocator() {
   getIt.registerFactory<PracticePageManager>(() => PracticePageManager());
   getIt.registerLazySingleton<AppManager>(() => AppManager());
   getIt.registerLazySingleton<HomePageManager>(() => HomePageManager());
+  getIt.registerLazySingleton<BibleData>(() => BibleData());
 }
