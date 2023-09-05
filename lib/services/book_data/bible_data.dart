@@ -14,14 +14,6 @@ class BibleData {
   List<Book> fetchNtBooks() {
     return _books.where((book) => book.testament == Testament.nt).toList();
   }
-
-  // Uri fetchUrl({
-  //   required Version version,
-  //   required Book book,
-  //   required int chapter,
-  // }) {
-  //   final version = _versions.firstWhere((e) => e.name)
-  // }
 }
 
 Uri _biblePortalUrl(Book book, int chapter, String version) {

@@ -21,10 +21,7 @@ class ImportPageManager {
   Book? _currentBook;
   int? _currentChapter;
 
-  get readyToGo =>
-      _currentVersion != null &&
-      _currentBook != null &&
-      _currentChapter != null;
+  get readyToGo => _currentVersion != null && _currentBook != null;
 
   void setVersion(Version? version) {
     _currentVersion = version;
@@ -50,8 +47,9 @@ class ImportPageManager {
   }
 
   Uri? getUrl() {
-    if (_currentBook == null || _currentChapter == null) return null;
-    return _currentVersion?.generateUrl(_currentBook!, _currentChapter!);
+    final chapter = _currentChapter ?? 1;
+    if (_currentBook == null) return null;
+    return _currentVersion?.generateUrl(_currentBook!, chapter);
   }
 }
 

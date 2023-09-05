@@ -4,6 +4,7 @@ import 'package:memorize_scripture/common/version.dart';
 import 'package:memorize_scripture/pages/add_edit_verse/import/import_page_manager.dart';
 import 'package:memorize_scripture/pages/practice/widgets/buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ImportPage extends StatefulWidget {
   const ImportPage({super.key});
@@ -43,7 +44,7 @@ class _ImportPageState extends State<ImportPage> {
                     ),
                     OutlinedButton(
                       onPressed: () async {
-                        final book = await _showBooksDialog();
+                        final book = await _showBooksDialog(reference.book);
                         manager.setBook(book);
                       },
                       child: Text(reference.book),
@@ -110,7 +111,7 @@ class _ImportPageState extends State<ImportPage> {
     );
   }
 
-  Future<Book?> _showBooksDialog() async {
+  Future<Book?> _showBooksDialog(String previouslySelected) async {
     return showDialog(
       context: context,
       builder: (BuildContext buildContext) {
@@ -118,8 +119,8 @@ class _ImportPageState extends State<ImportPage> {
         final ntBooks = manager.ntBooks;
         return Dialog(
           child: Row(children: [
-            BookList(books: otBooks),
-            BookList(books: ntBooks),
+            BookList(books: otBooks, selectedBook: previouslySelected),
+            BookList(books: ntBooks, selectedBook: previouslySelected),
           ]),
         );
       },
@@ -159,22 +160,48 @@ class _ImportPageState extends State<ImportPage> {
   }
 }
 
-class BookList extends StatelessWidget {
+class BookList extends StatefulWidget {
   const BookList({
     super.key,
     required this.books,
+    required this.selectedBook,
   });
 
   final List<Book> books;
+  final String selectedBook;
+
+  @override
+  State<BookList> createState() => _BookListState();
+}
+
+class _BookListState extends State<BookList> {
+  final itemScrollController = ItemScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToIndex();
+    });
+  }
+
+  void _scrollToIndex() {
+    final index =
+        widget.books.indexWhere((book) => book.name == widget.selectedBook);
+    if (index == -1) return;
+    final scrollTo = (index > 0) ? index - 1 : 0;
+    itemScrollController.jumpTo(index: scrollTo);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ListView.builder(
+      child: ScrollablePositionedList.builder(
         shrinkWrap: true,
-        itemCount: books.length,
+        itemScrollController: itemScrollController,
+        itemCount: widget.books.length,
         itemBuilder: (context, index) {
-          final book = books[index];
+          final book = widget.books[index];
           return ListTile(
             title: Text(
               book.name,
