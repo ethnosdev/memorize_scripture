@@ -1,9 +1,10 @@
 ## 1.7.0
 
-- Fix collection title not fitting on collection screen
-- Fix app name not fitting on home page
-- Fix hint button titles not fitting when using a large font size
-- Fix congratulations message padding and centering
+- Copy/paste from BiblePortal.com based on version, book, and chapter.
+- Fix collection title not fitting on collection screen.
+- Fix app name not fitting on home page.
+- Fix hint button titles not fitting when using a large font size.
+- Fix congratulations message padding and centering.
 
 ## 1.6.0 - August 26, 2023
 
