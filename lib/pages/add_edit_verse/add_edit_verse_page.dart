@@ -83,97 +83,111 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: OutlinedButton(
-                      child: const Text('Search online'),
-                      onPressed: () {
-                        context.pushNamed(RouteName.import);
-                      },
-                    ),
-                  ),
+                  if (!isEditing) _searchOnline(context),
                   const SizedBox(height: 10),
-                  ValueListenableBuilder<bool>(
-                    valueListenable: manager.alreadyExistsNotifier,
-                    builder: (context, alreadyExists, child) {
-                      return TextField(
-                        autofocus: !isEditing,
-                        focusNode: promptFocus,
-                        controller: promptController,
-                        textCapitalization: TextCapitalization.sentences,
-                        maxLines: 5,
-                        decoration: InputDecoration(
-                          labelText: 'Prompt',
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          border: const OutlineInputBorder(),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 8,
-                          ),
-                          errorText: (alreadyExists)
-                              ? 'This prompt already exists'
-                              : null,
-                        ),
-                        onChanged: (value) => manager.onPromptChanged(
-                          collectionId: widget.collectionId,
-                          prompt: value,
-                        ),
-                      );
-                    },
-                  ),
+                  _prompt(),
                   const SizedBox(height: 10),
-                  TextField(
-                    textCapitalization: TextCapitalization.sentences,
-                    maxLines: 5,
-                    controller: verseTextController,
-                    decoration: const InputDecoration(
-                      labelText: 'Verse text',
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 8,
-                      ),
-                    ),
-                    onChanged: manager.onAnswerChanged,
-                  ),
+                  _verseText(),
                   const SizedBox(height: 10),
-                  ValueListenableBuilder<bool>(
-                    valueListenable: manager.showHintBoxNotifier,
-                    builder: (context, showHintBox, child) {
-                      if (showHintBox || hintController.text.isNotEmpty) {
-                        return TextField(
-                          textCapitalization: TextCapitalization.sentences,
-                          maxLines: 5,
-                          focusNode: hintFocus,
-                          controller: hintController,
-                          decoration: const InputDecoration(
-                            labelText: 'Hint',
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 8,
-                            ),
-                          ),
-                          onChanged: manager.onHintChanged,
-                        );
-                      }
-                      return OutlinedButton(
-                        onPressed: () {
-                          manager.onAddHintButtonPressed();
-                          hintFocus.requestFocus();
-                        },
-                        child: const Text('Add hint'),
-                      );
-                    },
-                  ),
+                  _hintOption(),
                 ],
               ),
             ),
           );
         },
       ),
+    );
+  }
+
+  Align _searchOnline(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: OutlinedButton(
+        child: const Text('Search online'),
+        onPressed: () {
+          context.pushNamed(RouteName.import);
+        },
+      ),
+    );
+  }
+
+  ValueListenableBuilder<bool> _prompt() {
+    return ValueListenableBuilder<bool>(
+      valueListenable: manager.alreadyExistsNotifier,
+      builder: (context, alreadyExists, child) {
+        return TextField(
+          autofocus: !isEditing,
+          focusNode: promptFocus,
+          controller: promptController,
+          textCapitalization: TextCapitalization.sentences,
+          maxLines: 5,
+          decoration: InputDecoration(
+            labelText: 'Prompt',
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            border: const OutlineInputBorder(),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 12,
+              horizontal: 8,
+            ),
+            errorText: (alreadyExists) ? 'This prompt already exists' : null,
+          ),
+          onChanged: (value) => manager.onPromptChanged(
+            collectionId: widget.collectionId,
+            prompt: value,
+          ),
+        );
+      },
+    );
+  }
+
+  TextField _verseText() {
+    return TextField(
+      textCapitalization: TextCapitalization.sentences,
+      maxLines: 5,
+      controller: verseTextController,
+      decoration: const InputDecoration(
+        labelText: 'Verse text',
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        border: OutlineInputBorder(),
+        contentPadding: EdgeInsets.symmetric(
+          vertical: 12,
+          horizontal: 8,
+        ),
+      ),
+      onChanged: manager.onAnswerChanged,
+    );
+  }
+
+  ValueListenableBuilder<bool> _hintOption() {
+    return ValueListenableBuilder<bool>(
+      valueListenable: manager.showHintBoxNotifier,
+      builder: (context, showHintBox, child) {
+        if (showHintBox || hintController.text.isNotEmpty) {
+          return TextField(
+            textCapitalization: TextCapitalization.sentences,
+            maxLines: 5,
+            focusNode: hintFocus,
+            controller: hintController,
+            decoration: const InputDecoration(
+              labelText: 'Hint',
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 8,
+              ),
+            ),
+            onChanged: manager.onHintChanged,
+          );
+        }
+        return OutlinedButton(
+          onPressed: () {
+            manager.onAddHintButtonPressed();
+            hintFocus.requestFocus();
+          },
+          child: const Text('Add hint'),
+        );
+      },
     );
   }
 
