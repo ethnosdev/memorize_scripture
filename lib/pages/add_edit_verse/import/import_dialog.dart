@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/book.dart';
 import 'package:memorize_scripture/common/version.dart';
-import 'package:memorize_scripture/pages/add_edit_verse/import/import_page_manager.dart';
+import 'package:memorize_scripture/pages/add_edit_verse/import/import_dialog_manager.dart';
 import 'package:memorize_scripture/pages/practice/widgets/buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-class ImportPage extends StatefulWidget {
-  const ImportPage({super.key});
+class ImportDialog extends StatefulWidget {
+  const ImportDialog({super.key});
 
   @override
-  State<ImportPage> createState() => _ImportPageState();
+  State<ImportDialog> createState() => _ImportDialogState();
 }
 
-class _ImportPageState extends State<ImportPage> {
-  final manager = ImportPageManager();
+class _ImportDialogState extends State<ImportDialog> {
+  final manager = ImportDialogManager();
 
   @override
   void initState() {
@@ -24,71 +24,79 @@ class _ImportPageState extends State<ImportPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Search online'),
-      ),
-      body: Padding(
+    final goButton = TextButton(
+      onPressed: (manager.readyToGo)
+          ? null
+          : () {
+              manager.onGoSearchOnlinePressed();
+              Navigator.of(context).pop();
+            },
+      child: const Text('Go'),
+    );
+    return AlertDialog(
+      title: Text('Search Online'),
+      actions: [goButton],
+      content: Padding(
         padding: const EdgeInsets.all(20.0),
         child: ValueListenableBuilder<Reference>(
           valueListenable: manager.referenceNotifier,
           builder: (context, reference, child) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Spacer(),
-                Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
-                  alignment: WrapAlignment.center,
-                  children: [
-                    OutlinedButton(
-                      onPressed: () async {
-                        final version = await _showVersionsDialog();
-                        manager.setVersion(version);
-                      },
-                      child: Text(reference.version),
-                    ),
-                    OutlinedButton(
-                      onPressed: () async {
-                        final book = await _showBooksDialog(reference.book);
-                        manager.setBook(book);
-                      },
-                      child: Text(reference.book),
-                    ),
-                    if (reference.chapter != null)
+            return SingleChildScrollView(
+              child: Column(
+                // crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  OutlinedButton(
+                    onPressed: () async {
+                      final version = await _showVersionsDialog();
+                      manager.setVersion(version);
+                    },
+                    child: Text(reference.version),
+                  ),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    alignment: WrapAlignment.center,
+                    children: [
                       OutlinedButton(
                         onPressed: () async {
-                          final number = manager.numberOfChapters;
-                          final chapter = await _showChaptersDialog(number);
-                          if (chapter == null) return;
-                          manager.setChapter(chapter);
+                          final book = await _showBooksDialog(reference.book);
+                          manager.setBook(book);
                         },
-                        child: Text(reference.chapter!),
+                        child: Text(reference.book),
                       ),
-                  ],
-                ),
-                const Spacer(),
-                Align(
-                  alignment: Alignment.center,
-                  child: OutlinedButton(
-                    onPressed: (manager.readyToGo)
-                        ? () async {
-                            final url = manager.getUrl();
-                            if (url == null) return;
-                            if (await canLaunchUrl(url)) {
-                              launchUrl(
-                                url,
-                                mode: LaunchMode.externalApplication,
-                              );
-                            }
-                          }
-                        : null,
-                    child: const Text('Go'),
+                      if (reference.chapter != null)
+                        OutlinedButton(
+                          onPressed: () async {
+                            final number = manager.numberOfChapters;
+                            final chapter = await _showChaptersDialog(number);
+                            if (chapter == null) return;
+                            manager.setChapter(chapter);
+                          },
+                          child: Text(reference.chapter!),
+                        ),
+                    ],
                   ),
-                ),
-                const Spacer(),
-              ],
+                  // Align(
+                  //   alignment: Alignment.center,
+                  //   child: OutlinedButton(
+                  //     onPressed: (manager.readyToGo)
+                  //         ? () async {
+                  //             final url = manager.getUrl();
+                  //             if (url == null) return;
+                  //             if (await canLaunchUrl(url)) {
+                  //               launchUrl(
+                  //                 url,
+                  //                 mode: LaunchMode.externalApplication,
+                  //               );
+                  //             }
+                  //           }
+                  //         : null,
+                  //     child: const Text('Go'),
+                  //   ),
+                  // ),
+                ],
+              ),
             );
           },
         ),

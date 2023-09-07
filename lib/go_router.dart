@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/pages/about/about_page.dart';
 import 'package:memorize_scripture/pages/add_edit_verse/add_edit_verse_page.dart';
-import 'package:memorize_scripture/pages/add_edit_verse/import/import_page.dart';
+import 'package:memorize_scripture/pages/add_edit_verse/import/import_dialog.dart';
 import 'package:memorize_scripture/pages/home/home_page.dart';
 import 'package:memorize_scripture/pages/practice/practice_page.dart';
 import 'package:memorize_scripture/pages/settings/settings_page.dart';
@@ -22,7 +22,7 @@ class RouteName {
   static const verseBrowser = 'verse_browser';
   static const about = 'about';
   static const settings = 'settings';
-  static const import = 'import';
+  // static const import = 'import';
 }
 
 final GoRouter router = GoRouter(
@@ -90,11 +90,11 @@ final GoRouter router = GoRouter(
           path: 'settings',
           builder: (context, state) => const SettingsPage(),
         ),
-        GoRoute(
-          name: RouteName.import,
-          path: 'import',
-          builder: (context, state) => const ImportPage(),
-        ),
+        // GoRoute(
+        //   name: RouteName.import,
+        //   path: 'import',
+        //   builder: (context, state) => const ImportDialog(),
+        // ),
       ],
     ),
   ],

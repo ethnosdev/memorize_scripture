@@ -4,8 +4,9 @@ import 'package:memorize_scripture/common/version.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/book_data/bible_data.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class ImportPageManager {
+class ImportDialogManager {
   final referenceNotifier = ValueNotifier<Reference>(const Reference());
   final bibleData = getIt<BibleData>();
   final userSettings = getIt<UserSettings>();
@@ -81,7 +82,18 @@ class ImportPageManager {
     );
   }
 
-  Uri? getUrl() {
+  Future<void> onGoSearchOnlinePressed() async {
+    final url = _getUrl();
+    if (url == null) return;
+    if (await canLaunchUrl(url)) {
+      launchUrl(
+        url,
+        mode: LaunchMode.externalApplication,
+      );
+    }
+  }
+
+  Uri? _getUrl() {
     final chapter = _currentChapter ?? 1;
     if (_currentBook == null) return null;
     return _currentVersion?.generateUrl(_currentBook!, chapter);

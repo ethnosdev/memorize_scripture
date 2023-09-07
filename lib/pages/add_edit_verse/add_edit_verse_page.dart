@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/go_router.dart';
 import 'package:memorize_scripture/pages/add_edit_verse/add_edit_verse_page_manager.dart';
+import 'package:memorize_scripture/pages/add_edit_verse/import/import_dialog.dart';
 
 class AddEditVersePage extends StatefulWidget {
   const AddEditVersePage({
@@ -105,7 +106,8 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
       child: OutlinedButton(
         child: const Text('Search online'),
         onPressed: () {
-          context.pushNamed(RouteName.import);
+          // context.pushNamed(RouteName.import);
+          _showSearchOnlineDialog();
         },
       ),
     );
@@ -250,6 +252,15 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
       context: context,
       builder: (BuildContext context) {
         return alert;
+      },
+    );
+  }
+
+  Future<void> _showSearchOnlineDialog() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext buildContext) {
+        return const ImportDialog();
       },
     );
   }
