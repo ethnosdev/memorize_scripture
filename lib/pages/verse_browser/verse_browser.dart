@@ -31,6 +31,22 @@ class _VerseBrowserState extends State<VerseBrowser> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.collectionName),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            tooltip: 'Add verse',
+            onPressed: () {
+              context.goNamed(
+                RouteName.addBrowser,
+                queryParameters: {
+                  Params.colId: widget.collectionId,
+                  Params.colName: widget.collectionName,
+                },
+                extra: manager.onFinishedEditing,
+              );
+            },
+          ),
+        ],
       ),
       body: ValueListenableBuilder(
         valueListenable: manager.listNotifier,

@@ -40,7 +40,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                 tooltip: 'Add verse',
                 onPressed: () {
                   context.goNamed(
-                    RouteName.add,
+                    RouteName.addPractice,
                     queryParameters: {
                       Params.colId: collectionId,
                       Params.colName: collectionName,
@@ -81,7 +81,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                       );
                     case 2:
                       context.goNamed(
-                        RouteName.add,
+                        RouteName.addPractice,
                         queryParameters: {
                           Params.colId: collectionId,
                           Params.colName: collectionName,

@@ -15,12 +15,14 @@ class Params {
 class RouteName {
   static const home = 'home';
   static const practice = 'practice';
-  static const add = 'add';
-  static const editPractice = 'edit_practice';
-  static const editBrowser = 'edit_browser';
-  static const verseBrowser = 'verse_browser';
+  static const addPractice = 'add-practice';
+  static const editPractice = 'edit-practice';
+  static const addBrowser = 'add-browser';
+  static const editBrowser = 'edit-browser';
+  static const verseBrowser = 'verse-browser';
   static const about = 'about';
   static const settings = 'settings';
+
   // static const import = 'import';
 }
 
@@ -42,7 +44,7 @@ final GoRouter router = GoRouter(
           },
           routes: [
             GoRoute(
-              name: RouteName.add,
+              name: RouteName.addPractice,
               path: 'add',
               builder: (context, state) => AddEditVersePage(
                 collectionId: state.queryParameters[Params.colId] as String,
@@ -74,6 +76,14 @@ final GoRouter router = GoRouter(
               builder: (context, state) => AddEditVersePage(
                 collectionId: state.queryParameters[Params.colId] as String,
                 verseId: state.queryParameters[Params.verseId] as String,
+                onFinished: state.extra as void Function(String?)?,
+              ),
+            ),
+            GoRoute(
+              name: RouteName.addBrowser,
+              path: 'add',
+              builder: (context, state) => AddEditVersePage(
+                collectionId: state.queryParameters[Params.colId] as String,
                 onFinished: state.extra as void Function(String?)?,
               ),
             ),

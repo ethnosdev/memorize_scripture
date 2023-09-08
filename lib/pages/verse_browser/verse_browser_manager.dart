@@ -31,7 +31,6 @@ class VerseBrowserManager {
   }
 
   void onFinishedEditing(String? verseId) async {
-    if (verseId == null) return;
     init(_collectionId);
   }
 

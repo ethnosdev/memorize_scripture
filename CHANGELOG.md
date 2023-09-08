@@ -1,6 +1,7 @@
 ## 1.7.0
 
 - Copy/paste from BiblePortal.com based on version, book, and chapter.
+- Add verse from browser page
 - Fix collection title not fitting on collection screen.
 - Fix app name not fitting on home page.
 - Fix hint button titles not fitting when using a large font size.
