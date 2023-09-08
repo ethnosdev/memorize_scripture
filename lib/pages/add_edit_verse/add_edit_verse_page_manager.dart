@@ -86,6 +86,7 @@ class AddEditVersePageManager {
       ),
     );
     canAddNotifier.value = false;
+    showHintBoxNotifier.value = false;
   }
 
   Future<void> updateVerse({
