@@ -1,4 +1,4 @@
-## 1.7.0
+## 1.7.0 - September 8, 2023
 
 - Copy/paste from BiblePortal.com based on version, book, and chapter.
 - Add verse from browser page

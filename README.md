@@ -24,7 +24,7 @@ Screen sizes:
 Publishing
 
 - https://docs.flutter.dev/deployment/ios
-- Update version and build number
+- Update version and build number in Xcode
 
 ```
 flutter build ipa

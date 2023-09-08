@@ -79,10 +79,12 @@ Follow the directions and click the **+** button in the top right. That'll show 
 ![empty collection](img/add-verse-2.png)
 </div>
 
-Here's the meaning of these two text input boxes:
+Here's the meaning of the content:
 
+- The **Search online** button allows you to select a translation, book, and chapter and then open a web page with that chapter. You can then copy and paste your desired verse into the Memorize Scripture app. For now, though, you can ignore this button.
 - The **prompt** is what the app will show when it's prompting you to quote a verse from memory. For a key verse collection, most people will probably write the verse reference here.
 - The **verse text** is what you're trying to quote. The app will hide this text from you until you're ready to check yourself.
+- The **Add hint** button allows you to input a custom hint. You can ignore this for now.
 
 Copy the reference below and paste it into the **Prompt** box:
 
@@ -112,10 +114,6 @@ To save the verse, press the **check mark button** in the top right:
 </div>
 
 You can continue adding as many verses as you like. When you're finished, press the back button twice to return to the home screen.
-
-:::tip
-You can use sites like [YouVersion](https://www.bible.com/) or [BibleGateway](https://www.biblegateway.com/) to look up verses so that you can copy and paste them into the app. On the other hand, entering them in by hand is good for your memory, too.
-:::
 
 ### Passage collection
 

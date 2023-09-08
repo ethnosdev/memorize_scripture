@@ -39,6 +39,10 @@ This setting is useful when you reset the due date for all of the verses in a co
 Rather than entering a lot of new verses at once and setting the max new verses to a low number like 1, it's generally better to wait to enter a new verse until you're ready to start learning it.
 :::
 
+## Max days between reviews
+
+You can ensure that every verse will show up at least once a month (or once every x days) no matter how many times you've marked a verse Good or Easy. If that's what you want, set this option to 30 days. Now, the Good and Easy buttons will never exceed 30.
+
 ## Two-button response
 
 The default is to show four response buttons on the practice screen:
