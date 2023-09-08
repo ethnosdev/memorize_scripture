@@ -109,7 +109,7 @@ class Finished extends StatelessWidget {
   });
 
   final PracticePageManager manager;
-  static const message = "Congratulations!\nYou're finished for today!";
+  static const message = "Congratulations!\nYou're finished for today.";
 
   @override
   Widget build(BuildContext context) {
