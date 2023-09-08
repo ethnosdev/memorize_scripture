@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:memorize_scripture/pages/practice/widgets/single_line_button.dart';
 import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
-import 'package:memorize_scripture/pages/practice/widgets/buttons.dart';
 
 class HintBox extends StatelessWidget {
   const HintBox({
@@ -21,19 +21,19 @@ class HintBox extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Wrap(
             alignment: WrapAlignment.center,
-            spacing: 16,
+            spacing: 10,
             runSpacing: 10,
             children: [
               SizedBox(
                 width: _buttonWidth,
-                child: ResponseButton(
+                child: SingleLineButton(
                   title: 'Letters',
                   onPressed: (enabled) ? manager.showFirstLettersHint : null,
                 ),
               ),
               SizedBox(
                 width: _buttonWidth,
-                child: ResponseButton(
+                child: SingleLineButton(
                   title: 'Words',
                   onPressed: (enabled) ? manager.showNextWordHint : null,
                 ),
@@ -41,7 +41,7 @@ class HintBox extends StatelessWidget {
               if (buttonState.hasCustomHint)
                 SizedBox(
                   width: _buttonWidth,
-                  child: ResponseButton(
+                  child: SingleLineButton(
                     title: 'Hint',
                     onPressed: (enabled) ? manager.showCustomHint : null,
                   ),

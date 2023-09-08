@@ -1,7 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/pages/about/about_page.dart';
 import 'package:memorize_scripture/pages/add_edit_verse/add_edit_verse_page.dart';
-import 'package:memorize_scripture/pages/add_edit_verse/import/import_dialog.dart';
 import 'package:memorize_scripture/pages/home/home_page.dart';
 import 'package:memorize_scripture/pages/practice/practice_page.dart';
 import 'package:memorize_scripture/pages/settings/settings_page.dart';
@@ -90,11 +89,6 @@ final GoRouter router = GoRouter(
           path: 'settings',
           builder: (context, state) => const SettingsPage(),
         ),
-        // GoRoute(
-        //   name: RouteName.import,
-        //   path: 'import',
-        //   builder: (context, state) => const ImportDialog(),
-        // ),
       ],
     ),
   ],

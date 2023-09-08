@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/common/verse.dart';
-import 'package:memorize_scripture/go_router.dart';
 import 'package:memorize_scripture/pages/add_edit_verse/add_edit_verse_page_manager.dart';
 import 'package:memorize_scripture/pages/add_edit_verse/import/import_dialog.dart';
 

@@ -45,33 +45,29 @@ class ImportDialogManager {
   get readyToGo => _currentVersion != null && _currentBook != null;
 
   void setVersion(Version? version) {
+    if (version == null) return;
     _currentVersion = version;
-    print('_currentVersion: $_currentVersion');
-    print('_currentBook: $_currentBook');
-    print('readyToGo: $readyToGo');
-
     userSettings.setRecentReference(
       version: _currentVersion?.abbreviation,
       book: _currentBook?.name,
       chapter: _currentChapter,
     );
     referenceNotifier.value = referenceNotifier.value.copyWith(
-      version: version?.name,
+      version: version.name,
     );
   }
 
   void setBook(Book? book) {
+    if (book == null) return;
     _currentBook = book;
-    print('_currentVersion: $_currentVersion');
-    print('_currentBook: $_currentBook');
-    _currentChapter = (book?.numberChapters == 1) ? null : 1;
+    _currentChapter = (book.numberChapters == 1) ? null : 1;
     userSettings.setRecentReference(
       version: _currentVersion?.abbreviation,
       book: _currentBook?.name,
       chapter: _currentChapter,
     );
     referenceNotifier.value = referenceNotifier.value.copyWith(
-      book: book?.name,
+      book: book.name,
       chapter: _currentChapter?.toString(),
     );
   }
