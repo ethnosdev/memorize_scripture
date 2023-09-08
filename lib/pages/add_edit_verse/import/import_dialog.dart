@@ -3,7 +3,6 @@ import 'package:memorize_scripture/common/book.dart';
 import 'package:memorize_scripture/common/version.dart';
 import 'package:memorize_scripture/pages/add_edit_verse/import/import_dialog_manager.dart';
 import 'package:memorize_scripture/pages/practice/widgets/buttons.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ImportDialog extends StatefulWidget {
@@ -24,35 +23,15 @@ class _ImportDialogState extends State<ImportDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final goButton = TextButton(
-      onPressed: (manager.readyToGo)
-          ? null
-          : () {
-              manager.onGoSearchOnlinePressed();
-              Navigator.of(context).pop();
-            },
-      child: const Text('Go'),
-    );
-    return AlertDialog(
-      title: Text('Search Online'),
-      actions: [goButton],
-      content: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: ValueListenableBuilder<Reference>(
-          valueListenable: manager.referenceNotifier,
-          builder: (context, reference, child) {
-            return SingleChildScrollView(
+    return Dialog(
+      child: ValueListenableBuilder<Reference>(
+        valueListenable: manager.referenceNotifier,
+        builder: (context, reference, child) {
+          return Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: SingleChildScrollView(
               child: Column(
-                // crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  OutlinedButton(
-                    onPressed: () async {
-                      final version = await _showVersionsDialog();
-                      manager.setVersion(version);
-                    },
-                    child: Text(reference.version),
-                  ),
-                  const SizedBox(height: 10),
                   Wrap(
                     spacing: 10,
                     runSpacing: 10,
@@ -60,12 +39,19 @@ class _ImportDialogState extends State<ImportDialog> {
                     children: [
                       OutlinedButton(
                         onPressed: () async {
+                          final version = await _showVersionsDialog();
+                          manager.setVersion(version);
+                        },
+                        child: Text(reference.version),
+                      ),
+                      OutlinedButton(
+                        onPressed: () async {
                           final book = await _showBooksDialog(reference.book);
                           manager.setBook(book);
                         },
                         child: Text(reference.book),
                       ),
-                      if (reference.chapter != null)
+                      if (manager.numberOfChapters > 1)
                         OutlinedButton(
                           onPressed: () async {
                             final number = manager.numberOfChapters;
@@ -73,33 +59,25 @@ class _ImportDialogState extends State<ImportDialog> {
                             if (chapter == null) return;
                             manager.setChapter(chapter);
                           },
-                          child: Text(reference.chapter!),
+                          child: Text(reference.chapter),
                         ),
                     ],
                   ),
-                  // Align(
-                  //   alignment: Alignment.center,
-                  //   child: OutlinedButton(
-                  //     onPressed: (manager.readyToGo)
-                  //         ? () async {
-                  //             final url = manager.getUrl();
-                  //             if (url == null) return;
-                  //             if (await canLaunchUrl(url)) {
-                  //               launchUrl(
-                  //                 url,
-                  //                 mode: LaunchMode.externalApplication,
-                  //               );
-                  //             }
-                  //           }
-                  //         : null,
-                  //     child: const Text('Go'),
-                  //   ),
-                  // ),
+                  const SizedBox(height: 30),
+                  OutlinedButton(
+                    onPressed: (!manager.readyToGo)
+                        ? null
+                        : () {
+                            manager.onGoSearchOnlinePressed();
+                            Navigator.of(context).pop();
+                          },
+                    child: const Text('Go'),
+                  ),
                 ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

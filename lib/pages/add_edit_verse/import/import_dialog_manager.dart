@@ -23,9 +23,9 @@ class ImportDialogManager {
     }
     _currentChapter = chapter;
     referenceNotifier.value = Reference(
-      version: _currentVersion?.name ?? 'Version',
-      book: _currentBook?.name ?? 'Book',
-      chapter: _currentChapter?.toString(),
+      version: _currentVersion?.name ?? Reference.defaultVersion,
+      book: _currentBook?.name ?? Reference.defaultBook,
+      chapter: _currentChapter?.toString() ?? Reference.defaultChapter,
     );
   }
 
@@ -46,6 +46,10 @@ class ImportDialogManager {
 
   void setVersion(Version? version) {
     _currentVersion = version;
+    print('_currentVersion: $_currentVersion');
+    print('_currentBook: $_currentBook');
+    print('readyToGo: $readyToGo');
+
     userSettings.setRecentReference(
       version: _currentVersion?.abbreviation,
       book: _currentBook?.name,
@@ -58,6 +62,8 @@ class ImportDialogManager {
 
   void setBook(Book? book) {
     _currentBook = book;
+    print('_currentVersion: $_currentVersion');
+    print('_currentBook: $_currentBook');
     _currentChapter = (book?.numberChapters == 1) ? null : 1;
     userSettings.setRecentReference(
       version: _currentVersion?.abbreviation,
@@ -101,27 +107,33 @@ class ImportDialogManager {
 }
 
 class Reference {
+  static const defaultVersion = 'Version';
+  static const defaultBook = 'Book';
+  static const defaultChapter = '1';
+
   const Reference({
-    this.version = 'Version',
-    this.book = 'Book',
-    this.chapter,
+    this.version = defaultVersion,
+    this.book = defaultBook,
+    this.chapter = defaultChapter,
   });
 
   final String version;
   final String book;
-  final String? chapter;
+  final String chapter;
 
   static const _nullSentinel = 'null';
 
   Reference copyWith({
-    String? version,
-    String? book,
+    String? version = _nullSentinel,
+    String? book = _nullSentinel,
     String? chapter = _nullSentinel,
   }) {
     return Reference(
-      version: version ?? this.version,
-      book: book ?? this.book,
-      chapter: (chapter != _nullSentinel) ? chapter : this.chapter,
+      version:
+          (version != _nullSentinel) ? version ?? defaultVersion : this.version,
+      book: (book != _nullSentinel) ? book ?? defaultBook : this.book,
+      chapter:
+          (chapter != _nullSentinel) ? chapter ?? defaultChapter : this.chapter,
     );
   }
 }
