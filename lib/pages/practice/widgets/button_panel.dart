@@ -54,14 +54,18 @@ class ButtonPanel extends StatelessWidget {
 
   List<Widget> _casualPracticeButtons() {
     return [
-      ResponseButton(
-        title: 'Again',
-        onPressed: () => manager.onResponse(Difficulty.hard),
+      Expanded(
+        child: ResponseButton(
+          title: 'Again',
+          onPressed: () => manager.onResponse(Difficulty.hard),
+        ),
       ),
       const SizedBox(width: 5),
-      ResponseButton(
-        title: 'Good',
-        onPressed: () => manager.onResponse(Difficulty.good),
+      Expanded(
+        child: ResponseButton(
+          title: 'Good',
+          onPressed: () => manager.onResponse(Difficulty.good),
+        ),
       ),
     ];
   }

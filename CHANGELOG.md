@@ -1,3 +1,7 @@
+## 1.7.1 - September 12, 2023
+
+- Fix missing response buttons in "practice all verses" mode.
+
 ## 1.7.0 - September 8, 2023
 
 - Copy/paste from BiblePortal.com based on version, book, and chapter.
