@@ -32,6 +32,7 @@ class _PracticePageState extends State<PracticePage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     manager.textThemeColor = Theme.of(context).textTheme.bodyMedium?.color;
+    manager.textHighlightColor = Theme.of(context).colorScheme.primary;
   }
 
   @override

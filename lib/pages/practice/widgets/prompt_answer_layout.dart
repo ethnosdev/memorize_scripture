@@ -90,15 +90,13 @@ class Prompt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<String>(
+    return ValueListenableBuilder<TextSpan>(
       valueListenable: manager.promptNotifier,
       builder: (context, text, child) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: SelectableText.rich(
-            TextSpan(
-              text: text,
-            ),
+            text,
             textAlign: TextAlign.center,
             textScaleFactor: textScaleFactor,
           ),

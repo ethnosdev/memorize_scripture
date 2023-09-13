@@ -54,7 +54,7 @@ class PracticePageManager {
 
   final uiNotifier = ValueNotifier<PracticeState>(PracticeState.loading);
   final countNotifier = ValueNotifier<String>('');
-  final promptNotifier = ValueNotifier<String>('');
+  final promptNotifier = ValueNotifier<TextSpan>(const TextSpan());
   final answerNotifier = ValueNotifier<TextSpan>(const TextSpan());
   final isShowingAnswerNotifier = ValueNotifier<bool>(false);
   final hintButtonNotifier =
@@ -79,6 +79,10 @@ class PracticePageManager {
 
   Color _textThemeColor = Colors.black;
   set textThemeColor(Color? value) => _textThemeColor = value ?? Colors.black;
+
+  Color _textHighlightColor = Colors.black;
+  set textHighlightColor(Color? value) =>
+      _textHighlightColor = value ?? Colors.black;
 
   // Response button titles
   String hardTitle = '';
@@ -134,7 +138,7 @@ class PracticePageManager {
         hasCustomHint: _verses.first.hint.isNotEmpty,
       );
       answerNotifier.value = const TextSpan();
-      promptNotifier.value = _verses.first.prompt;
+      promptNotifier.value = _addHighlighting(_verses.first.prompt);
       countNotifier.value = _verses.length.toString();
       appBarNotifier.update(isPracticing: true, canUndo: canUndo);
       _wordsHintHelper.init(
@@ -146,12 +150,41 @@ class PracticePageManager {
     }
   }
 
+  // Text surrounded by underscores should be highlighted.
+  TextSpan _addHighlighting(String text) {
+    final spans = <TextSpan>[];
+    final regExp = RegExp(r'_(.*?)_');
+    int lastEnd = 0;
+    final highlightStyle = TextStyle(
+      color: _textHighlightColor,
+      fontWeight: FontWeight.bold,
+    );
+
+    // Find all matches and create TextSpans
+    regExp.allMatches(text).forEach((match) {
+      spans.add(TextSpan(
+        text: text.substring(lastEnd, match.start),
+      ));
+      spans.add(TextSpan(
+        text: match.group(1),
+        style: highlightStyle,
+      ));
+      lastEnd = match.end;
+    });
+
+    // Add the remaining text if any
+    if (lastEnd < text.length) {
+      spans.add(TextSpan(
+        text: text.substring(lastEnd, text.length),
+      ));
+    }
+
+    return TextSpan(children: spans);
+  }
+
   void show() {
     _showResponseButtons();
-    answerNotifier.value = TextSpan(
-      text: _verses.first.text,
-      style: TextStyle(color: _textThemeColor),
-    );
+    answerNotifier.value = _addHighlighting(_verses.first.text);
   }
 
   void _showResponseButtons() {
@@ -227,7 +260,7 @@ class PracticePageManager {
     final hint = _verses.first.hint;
     final currentText = answerNotifier.value.text;
     answerNotifier.value =
-        (currentText == hint) ? const TextSpan() : TextSpan(text: hint);
+        (currentText == hint) ? const TextSpan() : _addHighlighting(hint);
   }
 
   void onResponse(Difficulty response) {

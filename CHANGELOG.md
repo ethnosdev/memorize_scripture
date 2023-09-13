@@ -1,3 +1,7 @@
+## 1.8.0
+
+- Secret feature: Highlight text by surrounding it with underscores.
+
 ## 1.7.1 - September 12, 2023
 
 - Fix missing response buttons in "practice all verses" mode.
