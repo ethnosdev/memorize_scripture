@@ -25,6 +25,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
   final verseTextController = TextEditingController();
   final hintController = TextEditingController();
   final promptFocus = FocusNode();
+  final verseTextFocus = FocusNode();
   final hintFocus = FocusNode();
 
   bool get isEditing => widget.verseId != null;
@@ -95,7 +96,65 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
           );
         },
       ),
+      bottomSheet: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          CustomKeyboardAction(
+            icon: Icons.format_bold,
+            onTap: () {},
+          ),
+          CustomKeyboardAction(
+            icon: Icons.keyboard_arrow_left,
+            onTap: _moveLeft,
+          ),
+          CustomKeyboardAction(
+            icon: Icons.keyboard_arrow_right,
+            onTap: _moveRight,
+          ),
+          CustomKeyboardAction(
+            icon: Icons.copy,
+            onTap: () {},
+          ),
+          CustomKeyboardAction(
+            icon: Icons.paste,
+            onTap: () {},
+          ),
+        ],
+      ),
     );
+  }
+
+  TextEditingController? _getFocusedController() {
+    final currentFocus = FocusManager.instance.primaryFocus;
+    if (currentFocus == promptFocus) {
+      return promptController;
+    } else if (currentFocus == verseTextFocus) {
+      return verseTextController;
+    } else if (currentFocus == hintFocus) {
+      return hintController;
+    }
+    return null;
+  }
+
+  void _moveLeft() => _moveCursor(-1);
+
+  void _moveRight() => _moveCursor(1);
+
+  void _moveCursor(int step) {
+    final controller = _getFocusedController();
+    if (controller == null) return;
+    final cursorPos = (step.isNegative)
+        ? controller.selection.start
+        : controller.selection.end;
+    if (!controller.selection.isCollapsed) {
+      controller.selection = TextSelection.collapsed(offset: cursorPos);
+      return;
+    }
+    if ((step.isNegative && cursorPos <= 0) ||
+        (!step.isNegative && cursorPos >= controller.text.length)) {
+      return;
+    }
+    controller.selection = TextSelection.collapsed(offset: cursorPos + step);
   }
 
   Align _searchOnline(BuildContext context) {
@@ -104,7 +163,6 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
       child: OutlinedButton(
         child: const Text('Search online'),
         onPressed: () {
-          // context.pushNamed(RouteName.import);
           _showSearchOnlineDialog();
         },
       ),
@@ -142,6 +200,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
 
   TextField _verseText() {
     return TextField(
+      focusNode: verseTextFocus,
       textCapitalization: TextCapitalization.sentences,
       maxLines: 5,
       controller: verseTextController,
@@ -260,6 +319,31 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
       builder: (BuildContext buildContext) {
         return const ImportDialog();
       },
+    );
+  }
+}
+
+class CustomKeyboardAction extends StatelessWidget {
+  const CustomKeyboardAction({
+    super.key,
+    required this.onTap,
+    required this.icon,
+  });
+
+  final VoidCallback onTap;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Icon(
+          icon,
+          size: 24,
+        ),
+      ),
     );
   }
 }

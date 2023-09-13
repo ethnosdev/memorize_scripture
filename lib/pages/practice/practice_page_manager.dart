@@ -150,10 +150,10 @@ class PracticePageManager {
     }
   }
 
-  // Text surrounded by underscores should be highlighted.
+  // Text surrounded by double asterisks should be highlighted.
   TextSpan _addHighlighting(String text) {
     final spans = <TextSpan>[];
-    final regExp = RegExp(r'_(.*?)_');
+    final regExp = RegExp(r'\*\*(.*?)\*\*');
     int lastEnd = 0;
     final highlightStyle = TextStyle(
       color: _textHighlightColor,
