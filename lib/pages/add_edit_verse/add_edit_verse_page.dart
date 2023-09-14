@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/pages/add_edit_verse/add_edit_verse_page_manager.dart';
 import 'package:memorize_scripture/pages/add_edit_verse/import/import_dialog.dart';
@@ -113,7 +114,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
           ),
           CustomKeyboardAction(
             icon: Icons.copy,
-            onTap: () {},
+            onTap: _copy,
           ),
           CustomKeyboardAction(
             icon: Icons.paste,
@@ -142,7 +143,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
 
   void _moveCursor(int step) {
     final controller = _getFocusedController();
-    if (controller == null) return;
+    if (controller == null || !controller.selection.isValid) return;
     final cursorPos = (step.isNegative)
         ? controller.selection.start
         : controller.selection.end;
@@ -155,6 +156,34 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
       return;
     }
     controller.selection = TextSelection.collapsed(offset: cursorPos + step);
+  }
+
+  Future<void> _copy() async {
+    final controller = _getFocusedController();
+    if (controller == null || !controller.selection.isValid) return;
+
+    // select everything if there is no selection
+    final finalPosition = controller.selection.end;
+    if (controller.selection.isCollapsed) {
+      controller.selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: controller.text.length,
+      );
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+
+    // copy selection
+    final selectedText = controller.text.substring(
+      controller.selection.start,
+      controller.selection.end,
+    );
+    Clipboard.setData(ClipboardData(text: selectedText));
+
+    // collapse selection
+    controller.selection = TextSelection(
+      baseOffset: finalPosition,
+      extentOffset: finalPosition,
+    );
   }
 
   Align _searchOnline(BuildContext context) {
