@@ -118,7 +118,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
           ),
           CustomKeyboardAction(
             icon: Icons.paste,
-            onTap: () {},
+            onTap: _paste,
           ),
         ],
       ),
@@ -160,9 +160,13 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
 
   Future<void> _copy() async {
     final controller = _getFocusedController();
-    if (controller == null || !controller.selection.isValid) return;
+    if (controller == null ||
+        !controller.selection.isValid ||
+        controller.text.isEmpty) {
+      return;
+    }
 
-    // select everything if there is no selection
+    // if there is no selection, select everything
     final finalPosition = controller.selection.end;
     if (controller.selection.isCollapsed) {
       controller.selection = TextSelection(
@@ -180,9 +184,25 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
     Clipboard.setData(ClipboardData(text: selectedText));
 
     // collapse selection
-    controller.selection = TextSelection(
-      baseOffset: finalPosition,
-      extentOffset: finalPosition,
+    controller.selection = TextSelection.collapsed(offset: finalPosition);
+  }
+
+  Future<void> _paste() async {
+    final controller = _getFocusedController();
+    // get clipboard text and check it
+    if (controller == null || !controller.selection.isValid) return;
+    final data = await Clipboard.getData(Clipboard.kTextPlain);
+    final text = data?.text;
+    if (text == null || text.isEmpty) return;
+    // get selection
+    final start = controller.selection.start;
+    final end = controller.selection.end;
+    final before = controller.text.substring(0, start);
+    final after = controller.text.substring(end);
+    // insert at or replace selection
+    controller.text = before + text + after;
+    controller.selection = TextSelection.collapsed(
+      offset: start + text.length,
     );
   }
 
