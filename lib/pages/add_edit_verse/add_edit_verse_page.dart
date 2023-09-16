@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:memorize_scripture/common/verse.dart';
@@ -102,7 +104,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
         children: [
           CustomKeyboardAction(
             icon: Icons.format_bold,
-            onTap: () {},
+            onTap: _highlight,
           ),
           CustomKeyboardAction(
             icon: Icons.keyboard_arrow_left,
@@ -137,6 +139,46 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
     return null;
   }
 
+  void _highlight() {
+    final controller = _getFocusedController();
+    if (controller == null || !controller.selection.isValid) return;
+    var text = controller.text;
+    final start = controller.selection.start;
+    final end = controller.selection.end;
+    text = manager.updateHighlight(text, start, end);
+    // int index = 1; // Replace this with the actual index
+    // String text = "I **am eating** an **apple**.";
+
+    // // 1. Check if the index is within a bolded range.
+    // final regExp = RegExp(r'\*\*(.*?)\*\*');
+    // bool found = false;
+    // for (var match in regExp.allMatches(text)) {
+    //   if (index >= match.start && index <= match.end) {
+    //     // Remove asterisks to unbold this range
+    //     text = text.replaceRange(match.start, match.end, match.group(1)!);
+    //     found = true;
+    //     break;
+    //   }
+    // }
+
+    // // 2. If index is not in a bolded range, find the word around the index and bold it.
+    // if (!found) {
+    //   int start = text.lastIndexOf(RegExp(r'\b'), index);
+    //   int end = text.indexOf(RegExp(r'\b'), index);
+
+    //   // If no boundary is found, default to beginning or end of the string
+    //   if (start == -1) start = 0;
+    //   if (end == -1) end = text.length;
+
+    //   if (start < end) {
+    //     String word = text.substring(start, end);
+    //     text = text.replaceRange(start, end, '**$word**');
+    //   }
+    // }
+
+    print(text);
+  }
+
   void _moveLeft() => _moveCursor(-1);
 
   void _moveRight() => _moveCursor(1);
@@ -165,7 +207,6 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
         controller.text.isEmpty) {
       return;
     }
-
     // if there is no selection, select everything
     final finalPosition = controller.selection.end;
     if (controller.selection.isCollapsed) {
@@ -175,14 +216,12 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
       );
       await Future.delayed(const Duration(milliseconds: 100));
     }
-
     // copy selection
     final selectedText = controller.text.substring(
       controller.selection.start,
       controller.selection.end,
     );
     Clipboard.setData(ClipboardData(text: selectedText));
-
     // collapse selection
     controller.selection = TextSelection.collapsed(offset: finalPosition);
   }
@@ -211,9 +250,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
       alignment: Alignment.topCenter,
       child: OutlinedButton(
         child: const Text('Search online'),
-        onPressed: () {
-          _showSearchOnlineDialog();
-        },
+        onPressed: () => _showSearchOnlineDialog(),
       ),
     );
   }
