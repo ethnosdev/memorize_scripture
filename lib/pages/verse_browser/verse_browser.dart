@@ -103,14 +103,13 @@ class _VerseBrowserState extends State<VerseBrowser> {
           child: ListView(
             shrinkWrap: true,
             children: [
-              if (showMove)
-                ListTile(
-                  title: const Text('Move'),
-                  onTap: () async {
-                    Navigator.of(context).pop();
-                    _showMoveDialog(index: index);
-                  },
-                ),
+              ListTile(
+                title: const Text('Copy verse text'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  manager.copyVerseText(index: index);
+                },
+              ),
               ListTile(
                 title: const Text('Reset due date'),
                 onTap: () {
@@ -119,6 +118,14 @@ class _VerseBrowserState extends State<VerseBrowser> {
                   _showMessage('Due date reset');
                 },
               ),
+              if (showMove)
+                ListTile(
+                  title: const Text('Move'),
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    _showMoveDialog(index: index);
+                  },
+                ),
               ListTile(
                 title: const Text('Delete'),
                 onTap: () {

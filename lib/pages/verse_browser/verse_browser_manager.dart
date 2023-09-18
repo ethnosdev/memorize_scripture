@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/service_locator.dart';
@@ -32,6 +33,12 @@ class VerseBrowserManager {
 
   void onFinishedEditing(String? verseId) async {
     init(_collectionId);
+  }
+
+  void copyVerseText({required int index}) {
+    final list = listNotifier.value;
+    final verse = list[index];
+    Clipboard.setData(ClipboardData(text: verse.text));
   }
 
   Future<void> resetDueDate({required int index}) async {
