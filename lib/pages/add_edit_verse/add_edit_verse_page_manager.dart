@@ -36,13 +36,10 @@ class AddEditVersePageManager {
     _hint = verse?.hint ?? '';
   }
 
-  void onPromptChanged({
-    required String collectionId,
-    required String prompt,
-  }) {
+  void onPromptChanged(String prompt) {
     _prompt = prompt;
     dataRepo
-        .promptExists(collectionId: collectionId, prompt: prompt)
+        .promptExists(collectionId: _collectionId, prompt: prompt)
         .then((exists) {
       if (_initialVerse?.prompt != prompt) {
         alreadyExistsNotifier.value = exists;
@@ -51,7 +48,7 @@ class AddEditVersePageManager {
     });
   }
 
-  void onAnswerChanged(String verseText) {
+  void onVerseTextChanged(String verseText) {
     _verseText = verseText;
     canAddNotifier.value = _promptVerseNotEmpty && _changesMade;
   }
@@ -135,22 +132,6 @@ class AddEditVersePageManager {
       match = text.indexOf('**', match + 2);
     }
     return isHighlighted;
-  }
-
-  int _moveStartBack(String text, int startIndex) {
-    int newStart = startIndex;
-    for (int i = startIndex - 1; i >= 0; i--) {
-      if (text[i] == '*') newStart = i;
-    }
-    return newStart;
-  }
-
-  int _moveEndUp(String text, int endIndex) {
-    int newEnd = endIndex;
-    for (int i = endIndex; i < text.length; i++) {
-      if (text[i] == '*') newEnd = i + 1;
-    }
-    return newEnd;
   }
 
   String _unhighlight(String text, int index) {

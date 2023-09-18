@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:memorize_scripture/common/verse.dart';
@@ -93,6 +91,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
                   _verseText(),
                   const SizedBox(height: 10),
                   _hintOption(),
+                  const SizedBox(height: 60),
                 ],
               ),
             ),
@@ -148,7 +147,13 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
     final (newText, index) = manager.updateHighlight(text, start, end);
     controller.text = newText;
     controller.selection = TextSelection.collapsed(offset: index);
-    print('$newText $index');
+    if (controller == promptController) {
+      manager.onPromptChanged(newText);
+    } else if (controller == verseTextController) {
+      manager.onVerseTextChanged(newText);
+    } else if (controller == hintController) {
+      manager.onHintChanged(newText);
+    }
   }
 
   void _moveLeft() => _moveCursor(-1);
@@ -236,7 +241,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
           focusNode: promptFocus,
           controller: promptController,
           textCapitalization: TextCapitalization.sentences,
-          maxLines: 5,
+          maxLines: null,
           decoration: InputDecoration(
             labelText: 'Prompt',
             floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -247,10 +252,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
             ),
             errorText: (alreadyExists) ? 'This prompt already exists' : null,
           ),
-          onChanged: (value) => manager.onPromptChanged(
-            collectionId: widget.collectionId,
-            prompt: value,
-          ),
+          onChanged: manager.onPromptChanged,
         );
       },
     );
@@ -260,7 +262,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
     return TextField(
       focusNode: verseTextFocus,
       textCapitalization: TextCapitalization.sentences,
-      maxLines: 5,
+      maxLines: null,
       controller: verseTextController,
       decoration: const InputDecoration(
         labelText: 'Verse text',
@@ -271,7 +273,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
           horizontal: 8,
         ),
       ),
-      onChanged: manager.onAnswerChanged,
+      onChanged: manager.onVerseTextChanged,
     );
   }
 
@@ -282,7 +284,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
         if (showHintBox || hintController.text.isNotEmpty) {
           return TextField(
             textCapitalization: TextCapitalization.sentences,
-            maxLines: 5,
+            maxLines: null,
             focusNode: hintFocus,
             controller: hintController,
             decoration: const InputDecoration(
