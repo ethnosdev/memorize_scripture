@@ -40,7 +40,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                 tooltip: 'Add verse',
                 onPressed: () {
                   context.goNamed(
-                    RouteName.addPractice,
+                    RouteName.practiceAdd,
                     queryParameters: {
                       Params.colId: collectionId,
                       Params.colName: collectionName,
@@ -66,12 +66,19 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                       text: 'Add verse',
                     ),
                   ),
+                  const PopupMenuItem(
+                    value: 3,
+                    child: IconTextRow(
+                      icon: Icons.list,
+                      text: 'Verse browser',
+                    ),
+                  ),
                 ],
                 onSelected: (value) {
                   switch (value) {
                     case 1:
                       context.goNamed(
-                        RouteName.editPractice,
+                        RouteName.practiceEdit,
                         queryParameters: {
                           Params.colId: collectionId,
                           Params.colName: collectionName,
@@ -81,12 +88,20 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                       );
                     case 2:
                       context.goNamed(
-                        RouteName.addPractice,
+                        RouteName.practiceAdd,
                         queryParameters: {
                           Params.colId: collectionId,
                           Params.colName: collectionName,
                         },
                         extra: manager.onFinishedAddingEditing,
+                      );
+                    case 3:
+                      context.pushNamed(
+                        RouteName.practiceBrowser,
+                        queryParameters: {
+                          Params.colId: collectionId,
+                          Params.colName: collectionName,
+                        },
                       );
                   }
                 },

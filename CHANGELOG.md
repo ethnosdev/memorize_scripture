@@ -4,7 +4,8 @@
 - Editor bar: Navigation arrows.
 - Editor bar: Copy/paste.
 - Add/Edit page: Input boxes match the content height.
-- Long press verse in browser to copy it.
+- Verse browser page: Long press menu item to copy verse text.
+- Practice page: Menu item for "Browse verses".
 
 ## 1.7.1 - September 12, 2023
 

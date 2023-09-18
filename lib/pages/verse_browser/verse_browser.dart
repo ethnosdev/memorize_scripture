@@ -36,8 +36,8 @@ class _VerseBrowserState extends State<VerseBrowser> {
             icon: const Icon(Icons.add),
             tooltip: 'Add verse',
             onPressed: () {
-              context.goNamed(
-                RouteName.addBrowser,
+              context.pushNamed(
+                RouteName.browserAdd,
                 queryParameters: {
                   Params.colId: widget.collectionId,
                   Params.colName: widget.collectionName,
@@ -74,7 +74,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
                 onTap: () {
                   final verse = manager.verseFor(index);
                   context.goNamed(
-                    RouteName.editBrowser,
+                    RouteName.browserEdit,
                     queryParameters: {
                       Params.colId: widget.collectionId,
                       Params.colName: widget.collectionName,
