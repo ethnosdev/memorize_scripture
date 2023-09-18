@@ -37,7 +37,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
             tooltip: 'Add verse',
             onPressed: () {
               context.pushNamed(
-                RouteName.browserAdd,
+                RouteName.add,
                 queryParameters: {
                   Params.colId: widget.collectionId,
                   Params.colName: widget.collectionName,
@@ -73,8 +73,8 @@ class _VerseBrowserState extends State<VerseBrowser> {
                 ),
                 onTap: () {
                   final verse = manager.verseFor(index);
-                  context.goNamed(
-                    RouteName.browserEdit,
+                  context.pushNamed(
+                    RouteName.edit,
                     queryParameters: {
                       Params.colId: widget.collectionId,
                       Params.colName: widget.collectionName,
@@ -184,10 +184,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
     );
 
     Widget deleteButton = TextButton(
-      child: const Text(
-        "Delete",
-        style: TextStyle(color: Colors.red),
-      ),
+      child: const Text("Delete"),
       onPressed: () {
         Navigator.of(context).pop();
         manager.deleteVerse(index);

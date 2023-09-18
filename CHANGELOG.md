@@ -6,6 +6,7 @@
 - Add/Edit page: Input boxes match the content height.
 - Verse browser page: Long press menu item to copy verse text.
 - Practice page: Menu item for "Browse verses".
+- Use default text color instead of red for dialog "Delete" button.
 
 ## 1.7.1 - September 12, 2023
 

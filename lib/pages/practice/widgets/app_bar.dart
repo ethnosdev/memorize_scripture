@@ -39,8 +39,8 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                 icon: const Icon(Icons.add),
                 tooltip: 'Add verse',
                 onPressed: () {
-                  context.goNamed(
-                    RouteName.practiceAdd,
+                  context.pushNamed(
+                    RouteName.add,
                     queryParameters: {
                       Params.colId: collectionId,
                       Params.colName: collectionName,
@@ -77,8 +77,8 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                 onSelected: (value) {
                   switch (value) {
                     case 1:
-                      context.goNamed(
-                        RouteName.practiceEdit,
+                      context.pushNamed(
+                        RouteName.edit,
                         queryParameters: {
                           Params.colId: collectionId,
                           Params.colName: collectionName,
@@ -87,8 +87,8 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                         extra: manager.onFinishedAddingEditing,
                       );
                     case 2:
-                      context.goNamed(
-                        RouteName.practiceAdd,
+                      context.pushNamed(
+                        RouteName.add,
                         queryParameters: {
                           Params.colId: collectionId,
                           Params.colName: collectionName,
@@ -97,7 +97,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                       );
                     case 3:
                       context.pushNamed(
-                        RouteName.practiceBrowser,
+                        RouteName.verseBrowser,
                         queryParameters: {
                           Params.colId: collectionId,
                           Params.colName: collectionName,

@@ -237,10 +237,7 @@ class _BodyWidgetState extends State<BodyWidget> {
     );
 
     Widget deleteButton = TextButton(
-      child: const Text(
-        "Delete",
-        style: TextStyle(color: Colors.red),
-      ),
+      child: const Text("Delete"),
       onPressed: () {
         Navigator.of(context).pop();
         manager.deleteCollection(index);

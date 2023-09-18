@@ -52,6 +52,7 @@ class MenuDrawer extends StatelessWidget {
             ListTile(
               title: const Text('Help'),
               onTap: () async {
+                Navigator.pop(context);
                 final url = Uri.parse(AppStrings.tutorialUrl);
                 if (await canLaunchUrl(url)) {
                   launchUrl(url, mode: LaunchMode.externalApplication);
