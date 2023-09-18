@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/go_router.dart';
 import 'package:memorize_scripture/pages/verse_browser/verse_browser_manager.dart';
 
@@ -8,10 +9,12 @@ class VerseBrowser extends StatefulWidget {
     super.key,
     required this.collectionId,
     required this.collectionName,
+    this.onFinished,
   });
 
   final String collectionId;
   final String collectionName;
+  final void Function(String?)? onFinished;
 
   @override
   State<VerseBrowser> createState() => _VerseBrowserState();
@@ -24,6 +27,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
   void initState() {
     super.initState();
     manager.init(widget.collectionId);
+    manager.onFinishedModifyingCollection = widget.onFinished;
   }
 
   @override
@@ -72,7 +76,6 @@ class _VerseBrowserState extends State<VerseBrowser> {
                   ],
                 ),
                 onTap: () {
-                  final verse = manager.verseFor(index);
                   context.pushNamed(
                     RouteName.edit,
                     queryParameters: {
@@ -83,9 +86,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
                     extra: manager.onFinishedEditing,
                   );
                 },
-                onLongPress: () async {
-                  _showCollectionOptionsDialog(index);
-                },
+                onLongPress: () => _showCollectionOptionsDialog(verse),
               );
             },
           );
@@ -94,7 +95,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
     );
   }
 
-  Future<String?> _showCollectionOptionsDialog(int index) async {
+  Future<String?> _showCollectionOptionsDialog(Verse verse) async {
     final showMove = manager.shouldShowMoveMenuItem();
     return showDialog(
       context: context,
@@ -107,14 +108,14 @@ class _VerseBrowserState extends State<VerseBrowser> {
                 title: const Text('Copy verse text'),
                 onTap: () {
                   Navigator.of(context).pop();
-                  manager.copyVerseText(index: index);
+                  manager.copyVerseText(verse.text);
                 },
               ),
               ListTile(
                 title: const Text('Reset due date'),
                 onTap: () {
                   Navigator.of(context).pop();
-                  manager.resetDueDate(index: index);
+                  manager.resetDueDate(verse);
                   _showMessage('Due date reset');
                 },
               ),
@@ -123,14 +124,14 @@ class _VerseBrowserState extends State<VerseBrowser> {
                   title: const Text('Move'),
                   onTap: () async {
                     Navigator.of(context).pop();
-                    _showMoveDialog(index: index);
+                    _showMoveDialog(verse);
                   },
                 ),
               ListTile(
                 title: const Text('Delete'),
                 onTap: () {
                   Navigator.of(context).pop();
-                  _showVerifyDeleteDialog(index: index);
+                  _showVerifyDeleteDialog(verse);
                 },
               )
             ],
@@ -140,7 +141,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
     );
   }
 
-  Future<String?> _showMoveDialog({required int index}) async {
+  Future<String?> _showMoveDialog(Verse verse) async {
     final collections = manager.otherCollections();
     return showDialog(
       context: context,
@@ -155,7 +156,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
                 title: Text(name),
                 onTap: () {
                   Navigator.of(context).pop();
-                  manager.moveVerse(index, collections[index].id);
+                  manager.moveVerse(verse, collections[index].id);
                   _showMessage('Verse moved to $name.');
                 },
               );
@@ -175,7 +176,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
     );
   }
 
-  Future<String?> _showVerifyDeleteDialog({required int index}) async {
+  Future<String?> _showVerifyDeleteDialog(Verse verse) async {
     Widget cancelButton = TextButton(
       child: const Text("Cancel"),
       onPressed: () {
@@ -187,7 +188,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
       child: const Text("Delete"),
       onPressed: () {
         Navigator.of(context).pop();
-        manager.deleteVerse(index);
+        manager.deleteVerse(verse);
       },
     );
 

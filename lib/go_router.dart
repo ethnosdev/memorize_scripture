@@ -17,11 +17,6 @@ class RouteName {
   static const practice = 'practice';
   static const add = 'add';
   static const edit = 'edit';
-  // static const practiceAdd = 'practice-add';
-  // static const practiceEdit = 'practice-edit';
-  // static const practiceBrowser = 'practice-browser';
-  // static const browserAdd = 'browser-add';
-  // static const browserEdit = 'browser-edit';
   static const verseBrowser = 'verse-browser';
   static const about = 'about';
   static const settings = 'settings';
@@ -50,6 +45,7 @@ final GoRouter router = GoRouter(
           builder: (context, state) => VerseBrowser(
             collectionId: state.queryParameters[Params.colId] as String,
             collectionName: state.queryParameters[Params.colName] as String,
+            onFinished: state.extra as void Function(String?)?,
           ),
         ),
         GoRoute(

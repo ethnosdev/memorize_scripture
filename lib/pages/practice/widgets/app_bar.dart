@@ -102,6 +102,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                           Params.colId: collectionId,
                           Params.colName: collectionName,
                         },
+                        extra: manager.onFinishedAddingEditing,
                       );
                   }
                 },

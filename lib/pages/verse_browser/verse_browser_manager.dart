@@ -12,6 +12,8 @@ class VerseBrowserManager {
   late String _collectionId;
   late List<Collection> _collections;
 
+  void Function(String?)? onFinishedModifyingCollection;
+
   Future<void> init(String collectionId) async {
     _collectionId = collectionId;
     _collections = await dataRepo.fetchCollections();
@@ -19,31 +21,24 @@ class VerseBrowserManager {
     listNotifier.value = list;
   }
 
-  Future<void> deleteVerse(int index) async {
-    final list = listNotifier.value.toList();
-    final verse = list[index];
+  Future<void> deleteVerse(Verse verse) async {
     await dataRepo.deleteVerse(verseId: verse.id);
-    list.removeAt(index);
+    final list = listNotifier.value.toList();
+    list.removeWhere((v) => v.id == verse.id);
     listNotifier.value = list;
-  }
-
-  Verse verseFor(int index) {
-    return listNotifier.value[index];
+    onFinishedModifyingCollection?.call(null);
   }
 
   void onFinishedEditing(String? verseId) async {
     init(_collectionId);
+    onFinishedModifyingCollection?.call(verseId);
   }
 
-  void copyVerseText({required int index}) {
-    final list = listNotifier.value;
-    final verse = list[index];
-    Clipboard.setData(ClipboardData(text: verse.text));
+  void copyVerseText(String verseText) {
+    Clipboard.setData(ClipboardData(text: verseText));
   }
 
-  Future<void> resetDueDate({required int index}) async {
-    final list = listNotifier.value;
-    final verse = list[index];
+  Future<void> resetDueDate(Verse verse) async {
     final updated = Verse(
       id: verse.id,
       prompt: verse.prompt,
@@ -60,11 +55,11 @@ class VerseBrowserManager {
         .toList();
   }
 
-  void moveVerse(int index, String toCollectionId) async {
-    final list = listNotifier.value.toList();
-    final verse = list[index];
+  void moveVerse(Verse verse, String toCollectionId) async {
     await dataRepo.updateVerse(toCollectionId, verse);
-    list.removeAt(index);
+    final list = listNotifier.value.toList();
+    list.removeWhere((v) => v.id == verse.id);
     listNotifier.value = list;
+    onFinishedModifyingCollection?.call(null);
   }
 }
