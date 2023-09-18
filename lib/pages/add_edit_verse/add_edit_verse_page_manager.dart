@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/service_locator.dart';
@@ -109,60 +111,20 @@ class AddEditVersePageManager {
     );
   }
 
-  String updateHighlight(String text, int startIndex, int endIndex) {
-    int start = _moveStartBack(text, startIndex);
-    int end = _moveEndUp(text, endIndex);
-    final startIsHighlighted = _isHighlighted(text, start);
-    final endIsHighlighted = _isHighlighted(text, end);
-    if (start == end) {
-      if (startIsHighlighted && endIsHighlighted) {
-        return _unhighlight(text, start);
-      }
-      // if not bold then
-      // move start to beginning of word
-      // move end to end of word
-      // if start still == end then do nothing (not in word)
+  /// Returns the updated text and the new cursor position
+  (String, int) updateHighlight(String text, int startIndex, int endIndex) {
+    if (startIndex != endIndex) {
+      final updated = _highlightRange(text, startIndex, endIndex);
+      return (updated, startIndex + 2);
     }
-
-    // range does not contain **
-    // then insert ** at start and ** at end
-
-    // range contains *
-    // 1. start and end bold:
-    //  remove all ** from start to end
-    if (startIsHighlighted && endIsHighlighted) {
-      return _unhighlightRange(text, start, end);
+    if (_isHighlighted(text, startIndex)) {
+      final updated = _unhighlight(text, startIndex);
+      return (updated, startIndex - 2);
     }
-    // 2. start and end NOT bold:
-    //  remove all ** from start to end
-    //  insert ** at start and ** at end
-    if (!startIsHighlighted && !endIsHighlighted) {
-      final value = _unhighlightRange(text, start, end);
-      return _highlightRange(text, start, end);
-    }
-    // 3. only start is bold:
-    //  remove all ** from start to end
-    //  insert ** at end
-    // 4. only end is bold:
-    //  remove all ** from start to end
-    //  insert ** at start
-
-    // edge cases
-    //  bbbbs**nnne (same as 3)
-    //  bbbb*s*nnne (move s back then 3)
-    //  bbbb**snnne (move s back then 3)
-    //  nnnns**bbbe (same as 4)
-    //  nnnn*s*bbbe (move s back then 4)
-    //  nnnn**sbbbe (move s back then 4)
-
-    //  sbbbb**ennn (same as 3)
-    //  sbbbb*e*nnn (move e up then 3)
-    //  sbbbbe**nnne (move e up then 3)
-    //  snnnn**ebbb (same as 4)
-    //  snnnn*e*bbb (move e up then 4)
-    //  snnnne**bbb (move e up then 4)
-
-    // Summary: move s back and e up to start with
+    final (start, end) = _getWordRange(text, startIndex);
+    if (start == end) return (text, startIndex);
+    final updated = _highlightRange(text, start, end);
+    return (updated, startIndex + 2);
   }
 
   bool _isHighlighted(String text, int index) {
@@ -192,14 +154,11 @@ class AddEditVersePageManager {
   }
 
   String _unhighlight(String text, int index) {
-    final indexBefore = text.lastIndexOf('**', index);
+    final start = max(index - 1, 0);
+    final indexBefore = text.lastIndexOf('**', start);
     final indexAfter = text.indexOf('**', index);
     if (indexBefore == -1 || indexAfter == -1) return text;
     return _unhighlightRange(text, indexBefore, indexAfter + 2);
-    // final before = text.substring(0, indexBefore);
-    // final middle = text.substring(indexBefore + 2, indexAfter);
-    // final after = text.substring(indexAfter + 2);
-    // return '$before$middle$after';
   }
 
   String _unhighlightRange(String text, int start, int end) {
@@ -213,5 +172,21 @@ class AddEditVersePageManager {
     final middle = text.substring(start, end);
     final after = text.substring(end);
     return '$before**$middle**$after';
+  }
+
+  (int start, int end) _getWordRange(String text, int index) {
+    int start = index;
+    int end = index;
+    while (start > 0 && _isWordCharacter(text[start - 1])) {
+      start--;
+    }
+    while (end < text.length && _isWordCharacter(text[end])) {
+      end++;
+    }
+    return (start, end);
+  }
+
+  bool _isWordCharacter(String c) {
+    return RegExp(r'\w').hasMatch(c);
   }
 }

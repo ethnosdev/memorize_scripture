@@ -145,38 +145,10 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
     var text = controller.text;
     final start = controller.selection.start;
     final end = controller.selection.end;
-    text = manager.updateHighlight(text, start, end);
-    // int index = 1; // Replace this with the actual index
-    // String text = "I **am eating** an **apple**.";
-
-    // // 1. Check if the index is within a bolded range.
-    // final regExp = RegExp(r'\*\*(.*?)\*\*');
-    // bool found = false;
-    // for (var match in regExp.allMatches(text)) {
-    //   if (index >= match.start && index <= match.end) {
-    //     // Remove asterisks to unbold this range
-    //     text = text.replaceRange(match.start, match.end, match.group(1)!);
-    //     found = true;
-    //     break;
-    //   }
-    // }
-
-    // // 2. If index is not in a bolded range, find the word around the index and bold it.
-    // if (!found) {
-    //   int start = text.lastIndexOf(RegExp(r'\b'), index);
-    //   int end = text.indexOf(RegExp(r'\b'), index);
-
-    //   // If no boundary is found, default to beginning or end of the string
-    //   if (start == -1) start = 0;
-    //   if (end == -1) end = text.length;
-
-    //   if (start < end) {
-    //     String word = text.substring(start, end);
-    //     text = text.replaceRange(start, end, '**$word**');
-    //   }
-    // }
-
-    print(text);
+    final (newText, index) = manager.updateHighlight(text, start, end);
+    controller.text = newText;
+    controller.selection = TextSelection.collapsed(offset: index);
+    print('$newText $index');
   }
 
   void _moveLeft() => _moveCursor(-1);
