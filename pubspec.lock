@@ -17,14 +17,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.13.0"
-  archive:
-    dependency: transitive
-    description:
-      name: archive
-      sha256: e0902a06f0e00414e4e3438a084580161279f137aeb862274710f29ec10cf01e
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.3.9"
   args:
     dependency: transitive
     description:
@@ -362,14 +354,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "9.1.1"
-  googleapis_auth:
-    dependency: transitive
-    description:
-      name: googleapis_auth
-      sha256: af7c3a3edf9d0de2e1e0a77e994fae0a581c525fa7012af4fa0d4a52ed9484da
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.4.1"
   graphs:
     dependency: transitive
     description:
@@ -378,14 +362,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
-  grpc:
-    dependency: transitive
-    description:
-      name: grpc
-      sha256: e93ee3bce45c134bf44e9728119102358c7cd69de7832d9a874e2e74eb8cab40
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.4"
   http:
     dependency: transitive
     description:
@@ -394,14 +370,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
-  http2:
-    dependency: transitive
-    description:
-      name: http2
-      sha256: "38db0c4aa9f1cd238a5d2e86aa0cc7cc91c77e0c6c94ba64bbe85e4ff732a952"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.0"
   http_multi_server:
     dependency: transitive
     description:
@@ -418,11 +386,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
-  integration_test:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   io:
     dependency: transitive
     description:
@@ -599,22 +562,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
-  patrol:
-    dependency: "direct dev"
-    description:
-      name: patrol
-      sha256: fa6550d33785ad9b8f497c81d3d74a25fd0f4c6491ab967d3cd9081c318a4da2
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.5"
-  patrol_finders:
-    dependency: transitive
-    description:
-      name: patrol_finders
-      sha256: "9de6b2c873843db6811c3def4a2d9f023968b1428a9fdc9127d5f089015df569"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   petitparser:
     dependency: transitive
     description:
@@ -639,14 +586,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.5"
-  pointycastle:
-    dependency: transitive
-    description:
-      name: pointycastle
-      sha256: "7c1e5f0d23c9016c5bbd8b1473d0d3fb3fc851b876046039509e18e0c7485f2c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.7.3"
   pool:
     dependency: transitive
     description:
@@ -663,14 +602,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.4"
-  protobuf:
-    dependency: transitive
-    description:
-      name: protobuf
-      sha256: "01dd9bd0fa02548bf2ceee13545d4a0ec6046459d847b6b061d8a27237108a08"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.0"
   pub_semver:
     dependency: transitive
     description:
