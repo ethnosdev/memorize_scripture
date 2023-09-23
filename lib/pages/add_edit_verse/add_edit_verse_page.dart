@@ -216,10 +216,18 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
     final before = controller.text.substring(0, start);
     final after = controller.text.substring(end);
     // insert at or replace selection
-    controller.text = before + text + after;
+    final newText = before + text + after;
+    controller.text = newText;
     controller.selection = TextSelection.collapsed(
       offset: start + text.length,
     );
+    if (controller == promptController) {
+      manager.onPromptChanged(newText);
+    } else if (controller == verseTextController) {
+      manager.onVerseTextChanged(newText);
+    } else if (controller == hintController) {
+      manager.onHintChanged(newText);
+    }
   }
 
   Align _searchOnline(BuildContext context) {
