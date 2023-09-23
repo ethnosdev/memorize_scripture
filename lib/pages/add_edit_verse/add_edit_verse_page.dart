@@ -208,8 +208,8 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
     // get clipboard text and check it
     if (controller == null || !controller.selection.isValid) return;
     final data = await Clipboard.getData(Clipboard.kTextPlain);
-    final text = data?.text;
-    if (text == null || text.isEmpty) return;
+    final text = _removeExtraSpaces(data?.text);
+    if (text.isEmpty) return;
     // get selection
     final start = controller.selection.start;
     final end = controller.selection.end;
@@ -228,6 +228,11 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
     } else if (controller == hintController) {
       manager.onHintChanged(newText);
     }
+  }
+
+  String _removeExtraSpaces(String? text) {
+    if (text == null) return '';
+    return text.replaceAll(RegExp(r' +'), ' ').trim();
   }
 
   Align _searchOnline(BuildContext context) {
