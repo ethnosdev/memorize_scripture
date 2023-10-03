@@ -3,6 +3,7 @@
 - Fix edit page not recognizing pastes.
 - Fix double spaces in text.
 - Fix letter hints not catching contractions with smart quote apostrophe.
+- Hide ** highlight markers in letter and word hints.
 
 ## 1.8.0 - September 18, 2023
 

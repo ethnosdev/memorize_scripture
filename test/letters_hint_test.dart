@@ -15,6 +15,28 @@ void main() {
       expect(texts, ["H", "ello", ", ", "W", "orld", "!"]);
     });
 
+    test('hide ** bold markers', () {
+      final helper = LettersHintHelper(
+        text: "Hello, **World**!",
+        textColor: Colors.black,
+        onUpdate: null,
+      );
+      final span = helper.textSpan;
+      final texts = span.children!.map((e) => (e as TextSpan).text!).toList();
+      expect(texts, ["H", "ello", ", ", "W", "orld", "!"]);
+    });
+
+    test('do not hide * single asterisks', () {
+      final helper = LettersHintHelper(
+        text: "Hello, *World*!",
+        textColor: Colors.black,
+        onUpdate: null,
+      );
+      final span = helper.textSpan;
+      final texts = span.children!.map((e) => (e as TextSpan).text!).toList();
+      expect(texts, ["H", "ello", ", *", "W", "orld", "*!"]);
+    });
+
     test('count normal apostrophe as part of word', () {
       final helper = LettersHintHelper(
         text: "David's",

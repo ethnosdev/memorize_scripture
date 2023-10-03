@@ -18,10 +18,14 @@ class WordsHintHelper {
     required void Function() onFinished,
   }) {
     _numberHintWordsShowing = 0;
-    _text = text;
+    _text = _removeBold(text);
     _textColor = textColor;
     _onTap = onTap;
     _onFinished = onFinished;
+  }
+
+  String _removeBold(String text) {
+    return text.replaceAll('**', '');
   }
 
   TextSpan nextWord() {

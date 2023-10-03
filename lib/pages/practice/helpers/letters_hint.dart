@@ -3,16 +3,21 @@ import 'package:flutter/material.dart';
 
 class LettersHintHelper {
   LettersHintHelper({
-    required this.text,
+    required String text,
     required this.textColor,
     required this.onUpdate,
   }) {
-    _tokens = _findGroups(text);
+    final withoutBold = _removeBold(text);
+    _tokens = _findGroups(withoutBold);
   }
-  final String text;
+
   final Color textColor;
   final void Function(TextSpan span)? onUpdate;
   late List<_Token> _tokens;
+
+  String _removeBold(String text) {
+    return text.replaceAll('**', '');
+  }
 
   TextSpan get textSpan {
     return TextSpan(
