@@ -208,7 +208,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
     // get clipboard text and check it
     if (controller == null || !controller.selection.isValid) return;
     final data = await Clipboard.getData(Clipboard.kTextPlain);
-    final text = data?.text ?? '';
+    final text = _removeExtraSpaces(data?.text);
     if (text.isEmpty) return;
     // get selection
     final start = controller.selection.start;
@@ -216,7 +216,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
     final before = controller.text.substring(0, start);
     final after = controller.text.substring(end);
     // insert at or replace selection
-    final newText = before + text + after;
+    var newText = before + text + after;
     controller.text = newText;
     controller.selection = TextSelection.collapsed(
       offset: start + text.length,
@@ -228,6 +228,11 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
     } else if (controller == hintController) {
       manager.onHintChanged(newText);
     }
+  }
+
+  String _removeExtraSpaces(String? text) {
+    if (text == null) return '';
+    return text.replaceAll(RegExp(r' +'), ' ').trim();
   }
 
   Align _searchOnline(BuildContext context) {
