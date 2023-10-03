@@ -73,13 +73,24 @@ class HomePageManager {
     return (collectionNotifier.value as LoadedCollections).list[index];
   }
 
-  Future<void> shareCollection({required int index}) async {
+  Future<void> shareCollection({
+    required int index,
+    Rect? sharePositionOrigin,
+  }) async {
     final collection = _getList[index];
     final name = collection.name.replaceAll(' ', '-');
-    await backupCollections(collectionId: collection.id, name: name);
+    await backupCollections(
+      collectionId: collection.id,
+      name: name,
+      sharePositionOrigin: sharePositionOrigin,
+    );
   }
 
-  Future<void> backupCollections({String? collectionId, String? name}) async {
+  Future<void> backupCollections({
+    String? collectionId,
+    String? name,
+    Rect? sharePositionOrigin,
+  }) async {
     final collections = await dataRepository.dumpCollections(collectionId);
     var verses = await dataRepository.dumpVerses(collectionId);
 
@@ -102,7 +113,10 @@ class HomePageManager {
     final file = File(path);
     await file.writeAsBytes(uint8list);
 
-    Share.shareXFiles([XFile(file.path)]);
+    Share.shareXFiles(
+      [XFile(file.path)],
+      sharePositionOrigin: sharePositionOrigin,
+    );
   }
 
   int? _dateToSecondsSinceEpoch(DateTime? date) {

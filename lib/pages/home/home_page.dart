@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/pages/home/widgets/drawer.dart';
@@ -39,34 +40,38 @@ class _HomePageState extends State<HomePage> {
               manager.addCollection(name);
             },
           ),
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) => [
-              const PopupMenuItem(
-                value: 1,
-                child: IconTextRow(
-                  icon: Icons.upload,
-                  text: 'Backup',
+          Builder(builder: (context) {
+            return PopupMenuButton(
+              itemBuilder: (BuildContext context) => [
+                const PopupMenuItem(
+                  value: 1,
+                  child: IconTextRow(
+                    icon: Icons.upload,
+                    text: 'Backup',
+                  ),
                 ),
-              ),
-              const PopupMenuItem(
-                value: 2,
-                child: IconTextRow(
-                  icon: Icons.download,
-                  text: 'Import',
+                const PopupMenuItem(
+                  value: 2,
+                  child: IconTextRow(
+                    icon: Icons.download,
+                    text: 'Import',
+                  ),
                 ),
-              ),
-            ],
-            onSelected: (value) {
-              switch (value) {
-                case 1:
-                  manager.backupCollections();
-                case 2:
-                  manager.import(
-                    (message) => _showMessage(context, message),
-                  );
-              }
-            },
-          ),
+              ],
+              onSelected: (value) {
+                switch (value) {
+                  case 1:
+                    final box = context.findRenderObject() as RenderBox?;
+                    final rect = box!.localToGlobal(Offset.zero) & box.size;
+                    manager.backupCollections(sharePositionOrigin: rect);
+                  case 2:
+                    manager.import(
+                      (message) => _showMessage(context, message),
+                    );
+                }
+              },
+            );
+          }),
         ],
       ),
       drawer: const MenuDrawer(),
@@ -136,28 +141,33 @@ class _BodyWidgetState extends State<BodyWidget> {
           final collection = widget.collections[index];
           return Card(
             key: ValueKey(collection.name),
-            child: ListTile(
-              title: Text(collection.name),
-              onTap: () {
-                context.goNamed(
-                  RouteName.practice,
-                  queryParameters: {
-                    Params.colId: collection.id,
-                    Params.colName: collection.name,
-                  },
-                );
-              },
-              onLongPress: () {
-                _showCollectionOptionsDialog(index);
-              },
-            ),
+            child: Builder(builder: (listTileContext) {
+              return ListTile(
+                title: Text(collection.name),
+                onTap: () {
+                  context.goNamed(
+                    RouteName.practice,
+                    queryParameters: {
+                      Params.colId: collection.id,
+                      Params.colName: collection.name,
+                    },
+                  );
+                },
+                onLongPress: () {
+                  _showCollectionOptionsDialog(listTileContext, index);
+                },
+              );
+            }),
           );
         },
       ),
     );
   }
 
-  Future<String?> _showCollectionOptionsDialog(int index) async {
+  Future<String?> _showCollectionOptionsDialog(
+    BuildContext listTileContext,
+    int index,
+  ) async {
     return showDialog(
       context: context,
       builder: (BuildContext buildContext) {
@@ -198,7 +208,12 @@ class _BodyWidgetState extends State<BodyWidget> {
                 title: const Text('Share'),
                 onTap: () async {
                   Navigator.of(context).pop();
-                  await manager.shareCollection(index: index);
+                  final box = listTileContext.findRenderObject() as RenderBox?;
+                  final rect = box!.localToGlobal(Offset.zero) & box.size;
+                  await manager.shareCollection(
+                    index: index,
+                    sharePositionOrigin: rect,
+                  );
                 },
               ),
               ListTile(
