@@ -37,7 +37,11 @@ class AddEditVersePageManager {
   }
 
   void onPromptChanged(String prompt) {
-    _prompt = prompt;
+    if (_isPastedText(_prompt, prompt)) {
+      _prompt = _removeExtraSpaces(prompt);
+    } else {
+      _prompt = prompt;
+    }
     dataRepo
         .promptExists(collectionId: _collectionId, prompt: prompt)
         .then((exists) {
@@ -48,8 +52,22 @@ class AddEditVersePageManager {
     });
   }
 
+  bool _isPastedText(String oldText, String newText) {
+    // assuming a large diff indicates a paste
+    return newText.length > oldText.length + 20;
+  }
+
+  String _removeExtraSpaces(String? text) {
+    if (text == null) return '';
+    return text.replaceAll(RegExp(r' +'), ' ').trim();
+  }
+
   void onVerseTextChanged(String verseText) {
-    _verseText = verseText;
+    if (_isPastedText(_verseText, verseText)) {
+      _verseText = _removeExtraSpaces(verseText);
+    } else {
+      _verseText = verseText;
+    }
     canAddNotifier.value = _promptVerseNotEmpty && _changesMade;
   }
 

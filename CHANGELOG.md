@@ -1,3 +1,8 @@
+## 1.9.0
+
+- fix edit page not recognizing pastes
+- fix double spaces in text
+
 ## 1.8.0 - September 18, 2023
 
 - Editor bar: Highlight text by surrounding it with **.
