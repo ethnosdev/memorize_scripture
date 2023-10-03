@@ -44,6 +44,12 @@ final _versions = [
     generateUrl: (book, chapter) => _biblePortalUrl(book, chapter, 'NKJV'),
   ),
   Version(
+    name: 'NLT',
+    longName: 'New Living Translation',
+    abbreviation: 'NLT',
+    generateUrl: (book, chapter) => _biblePortalUrl(book, chapter, 'NLT'),
+  ),
+  Version(
     name: 'NIV 1984',
     longName: 'New International Version (1984)',
     abbreviation: 'NIV84',
