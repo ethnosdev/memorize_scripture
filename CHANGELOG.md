@@ -1,7 +1,8 @@
 ## 1.9.0
 
-- fix edit page not recognizing pastes
-- fix double spaces in text
+- Fix edit page not recognizing pastes.
+- Fix double spaces in text.
+- Fix letter hints not catching contractions with smart quote apostrophe.
 
 ## 1.8.0 - September 18, 2023
 

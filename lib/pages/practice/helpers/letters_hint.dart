@@ -24,7 +24,7 @@ class LettersHintHelper {
 
   List<_Token> _findGroups(String str) {
     final list = <_Token>[];
-    RegExp exp = RegExp(r"(\b\w+('\w+)?\b)|(\W+)");
+    RegExp exp = RegExp(r"(\b\w+(['\u2019]\w+)?\b)|(\W+)");
 
     var matches = exp.allMatches(str);
     int tokenId = 0;
