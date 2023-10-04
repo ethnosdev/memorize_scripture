@@ -28,7 +28,7 @@ Name the collection **Key Verses**.
 ![Key Verses naming](img/collection-2.png)
 </div>
 
-Press **OK** and you should see something like the following:
+Press **OK** and you should see something like this:
 
 <div class="bordered-image">
 
@@ -195,6 +195,8 @@ And on you'll continue for each verse. You see the pattern now. Besides the firs
 
 :::tip
 Don't enter too many new verses at once. Instead, only add a new verse at the point you're ready for it. One new verse a week is a good long-term strategy.
+
+Another option is to create an extra collection and name it something like **To Learn**. Fill that collection with all of the verses that you want to learn. Then, when you're ready for a new verse, move it to your active collection. See the **Making Changes** section for how to move verses between collections.
 :::
 
 In the next section, you'll learn how to practice the verses you've entered.
