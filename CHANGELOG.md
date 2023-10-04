@@ -1,6 +1,6 @@
-## 1.9.0
+## 1.9.0 - October 4, 2023
 
-- Add NLT version to Online search options.
+- Add NLT version to online search options.
 - Fix edit page not recognizing pastes.
 - Fix double spaces in text when using paste button.
 - Fix letter hints not catching contractions with smart quote apostrophe.
