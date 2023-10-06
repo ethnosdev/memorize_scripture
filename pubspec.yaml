@@ -11,11 +11,11 @@ dependencies:
   file_picker: ^5.5.0
   flutter:
     sdk: flutter
-  flutter_local_notifications: ^15.1.1
+  flutter_local_notifications: ^16.0.0+1
   flutter_svg: ^2.0.7
   flutter_timezone: ^1.0.7
-  get_it: ^7.6.2
-  go_router: ^9.1.1
+  get_it: ^7.6.4
+  go_router: ^11.1.2
   package_info_plus: ^4.1.0
   path: ^1.8.3
   path_provider: ^2.1.1
@@ -37,12 +37,12 @@ dev_dependencies:
   test: ^1.22.0
   mockito: ^5.4.2
   build_runner: ^2.4.6
-#   patrol: ^2.2.5
+  patrol: ^2.3.0
 
-# patrol:
-#   app_name: Memorize Scripture`
-#   android:
-#     package_name: dev.ethnos.memorize_scripture
+patrol:
+  app_name: Memorize Scripture
+  android:
+    package_name: dev.ethnos.memorize_scripture
 
 flutter:
   uses-material-design: true

@@ -201,6 +201,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.8"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      sha256: c2b87cb7756efdf69892005af546c56c0b5037f54d2a88269b4f347a505e3ca2
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.5"
   fake_async:
     dependency: transitive
     description:
@@ -263,10 +271,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_local_notifications
-      sha256: "3002092e5b8ce2f86c3361422e52e6db6776c23ee21e0b2f71b892bf4259ef04"
+      sha256: "916e2e8e594a0ef98b88662be55a1fbc95094473366afdd992c72a1695687f4d"
       url: "https://pub.dev"
     source: hosted
-    version: "15.1.1"
+    version: "16.0.0+1"
   flutter_local_notifications_linux:
     dependency: transitive
     description:
@@ -334,10 +342,10 @@ packages:
     dependency: "direct main"
     description:
       name: get_it
-      sha256: "66c270f23f1b49d3af9c6651d8c40367319f4abefffc23380e4e7c5efd9fe4a7"
+      sha256: f79870884de16d689cf9a7d15eedf31ed61d750e813c538a6efb92660fea83c3
       url: "https://pub.dev"
     source: hosted
-    version: "7.6.2"
+    version: "7.6.4"
   glob:
     dependency: transitive
     description:
@@ -350,10 +358,10 @@ packages:
     dependency: "direct main"
     description:
       name: go_router
-      sha256: edbceb4c06758652fc9d12e58edb371cd977011b032e298dae0eb357167baad2
+      sha256: a07c781bf55bf11ae85133338e4850f0b4e33e261c44a66c750fc707d65d8393
       url: "https://pub.dev"
     source: hosted
-    version: "9.1.1"
+    version: "11.1.2"
   graphs:
     dependency: transitive
     description:
@@ -386,6 +394,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  integration_test:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   io:
     dependency: transitive
     description:
@@ -562,6 +575,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  patrol:
+    dependency: "direct dev"
+    description:
+      name: patrol
+      sha256: "6c6bd6983b8cd9fbc873f3efa358c860234dd961f12266452634e8bbe90300f7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
+  patrol_finders:
+    dependency: transitive
+    description:
+      name: patrol_finders
+      sha256: "9de6b2c873843db6811c3def4a2d9f023968b1428a9fdc9127d5f089015df569"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   petitparser:
     dependency: transitive
     description:

@@ -108,7 +108,7 @@ class SettingsPageManager extends ChangeNotifier {
       return await plugin
               .resolvePlatformSpecificImplementation<
                   AndroidFlutterLocalNotificationsPlugin>()
-              ?.requestPermission() ??
+              ?.requestNotificationsPermission() ??
           false;
     }
     debugPrint('Trying to set notifications for unimplemented platform');
