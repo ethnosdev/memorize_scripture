@@ -37,12 +37,6 @@ dev_dependencies:
   test: ^1.22.0
   mockito: ^5.4.2
   build_runner: ^2.4.6
-  patrol: ^2.3.0
-
-patrol:
-  app_name: Memorize Scripture
-  android:
-    package_name: dev.ethnos.memorize_scripture
 
 flutter:
   uses-material-design: true
