@@ -143,6 +143,9 @@ class _BodyWidgetState extends State<BodyWidget> {
             child: Builder(builder: (listTileContext) {
               return ListTile(
                 title: Text(collection.name),
+                trailing: (collection.isPinned) //
+                    ? const Icon(Icons.push_pin)
+                    : null,
                 onTap: () {
                   context.goNamed(
                     RouteName.practice,
@@ -153,7 +156,11 @@ class _BodyWidgetState extends State<BodyWidget> {
                   );
                 },
                 onLongPress: () {
-                  _showCollectionOptionsDialog(listTileContext, index);
+                  _showCollectionOptionsDialog(
+                    listTileContext: listTileContext,
+                    index: index,
+                    numberOfCollections: widget.collections.length,
+                  );
                 },
               );
             }),
@@ -163,22 +170,35 @@ class _BodyWidgetState extends State<BodyWidget> {
     );
   }
 
-  Future<String?> _showCollectionOptionsDialog(
-    BuildContext listTileContext,
-    int index,
-  ) async {
+  Future<String?> _showCollectionOptionsDialog({
+    required BuildContext listTileContext,
+    required int index,
+    required int numberOfCollections,
+  }) async {
     return showDialog(
       context: context,
       builder: (BuildContext buildContext) {
+        // TODO: refactor methods below to use collection rather than index
+        final collection = manager.collectionAt(index);
+        final showPinTile = numberOfCollections > 5;
         return Dialog(
           child: ListView(
             shrinkWrap: true,
             children: [
+              if (collection.isPinned || showPinTile)
+                ListTile(
+                  title: (collection.isPinned)
+                      ? const Text('Unpin')
+                      : const Text('Pin to top'),
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    manager.togglePin(collection);
+                  },
+                ),
               ListTile(
                 title: const Text('Browse verses'),
                 onTap: () async {
                   Navigator.of(context).pop();
-                  final collection = manager.collectionAt(index);
                   context.goNamed(
                     RouteName.verseBrowser,
                     queryParameters: {

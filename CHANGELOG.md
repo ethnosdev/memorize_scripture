@@ -1,3 +1,7 @@
+## 1.10.0 - October 27, 2023
+
+- Enable pinning to the top when more than five collections.
+
 ## 1.9.0 - October 4, 2023
 
 - Add NLT version to online search options.

@@ -24,6 +24,8 @@ abstract class UserSettings {
     required String? book,
     required int? chapter,
   });
+  List<String> get pinnedCollections;
+  Future<void> setPinnedCollections(List<String> ids);
 }
 
 class SharedPreferencesStorage extends UserSettings {
@@ -34,6 +36,7 @@ class SharedPreferencesStorage extends UserSettings {
   static const String _notificationsKey = 'notifications';
   static const String _notificationTimeKey = 'notificationTime';
   static const String _recentReferenceKey = 'recentReference';
+  static const String _pinnedCollectionsKey = 'pinnedCollections';
 
   // getters cache
   late final SharedPreferences prefs;
@@ -130,5 +133,14 @@ class SharedPreferencesStorage extends UserSettings {
     };
     final json = jsonEncode(map);
     await prefs.setString(_recentReferenceKey, json);
+  }
+
+  @override
+  List<String> get pinnedCollections =>
+      prefs.getStringList(_pinnedCollectionsKey) ?? [];
+
+  @override
+  Future<void> setPinnedCollections(List<String> ids) async {
+    await prefs.setStringList(_pinnedCollectionsKey, ids);
   }
 }

@@ -7,16 +7,22 @@ import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/data_repository/data_repository.dart';
+import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
 
 class HomePageManager {
-  HomePageManager({DataRepository? dataRepository}) {
+  HomePageManager({
+    DataRepository? dataRepository,
+    UserSettings? userSettings,
+  }) {
     this.dataRepository = dataRepository ?? getIt<DataRepository>();
+    this.userSettings = userSettings ?? getIt<UserSettings>();
   }
   late final DataRepository dataRepository;
+  late final UserSettings userSettings;
 
   final collectionNotifier =
       ValueNotifier<HomePageUiState>(LoadingCollections());
@@ -25,8 +31,32 @@ class HomePageManager {
       (collectionNotifier.value as LoadedCollections).list;
 
   Future<void> init() async {
+    await _reloadCollections();
+  }
+
+  Future<void> _reloadCollections() async {
     final collections = await dataRepository.fetchCollections();
-    collectionNotifier.value = LoadedCollections(collections);
+    final withPins = _updatePinnedStatus(collections);
+    final sorted = _sortPinned(withPins);
+    collectionNotifier.value = LoadedCollections(sorted);
+  }
+
+  List<Collection> _updatePinnedStatus(List<Collection> collections) {
+    final pinnedIds = userSettings.pinnedCollections;
+    final withPins = collections.map((c) {
+      return c.copyWith(isPinned: pinnedIds.contains(c.id));
+    }).toList();
+    return withPins;
+  }
+
+  List<Collection> _sortPinned(List<Collection> collections) {
+    final sortedCollections = collections.toList();
+    sortedCollections.sort((a, b) {
+      if (a.isPinned && !b.isPinned) return -1;
+      if (!a.isPinned && b.isPinned) return 1;
+      return a.name.compareTo(b.name);
+    });
+    return sortedCollections;
   }
 
   Future<void> addCollection(String? name) async {
@@ -36,8 +66,7 @@ class HomePageManager {
       name: name,
     );
     await dataRepository.insertCollection(collection);
-    final collections = await dataRepository.fetchCollections();
-    collectionNotifier.value = LoadedCollections(collections);
+    await _reloadCollections();
   }
 
   Future<void> renameCollection({required int index, String? newName}) async {
@@ -46,8 +75,7 @@ class HomePageManager {
     await dataRepository.updateCollection(
       oldCollection.copyWith(name: newName),
     );
-    final collections = await dataRepository.fetchCollections();
-    collectionNotifier.value = LoadedCollections(collections);
+    await _reloadCollections();
   }
 
   Future<void> resetDueDates({
@@ -198,6 +226,19 @@ class HomePageManager {
   String _versesWere(int count) {
     if (count == 1) return 'verse was';
     return 'verses were';
+  }
+
+  void togglePin(Collection collection) {
+    final collections = _getList.toList();
+    final index = collections.indexOf(collection);
+    collections[index] = collection.copyWith(isPinned: !collection.isPinned);
+    final reordered = _sortPinned(collections);
+    collectionNotifier.value = LoadedCollections(reordered);
+    final pinnedIds = reordered
+        .where((c) => c.isPinned) //
+        .map((c) => c.id)
+        .toList();
+    userSettings.setPinnedCollections(pinnedIds);
   }
 }
 
