@@ -1,4 +1,4 @@
-## 1.10.0 - October 27, 2023
+## 1.10.0 - October 28, 2023
 
 - Enable pinning to the top when more than five collections.
 - Remember book chapter when searching online.
