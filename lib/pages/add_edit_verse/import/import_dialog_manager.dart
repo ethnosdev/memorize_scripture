@@ -60,7 +60,8 @@ class ImportDialogManager {
   void setBook(Book? book) {
     if (book == null) return;
     _currentBook = book;
-    _currentChapter = (book.numberChapters == 1) ? null : 1;
+    final savedChapter = userSettings.getChapterForBook(book.name);
+    _currentChapter = (book.numberChapters == 1) ? null : savedChapter;
     userSettings.setRecentReference(
       version: _currentVersion?.abbreviation,
       book: _currentBook?.name,
@@ -79,6 +80,9 @@ class ImportDialogManager {
       book: _currentBook?.name,
       chapter: _currentChapter,
     );
+    if (_currentBook != null) {
+      userSettings.setChapterForBook(_currentBook!.name, chapter);
+    }
     referenceNotifier.value = referenceNotifier.value.copyWith(
       chapter: chapter.toString(),
     );

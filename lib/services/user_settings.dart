@@ -24,6 +24,8 @@ abstract class UserSettings {
     required String? book,
     required int? chapter,
   });
+  int getChapterForBook(String book);
+  Future<void> setChapterForBook(String book, int chapter);
   List<String> get pinnedCollections;
   Future<void> setPinnedCollections(List<String> ids);
 }
@@ -133,6 +135,18 @@ class SharedPreferencesStorage extends UserSettings {
     };
     final json = jsonEncode(map);
     await prefs.setString(_recentReferenceKey, json);
+  }
+
+  // The `book` is its own key.
+  @override
+  int getChapterForBook(String book) {
+    return prefs.getInt(book) ?? 1;
+  }
+
+  // The `book` is the key to save the chapter number.
+  @override
+  Future<void> setChapterForBook(String book, int chapter) async {
+    await prefs.setInt(book, chapter);
   }
 
   @override
