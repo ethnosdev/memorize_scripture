@@ -45,12 +45,19 @@ class _HomePageState extends State<HomePage> {
                 const PopupMenuItem(
                   value: 1,
                   child: IconTextRow(
+                    icon: Icons.sync,
+                    text: 'Sync',
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: 2,
+                  child: IconTextRow(
                     icon: Icons.upload,
                     text: 'Backup',
                   ),
                 ),
                 const PopupMenuItem(
-                  value: 2,
+                  value: 3,
                   child: IconTextRow(
                     icon: Icons.download,
                     text: 'Import',
@@ -60,10 +67,16 @@ class _HomePageState extends State<HomePage> {
               onSelected: (value) {
                 switch (value) {
                   case 1:
+                    if (manager.isLoggedIn) {
+                      manager.sync();
+                    } else {
+                      // TODO: prompt user to log in
+                    }
+                  case 2:
                     final box = context.findRenderObject() as RenderBox?;
                     final rect = box!.localToGlobal(Offset.zero) & box.size;
                     manager.backupCollections(sharePositionOrigin: rect);
-                  case 2:
+                  case 3:
                     manager.import(
                       (message) => _showMessage(context, message),
                     );

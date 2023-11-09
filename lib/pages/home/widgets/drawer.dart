@@ -50,6 +50,13 @@ class MenuDrawer extends StatelessWidget {
               },
             ),
             ListTile(
+              title: const Text('Account'),
+              onTap: () {
+                Navigator.pop(context);
+                context.goNamed(RouteName.account);
+              },
+            ),
+            ListTile(
               title: const Text('Help'),
               onTap: () async {
                 Navigator.pop(context);

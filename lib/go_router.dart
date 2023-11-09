@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/pages/about/about_page.dart';
+import 'package:memorize_scripture/pages/account/account_page.dart';
 import 'package:memorize_scripture/pages/add_edit_verse/add_edit_verse_page.dart';
 import 'package:memorize_scripture/pages/home/home_page.dart';
 import 'package:memorize_scripture/pages/practice/practice_page.dart';
@@ -20,6 +21,7 @@ class RouteName {
   static const verseBrowser = 'verse-browser';
   static const about = 'about';
   static const settings = 'settings';
+  static const account = 'account';
 }
 
 final GoRouter router = GoRouter(
@@ -75,6 +77,11 @@ final GoRouter router = GoRouter(
           name: RouteName.settings,
           path: 'settings',
           builder: (context, state) => const SettingsPage(),
+        ),
+        GoRoute(
+          name: RouteName.account,
+          path: 'account',
+          builder: (context, state) => const AccountPage(),
         ),
       ],
     ),

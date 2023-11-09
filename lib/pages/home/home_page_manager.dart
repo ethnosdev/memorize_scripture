@@ -30,6 +30,8 @@ class HomePageManager {
   List<Collection> get _getList =>
       (collectionNotifier.value as LoadedCollections).list;
 
+  bool get isLoggedIn => false;
+
   Future<void> init() async {
     await _reloadCollections();
   }
@@ -239,6 +241,10 @@ class HomePageManager {
         .map((c) => c.id)
         .toList();
     userSettings.setPinnedCollections(pinnedIds);
+  }
+
+  Future<void> sync() async {
+    // TODO: show overlay while syncing
   }
 }
 
