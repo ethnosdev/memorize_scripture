@@ -9,21 +9,27 @@ class TextFieldData {
   final String? errorText;
   final bool isObscured;
   bool get hasError => errorText != null;
+}
 
-  // TextFieldData copyWith({
-  //   String? errorText,
-  //   bool? isObscured,
-  // }) {
-  //   return TextFieldData(
-  //     errorText: errorText ?? this.errorText,
-  //     isObscured: isObscured ?? this.isObscured,
-  //   );
-  // }
+enum LoginStatus {
+  initial,
+  loading,
+  notLoggedIn,
+  loggedIn,
 }
 
 class AccountPageManager {
   final emailNotifier = ValueNotifier(const TextFieldData());
   final passwordNotifier = ValueNotifier(const TextFieldData(isObscured: true));
+  final statusNotifier = ValueNotifier(LoginStatus.initial);
+
+  void Function(String)? onError;
+
+  Future<void> init() async {
+    statusNotifier.value = LoginStatus.initial;
+    await Future.delayed(Duration(seconds: 2));
+    statusNotifier.value = LoginStatus.notLoggedIn;
+  }
 
   void togglePasswordVisibility() {
     final data = passwordNotifier.value;
