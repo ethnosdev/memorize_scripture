@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:memorize_scripture/pages/account/account_page_manager.dart';
 
-class AccountPage extends StatelessWidget {
+class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
+
+  @override
+  State<AccountPage> createState() => _AccountPageState();
+}
+
+class _AccountPageState extends State<AccountPage> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final manager = AccountPageManager();
 
   @override
   Widget build(BuildContext context) {
@@ -21,22 +31,45 @@ class AccountPage extends StatelessWidget {
                     'to save your data online '
                     'and sync devices.'),
                 const SizedBox(height: 20),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                ),
+                ValueListenableBuilder<TextFieldData>(
+                    valueListenable: manager.emailNotifier,
+                    builder: (context, data, child) {
+                      return TextField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          border: const OutlineInputBorder(),
+                          errorText: data.errorText,
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                        onChanged: manager.emailChanged,
+                      );
+                    }),
                 const SizedBox(height: 16),
-                TextFormField(
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                    border: OutlineInputBorder(),
-                    suffixIcon: Icon(Icons.visibility_off),
-                  ),
-                ),
+                ValueListenableBuilder<TextFieldData>(
+                    valueListenable: manager.passwordNotifier,
+                    builder: (context, data, child) {
+                      return TextField(
+                        controller: passwordController,
+                        obscureText: data.isObscured,
+                        decoration: InputDecoration(
+                          labelText: 'Passphrase',
+                          hintText: 'Four random words',
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            onPressed: manager.togglePasswordVisibility,
+                            icon: (data.isObscured)
+                                ? const Icon(Icons.visibility_off)
+                                : const Icon(Icons.visibility),
+                          ),
+                          errorText: data.errorText,
+                          errorMaxLines: 3,
+                        ),
+                        onChanged: manager.passwordChanged,
+                      );
+                    }),
                 const SizedBox(height: 8),
                 Align(
                   alignment: Alignment.centerRight,
@@ -55,13 +88,19 @@ class AccountPage extends StatelessWidget {
                   children: [
                     OutlinedButton(
                       onPressed: () {
-                        // Log in logic
+                        manager.createAccount(
+                          email: emailController.text,
+                          passphrase: passwordController.text,
+                        );
                       },
                       child: const Text('Create account'),
                     ),
                     OutlinedButton(
                       onPressed: () {
-                        // Log in logic
+                        manager.login(
+                          email: emailController.text,
+                          passphrase: passwordController.text,
+                        );
                       },
                       child: const Text('Log In'),
                     ),
