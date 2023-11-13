@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:memorize_scripture/common/strings.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TextFieldData {
   const TextFieldData({
@@ -121,7 +123,18 @@ class AccountPageManager {
 
   void signInWithApple() {}
 
-  void showPrivacyPolicy() {}
+  Future<void> showPrivacyPolicy() async {
+    await _launch(AppStrings.privacyPolicyUrl);
+  }
 
-  void showTermsOfService() {}
+  Future<void> showTermsOfService() async {
+    await _launch(AppStrings.tosUrl);
+  }
+
+  Future<void> _launch(String webpage) async {
+    final url = Uri.parse(webpage);
+    if (await canLaunchUrl(url)) {
+      launchUrl(url, mode: LaunchMode.externalApplication);
+    }
+  }
 }
