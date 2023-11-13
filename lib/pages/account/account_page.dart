@@ -124,7 +124,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 builder: (context, data, child) {
                   return TextField(
                     controller: emailController,
-                    // autofocus: true,
                     decoration: InputDecoration(
                       labelText: 'Email',
                       floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -164,9 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {
-                    // Forgot password logic
-                  },
+                  onPressed: manager.forgotPassword,
                   child: const Text('Forgot password?'),
                 ),
               ),
@@ -218,23 +215,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   IconButton(
                     icon: const Icon(FontAwesomeIcons.google),
                     iconSize: 24.0,
-                    onPressed: () {
-                      // Google sign-in logic
-                    },
+                    onPressed: manager.signInWithGoogle,
                   ),
                   IconButton(
                     icon: const Icon(Icons.facebook),
                     iconSize: 32.0,
-                    onPressed: () {
-                      // Facebook sign-in logic
-                    },
+                    onPressed: manager.signInWithFacebook,
                   ),
                   IconButton(
                     icon: const Icon(Icons.apple),
                     iconSize: 32.0,
-                    onPressed: () {
-                      // Apple sign-in logic
-                    },
+                    onPressed: manager.signInWithApple,
                   ),
                 ],
               ),
@@ -243,11 +234,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: WrapAlignment.center,
                 children: [
                   TextButton(
-                    onPressed: () {},
+                    onPressed: manager.showPrivacyPolicy,
                     child: const Text('Privacy policy'),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: manager.showTermsOfService,
                     child: const Text('Terms of Service'),
                   ),
                 ],

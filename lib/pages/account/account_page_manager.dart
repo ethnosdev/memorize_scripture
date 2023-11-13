@@ -112,4 +112,16 @@ class AccountPageManager {
       );
     }
   }
+
+  void forgotPassword() {}
+
+  void signInWithGoogle() {}
+
+  void signInWithFacebook() {}
+
+  void signInWithApple() {}
+
+  void showPrivacyPolicy() {}
+
+  void showTermsOfService() {}
 }
