@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/strings.dart';
+import 'package:memorize_scripture/service_locator.dart';
+import 'package:memorize_scripture/services/remote_storage/remote_storage.dart';
+// import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TextFieldData {
@@ -30,6 +33,7 @@ class AccountPageManager {
   Future<void> init() async {
     statusNotifier.value = LoginStatus.initial;
     await Future.delayed(Duration(seconds: 2));
+    await getIt<RemoteStorage>().init();
     statusNotifier.value = LoginStatus.notLoggedIn;
   }
 
@@ -41,8 +45,15 @@ class AccountPageManager {
     );
   }
 
-  void createAccount({required String email, required String passphrase}) {
+  Future<void> createAccount({
+    required String email,
+    required String passphrase,
+  }) async {
     if (!_emailAndPasswordOk(email, passphrase)) return;
+    await getIt<RemoteStorage>().createAccount(
+      email: email,
+      passphrase: passphrase,
+    );
   }
 
   void login({required String email, required String passphrase}) {
@@ -116,12 +127,6 @@ class AccountPageManager {
   }
 
   void forgotPassword() {}
-
-  void signInWithGoogle() {}
-
-  void signInWithFacebook() {}
-
-  void signInWithApple() {}
 
   Future<void> showPrivacyPolicy() async {
     await _launch(AppStrings.privacyPolicyUrl);
