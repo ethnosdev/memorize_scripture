@@ -16,6 +16,14 @@ class TextFieldData {
   bool get hasError => errorText != null;
 }
 
+enum AccountScreenType {
+  signUp,
+  signIn,
+  forgotPasswordEmail,
+  forgotPasswordVerify,
+  forgotPasswordNewPassword,
+}
+
 enum LoginStatus {
   initial,
   loading,
@@ -24,15 +32,20 @@ enum LoginStatus {
 }
 
 class AccountPageManager {
+  final titleNotifier = ValueNotifier('');
+  final screenNotifier =
+      ValueNotifier<AccountScreenType>(AccountScreenType.signUp);
   final emailNotifier = ValueNotifier(const TextFieldData());
-  final passwordNotifier = ValueNotifier(const TextFieldData(isObscured: true));
+  final passwordNotifier =
+      ValueNotifier(const TextFieldData(isObscured: false));
+  final resetCodeNotifier = ValueNotifier(const TextFieldData());
   final statusNotifier = ValueNotifier(LoginStatus.initial);
 
   void Function(String)? onError;
 
   Future<void> init() async {
     statusNotifier.value = LoginStatus.initial;
-    await Future.delayed(Duration(seconds: 2));
+    // await Future.delayed(Duration(seconds: 2));
     await getIt<RemoteStorage>().init();
     statusNotifier.value = LoginStatus.notLoggedIn;
   }
@@ -111,6 +124,19 @@ class AccountPageManager {
     return false;
   }
 
+  bool _validateResetCode(String code) {
+    String? error;
+    if (code.isEmpty) {
+      error = 'Reset code cannot be empty';
+    }
+
+    if (error == null) return true;
+
+    resetCodeNotifier.value = TextFieldData(errorText: error);
+
+    return false;
+  }
+
   void emailChanged(String value) {
     if (emailNotifier.value.hasError) {
       emailNotifier.value = const TextFieldData();
@@ -126,8 +152,6 @@ class AccountPageManager {
     }
   }
 
-  void forgotPassword() {}
-
   Future<void> showPrivacyPolicy() async {
     await _launch(AppStrings.privacyPolicyUrl);
   }
@@ -142,4 +166,33 @@ class AccountPageManager {
       launchUrl(url, mode: LaunchMode.externalApplication);
     }
   }
+
+  void showSignInScreen() {
+    screenNotifier.value = AccountScreenType.signIn;
+    passwordNotifier.value = const TextFieldData(isObscured: true);
+  }
+
+  void showSignUpScreen() {
+    screenNotifier.value = AccountScreenType.signUp;
+    passwordNotifier.value = const TextFieldData(isObscured: false);
+  }
+
+  void forgotPassword() {
+    screenNotifier.value = AccountScreenType.forgotPasswordEmail;
+  }
+
+  void requestPasswordReset({required String email}) {
+    if (!_validateEmail(email)) return;
+    screenNotifier.value = AccountScreenType.forgotPasswordVerify;
+  }
+
+  void verifyPasswordResetCode({required String code}) {
+    if (!_validateResetCode(code)) return;
+    screenNotifier.value = AccountScreenType.forgotPasswordNewPassword;
+    passwordNotifier.value = const TextFieldData(isObscured: false);
+  }
+
+  void resetPassword({required String password}) {}
+
+  void pasteVerificationCode() {}
 }
