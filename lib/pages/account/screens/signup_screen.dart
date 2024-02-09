@@ -82,15 +82,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   },
                 ),
                 const SizedBox(height: 32),
-                OutlinedButton(
-                  onPressed: () {
-                    manager.createAccount(
-                      email: emailController.text,
-                      passphrase: passwordController.text,
-                    );
-                  },
-                  child: const Text('Create account'),
-                ),
+                ValueListenableBuilder<bool>(
+                    valueListenable: manager.processingNotifier,
+                    builder: (context, isProcessing, _) {
+                      if (isProcessing) {
+                        return const SizedBox(
+                          height: 32,
+                          width: 32,
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      return OutlinedButton(
+                        onPressed: () {
+                          manager.createAccount(
+                            email: emailController.text,
+                            passphrase: passwordController.text,
+                          );
+                        },
+                        child: const Text('Create account'),
+                      );
+                    }),
                 const SizedBox(height: 20),
                 Wrap(
                   alignment: WrapAlignment.center,

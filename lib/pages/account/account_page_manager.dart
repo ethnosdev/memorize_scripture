@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/strings.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/remote_storage/remote_storage.dart';
+import 'package:memorize_scripture/services/auth/auth_service.dart';
+import 'package:pocketbase/pocketbase.dart';
 // import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -40,13 +41,14 @@ class AccountPageManager {
       ValueNotifier(const TextFieldData(isObscured: false));
   final resetCodeNotifier = ValueNotifier(const TextFieldData());
   final statusNotifier = ValueNotifier(LoginStatus.initial);
+  final processingNotifier = ValueNotifier<bool>(false);
 
   void Function(String)? onError;
 
   Future<void> init() async {
     statusNotifier.value = LoginStatus.initial;
     // await Future.delayed(Duration(seconds: 2));
-    await getIt<RemoteStorage>().init();
+    await getIt<AuthService>().init();
     statusNotifier.value = LoginStatus.notLoggedIn;
   }
 
@@ -63,10 +65,20 @@ class AccountPageManager {
     required String passphrase,
   }) async {
     if (!_emailAndPasswordOk(email, passphrase)) return;
-    await getIt<RemoteStorage>().createAccount(
-      email: email,
-      passphrase: passphrase,
-    );
+    processingNotifier.value = true;
+    try {
+      await Future.delayed(Duration(seconds: 2));
+      await getIt<AuthService>().createAccount(
+        email: email,
+        passphrase: passphrase,
+      );
+    } on ClientException catch (e) {
+      final response = e.response;
+      final message = response['data']['email']['message'];
+      emailNotifier.value = TextFieldData(errorText: message);
+    } finally {
+      processingNotifier.value = false;
+    }
   }
 
   void login({required String email, required String passphrase}) {
