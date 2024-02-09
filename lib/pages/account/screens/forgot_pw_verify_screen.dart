@@ -35,7 +35,7 @@ class _ForgotPasswordVerifyScreenState
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Check you email for a password reset code.'),
+                const Text('Check your email for a password reset code.'),
                 const SizedBox(height: 20),
                 ValueListenableBuilder<TextFieldData>(
                   valueListenable: manager.resetCodeNotifier,

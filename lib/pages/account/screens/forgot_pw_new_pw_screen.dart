@@ -50,6 +50,7 @@ class _ForgotPasswordNewPasswordScreenState
                               ? const Icon(Icons.visibility_off)
                               : const Icon(Icons.visibility),
                         ),
+                        hintText: 'Four random words',
                         errorText: data.errorText,
                         errorMaxLines: 3,
                       ),

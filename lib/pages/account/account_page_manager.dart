@@ -70,7 +70,14 @@ class AccountPageManager {
   }
 
   void login({required String email, required String passphrase}) {
-    if (!_emailAndPasswordOk(email, passphrase)) return;
+    if (!_validateEmail(email)) return;
+    if (passphrase.isEmpty) {
+      passwordNotifier.value = TextFieldData(
+        errorText: 'Passphrase cannot be empty',
+        isObscured: passwordNotifier.value.isObscured,
+      );
+      return;
+    }
   }
 
   bool _emailAndPasswordOk(String email, String passphrase) {
@@ -192,7 +199,9 @@ class AccountPageManager {
     passwordNotifier.value = const TextFieldData(isObscured: false);
   }
 
-  void resetPassword({required String password}) {}
+  void resetPassword({required String password}) {
+    if (!_validatePassphrase(password)) return;
+  }
 
   void pasteVerificationCode() {}
 }
