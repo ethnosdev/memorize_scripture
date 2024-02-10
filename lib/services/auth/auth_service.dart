@@ -18,4 +18,14 @@ class AuthService {
     final record = await pb.collection('users').create(body: body);
     print(record);
   }
+
+  Future<void> signIn({
+    required String email,
+    required String passphrase,
+  }) async {
+    final authData =
+        await pb.collection('users').authWithPassword(email, passphrase);
+    print(authData);
+    // TODO: check if is verified
+  }
 }

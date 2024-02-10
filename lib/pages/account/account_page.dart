@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:memorize_scripture/pages/account/account_page_manager.dart';
 import 'package:memorize_scripture/pages/account/screens/forgot_pw_verify_screen.dart';
 import 'package:memorize_scripture/pages/account/screens/signup_screen.dart';
+import 'package:memorize_scripture/pages/account/screens/verify_email_screen.dart';
 
 import 'screens/forgot_pw_email_screen.dart';
 import 'screens/forgot_pw_new_pw_screen.dart';
@@ -20,7 +21,7 @@ class _AccountPageState extends State<AccountPage> {
   @override
   void initState() {
     super.initState();
-    manager.onError = _showErrorDialog;
+    manager.onEventCompletion = _showMessageDialog;
     manager.init();
   }
 
@@ -45,14 +46,14 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  void _showErrorDialog(String errorMessage) {
+  void _showMessageDialog(String message) {
     final okButton = TextButton(
       child: const Text("OK"),
       onPressed: () => Navigator.of(context).pop(),
     );
 
     final alert = AlertDialog(
-      content: Text(errorMessage),
+      content: Text(message),
       actions: [okButton],
     );
 
@@ -104,6 +105,8 @@ class NotLoggedInScreen extends StatelessWidget {
             return SignUpScreen(manager: manager);
           case AccountScreenType.signIn:
             return SignInScreen(manager: manager);
+          case AccountScreenType.verifyEmail:
+            return VerifyEmailScreen(manager: manager);
           case AccountScreenType.forgotPasswordEmail:
             return ForgotPasswordEmailScreen(manager: manager);
           case AccountScreenType.forgotPasswordVerify:

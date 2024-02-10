@@ -20,6 +20,7 @@ class TextFieldData {
 enum AccountScreenType {
   signUp,
   signIn,
+  verifyEmail,
   forgotPasswordEmail,
   forgotPasswordVerify,
   forgotPasswordNewPassword,
@@ -43,7 +44,7 @@ class AccountPageManager {
   final statusNotifier = ValueNotifier(LoginStatus.initial);
   final processingNotifier = ValueNotifier<bool>(false);
 
-  void Function(String)? onError;
+  void Function(String)? onEventCompletion;
 
   Future<void> init() async {
     statusNotifier.value = LoginStatus.initial;
@@ -67,21 +68,28 @@ class AccountPageManager {
     if (!_emailAndPasswordOk(email, passphrase)) return;
     processingNotifier.value = true;
     try {
-      await Future.delayed(Duration(seconds: 2));
       await getIt<AuthService>().createAccount(
         email: email,
         passphrase: passphrase,
       );
+      onEventCompletion?.call('Account created successfully.\n\n'
+          'Check your email and verify your account before signing in.');
+      screenNotifier.value = AccountScreenType.signIn;
     } on ClientException catch (e) {
-      final response = e.response;
-      final message = response['data']['email']['message'];
-      emailNotifier.value = TextFieldData(errorText: message);
+      final data = e.response['data'];
+      if (data['email'] != null) {
+        final message = data['email']['message'];
+        emailNotifier.value = TextFieldData(errorText: message);
+      } else if (data['password'] != null) {
+        final message = data['password']['message'];
+        passwordNotifier.value = TextFieldData(errorText: message);
+      }
     } finally {
       processingNotifier.value = false;
     }
   }
 
-  void login({required String email, required String passphrase}) {
+  void login({required String email, required String passphrase}) async {
     if (!_validateEmail(email)) return;
     if (passphrase.isEmpty) {
       passwordNotifier.value = TextFieldData(
@@ -90,6 +98,12 @@ class AccountPageManager {
       );
       return;
     }
+    await getIt<AuthService>().signIn(email: email, passphrase: passphrase);
+    // try {
+
+    // } catch (e) {
+
+    // }
   }
 
   bool _emailAndPasswordOk(String email, String passphrase) {
@@ -216,4 +230,6 @@ class AccountPageManager {
   }
 
   void pasteVerificationCode() {}
+
+  void verifyEmailCode({required String code}) {}
 }
