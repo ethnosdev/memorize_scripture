@@ -33,8 +33,21 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Check your email for a verification code.'),
-                const SizedBox(height: 20),
+                const Text('Your email has not been verified yet. '
+                    'Open your email and click the "Verify" button.'),
+                const SizedBox(height: 16),
+                OutlinedButton(
+                  onPressed: () {
+                    manager.verifyEmailCode(
+                      code: codeController.text,
+                    );
+                  },
+                  child: const Text('Done'),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                    'Or paste the verification code from your email below:'),
+                const SizedBox(height: 16),
                 ValueListenableBuilder<TextFieldData>(
                   valueListenable: manager.resetCodeNotifier,
                   builder: (context, data, child) {
@@ -63,6 +76,15 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                     );
                   },
                   child: const Text('Verify code'),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () {
+                    manager.verifyEmailCode(
+                      code: codeController.text,
+                    );
+                  },
+                  child: const Text('Resend verification email'),
                 ),
               ],
             ),

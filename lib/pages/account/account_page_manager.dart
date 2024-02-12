@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/strings.dart';
+import 'package:memorize_scripture/services/auth/exceptions.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/auth/auth_service.dart';
-import 'package:pocketbase/pocketbase.dart';
+// import 'package:pocketbase/pocketbase.dart';
 // import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -75,15 +76,10 @@ class AccountPageManager {
       onEventCompletion?.call('Account created successfully.\n\n'
           'Check your email and verify your account before signing in.');
       screenNotifier.value = AccountScreenType.signIn;
-    } on ClientException catch (e) {
-      final data = e.response['data'];
-      if (data['email'] != null) {
-        final message = data['email']['message'];
-        emailNotifier.value = TextFieldData(errorText: message);
-      } else if (data['password'] != null) {
-        final message = data['password']['message'];
-        passwordNotifier.value = TextFieldData(errorText: message);
-      }
+    } on EmailException catch (e) {
+      emailNotifier.value = TextFieldData(errorText: e.message);
+    } on PasswordException catch (e) {
+      passwordNotifier.value = TextFieldData(errorText: e.message);
     } finally {
       processingNotifier.value = false;
     }
@@ -98,12 +94,12 @@ class AccountPageManager {
       );
       return;
     }
-    await getIt<AuthService>().signIn(email: email, passphrase: passphrase);
-    // try {
 
-    // } catch (e) {
-
-    // }
+    try {
+      await getIt<AuthService>().signIn(email: email, passphrase: passphrase);
+    } on UserNotVerifiedException catch (e) {
+      screenNotifier.value = AccountScreenType.verifyEmail;
+    }
   }
 
   bool _emailAndPasswordOk(String email, String passphrase) {
