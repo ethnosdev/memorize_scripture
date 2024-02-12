@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/pages/account/account_page_manager.dart';
-import 'package:memorize_scripture/pages/account/screens/forgot_pw_verify_screen.dart';
-import 'package:memorize_scripture/pages/account/screens/signup_screen.dart';
-import 'package:memorize_scripture/pages/account/screens/verify_email_screen.dart';
+import 'package:memorize_scripture/pages/account/screens/1_sign_up/signup_screen.dart';
+import 'package:memorize_scripture/pages/account/screens/2_verify_email/verify_email_screen.dart';
+import 'package:memorize_scripture/pages/account/screens/4_new_password/new_password_screen.dart';
 
-import 'screens/forgot_pw_email_screen.dart';
-import 'screens/forgot_pw_new_pw_screen.dart';
-import 'screens/signin_screen.dart';
+import 'screens/3_sign_in/signin_screen.dart';
+import 'shared/account_screen_type.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -21,7 +20,7 @@ class _AccountPageState extends State<AccountPage> {
   @override
   void initState() {
     super.initState();
-    manager.onEventCompletion = _showMessageDialog;
+    // manager.onEventCompletion = _showMessageDialog;
     manager.init();
   }
 
@@ -35,7 +34,10 @@ class _AccountPageState extends State<AccountPage> {
             return const LoadingOverlay();
           case LoginStatus.loading:
             return LoadingOverlay(
-              background: SignUpScreen(manager: manager),
+              background: SignUpScreen(
+                screenNotifier: manager.screenNotifier,
+                // onSignedUp: _showMessageDialog,
+              ),
             );
           case LoginStatus.notLoggedIn:
             return NotLoggedInScreen(manager: manager);
@@ -43,23 +45,6 @@ class _AccountPageState extends State<AccountPage> {
             return const Text('logged in');
         }
       },
-    );
-  }
-
-  void _showMessageDialog(String message) {
-    final okButton = TextButton(
-      child: const Text("OK"),
-      onPressed: () => Navigator.of(context).pop(),
-    );
-
-    final alert = AlertDialog(
-      content: Text(message),
-      actions: [okButton],
-    );
-
-    showDialog(
-      context: context,
-      builder: (context) => alert,
     );
   }
 }
@@ -102,17 +87,21 @@ class NotLoggedInScreen extends StatelessWidget {
       builder: (context, type, child) {
         switch (type) {
           case AccountScreenType.signUp:
-            return SignUpScreen(manager: manager);
-          case AccountScreenType.signIn:
-            return SignInScreen(manager: manager);
+            return SignUpScreen(
+              screenNotifier: manager.screenNotifier,
+              // onSignedUp: _showMessageDialog,
+            );
           case AccountScreenType.verifyEmail:
-            return VerifyEmailScreen(manager: manager);
-          case AccountScreenType.forgotPasswordEmail:
-            return ForgotPasswordEmailScreen(manager: manager);
-          case AccountScreenType.forgotPasswordVerify:
-            return ForgotPasswordVerifyScreen(manager: manager);
-          case AccountScreenType.forgotPasswordNewPassword:
-            return ForgotPasswordNewPasswordScreen(manager: manager);
+            return VerifyEmailScreen(
+              screenNotifier: manager.screenNotifier,
+              email: manager.currentEmail!,
+            );
+          case AccountScreenType.signIn:
+            return SignInScreen(
+              screenNotifier: manager.screenNotifier,
+            );
+          case AccountScreenType.newPassword:
+            return NewPasswordScreen();
         }
       },
     );

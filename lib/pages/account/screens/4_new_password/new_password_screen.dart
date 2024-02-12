@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:memorize_scripture/pages/account/account_page_manager.dart';
+import 'package:memorize_scripture/pages/account/screens/4_new_password/new_password_manager.dart';
+import 'package:memorize_scripture/pages/account/shared/textfield_data.dart';
 
-class ForgotPasswordNewPasswordScreen extends StatefulWidget {
-  const ForgotPasswordNewPasswordScreen({super.key, required this.manager});
-  final AccountPageManager manager;
+class NewPasswordScreen extends StatefulWidget {
+  const NewPasswordScreen({super.key});
+  // final AccountPageManager manager;
 
   @override
-  State<ForgotPasswordNewPasswordScreen> createState() =>
-      _ForgotPasswordNewPasswordScreenState();
+  State<NewPasswordScreen> createState() => _NewPasswordScreenState();
 }
 
-class _ForgotPasswordNewPasswordScreenState
-    extends State<ForgotPasswordNewPasswordScreen> {
-  late final AccountPageManager manager;
+class _NewPasswordScreenState extends State<NewPasswordScreen> {
+  late final NewPasswordManager manager;
   final passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    manager = widget.manager;
+    manager = NewPasswordManager();
   }
 
   @override
@@ -54,7 +53,7 @@ class _ForgotPasswordNewPasswordScreenState
                         errorText: data.errorText,
                         errorMaxLines: 3,
                       ),
-                      onChanged: manager.passwordChanged,
+                      onChanged: manager.onPasswordChanged,
                     );
                   },
                 ),

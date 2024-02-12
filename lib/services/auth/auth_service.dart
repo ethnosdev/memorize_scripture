@@ -43,4 +43,8 @@ class AuthService {
       throw UserNotVerifiedException('User not verified');
     }
   }
+
+  Future<void> resendVerificationEmail(String email) async {
+    await pb.collection('users').requestVerification(email);
+  }
 }

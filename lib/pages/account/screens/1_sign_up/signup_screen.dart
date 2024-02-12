@@ -1,23 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:memorize_scripture/pages/account/account_page_manager.dart';
+import 'package:memorize_scripture/pages/account/screens/1_sign_up/signup_manager.dart';
+import 'package:memorize_scripture/pages/account/shared/account_screen_type.dart';
+import 'package:memorize_scripture/pages/account/shared/textfield_data.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key, required this.manager});
-  final AccountPageManager manager;
+  const SignUpScreen({
+    super.key,
+    required this.screenNotifier,
+    // required this.onSignedUp,
+  });
+  final ValueNotifier<AccountScreenType> screenNotifier;
+  // final void Function(String) onSignedUp;
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  late final AccountPageManager manager;
+  late final SignUpManager manager;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    manager = widget.manager;
+    manager = SignUpManager(
+      screenNotifier: widget.screenNotifier,
+      onSignedUp: _showMessageDialog,
+    );
   }
 
   @override
@@ -40,19 +50,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 20),
-                ValueListenableBuilder<TextFieldData>(
+                ValueListenableBuilder<String?>(
                   valueListenable: manager.emailNotifier,
-                  builder: (context, data, child) {
+                  builder: (context, error, child) {
                     return TextField(
                       controller: emailController,
+                      autofocus: true,
                       decoration: InputDecoration(
                         labelText: 'Email',
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         border: const OutlineInputBorder(),
-                        errorText: data.errorText,
+                        errorText: error,
                       ),
                       keyboardType: TextInputType.emailAddress,
-                      onChanged: manager.emailChanged,
+                      onChanged: manager.onEmailChanged,
                     );
                   },
                 ),
@@ -77,31 +88,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         errorText: data.errorText,
                         errorMaxLines: 3,
                       ),
-                      onChanged: manager.passwordChanged,
+                      onChanged: manager.onPasswordChanged,
                     );
                   },
                 ),
                 const SizedBox(height: 32),
                 ValueListenableBuilder<bool>(
-                    valueListenable: manager.processingNotifier,
-                    builder: (context, isProcessing, _) {
-                      if (isProcessing) {
-                        return const SizedBox(
-                          height: 32,
-                          width: 32,
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      return OutlinedButton(
-                        onPressed: () {
-                          manager.createAccount(
-                            email: emailController.text,
-                            passphrase: passwordController.text,
-                          );
-                        },
-                        child: const Text('Create account'),
+                  valueListenable: manager.waitingNotifier,
+                  builder: (context, isProcessing, _) {
+                    if (isProcessing) {
+                      return const SizedBox(
+                        height: 32,
+                        width: 32,
+                        child: CircularProgressIndicator(),
                       );
-                    }),
+                    }
+                    return OutlinedButton(
+                      onPressed: () {
+                        manager.createAccount(
+                          email: emailController.text,
+                          passphrase: passwordController.text,
+                        );
+                      },
+                      child: const Text('Create account'),
+                    );
+                  },
+                ),
                 const SizedBox(height: 20),
                 Wrap(
                   alignment: WrapAlignment.center,
@@ -121,6 +133,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showMessageDialog(String message) {
+    final okButton = TextButton(
+      child: const Text("OK"),
+      onPressed: () => Navigator.of(context).pop(),
+    );
+
+    final alert = AlertDialog(
+      content: Text(message),
+      actions: [okButton],
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) => alert,
     );
   }
 }

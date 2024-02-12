@@ -1,23 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:memorize_scripture/pages/account/account_page_manager.dart';
+import 'package:memorize_scripture/pages/account/shared/account_screen_type.dart';
+import 'package:memorize_scripture/pages/account/shared/textfield_data.dart';
+
+import 'signin_manager.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key, required this.manager});
-  final AccountPageManager manager;
+  const SignInScreen({
+    super.key,
+    required this.screenNotifier,
+  });
+  final ValueNotifier<AccountScreenType> screenNotifier;
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  late final AccountPageManager manager;
+  late final SignInManager manager;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    manager = widget.manager;
+    manager = SignInManager(
+      screenNotifier: widget.screenNotifier,
+    );
   }
 
   @override
@@ -40,19 +48,19 @@ class _SignInScreenState extends State<SignInScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 20),
-                ValueListenableBuilder<TextFieldData>(
+                ValueListenableBuilder<String?>(
                   valueListenable: manager.emailNotifier,
-                  builder: (context, data, child) {
+                  builder: (context, error, child) {
                     return TextField(
                       controller: emailController,
                       decoration: InputDecoration(
                         labelText: 'Email',
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         border: const OutlineInputBorder(),
-                        errorText: data.errorText,
+                        errorText: error,
                       ),
                       keyboardType: TextInputType.emailAddress,
-                      onChanged: manager.emailChanged,
+                      onChanged: manager.onEmailChanged,
                     );
                   },
                 ),
@@ -76,13 +84,13 @@ class _SignInScreenState extends State<SignInScreen> {
                           errorText: data.errorText,
                           errorMaxLines: 3,
                         ),
-                        onChanged: manager.passwordChanged,
+                        onChanged: manager.onPasswordChanged,
                       );
                     }),
                 const SizedBox(height: 32),
                 OutlinedButton(
                   onPressed: () {
-                    manager.login(
+                    manager.signIn(
                       email: emailController.text,
                       passphrase: passwordController.text,
                     );
