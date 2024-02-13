@@ -26,6 +26,7 @@ class _SignInScreenState extends State<SignInScreen> {
     manager = SignInManager(
       screenNotifier: widget.screenNotifier,
     );
+    manager.setSavedEmail(emailController);
   }
 
   @override
@@ -70,6 +71,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     builder: (context, data, child) {
                       return TextField(
                         controller: passwordController,
+                        autofocus: true,
                         obscureText: data.isObscured,
                         decoration: InputDecoration(
                           labelText: 'Passphrase',

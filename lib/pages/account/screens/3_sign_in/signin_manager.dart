@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter/src/widgets/editable_text.dart';
 import 'package:memorize_scripture/pages/account/shared/account_screen_type.dart';
 import 'package:memorize_scripture/pages/account/shared/textfield_data.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/auth/auth_service.dart';
 import 'package:memorize_scripture/services/auth/exceptions.dart';
+import 'package:memorize_scripture/services/secure_settings.dart';
 
 import '../../shared/validation.dart';
 
@@ -15,7 +19,7 @@ class SignInManager {
 
   final emailNotifier = ValueNotifier<String?>(null);
   final passwordNotifier = ValueNotifier(
-    const TextFieldData(isObscured: false),
+    const TextFieldData(isObscured: true),
   );
 
   void showSignUpScreen() {
@@ -73,5 +77,11 @@ class SignInManager {
 
   void forgotPassword() {
     screenNotifier.value = AccountScreenType.newPassword;
+  }
+
+  Future<void> setSavedEmail(TextEditingController emailController) async {
+    final email = await getIt<SecureStorage>().getEmail();
+    if (email == null) return;
+    emailController.text = email;
   }
 }

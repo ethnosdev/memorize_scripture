@@ -7,6 +7,7 @@ import 'package:memorize_scripture/pages/account/shared/validation.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/auth/auth_service.dart';
 import 'package:memorize_scripture/services/auth/exceptions.dart';
+import 'package:memorize_scripture/services/secure_settings.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SignUpManager {
@@ -34,6 +35,7 @@ class SignUpManager {
         email: email,
         passphrase: passphrase,
       );
+      await getIt<SecureStorage>().setEmail(email);
       onSignedUp.call('Account created',
           'Check your email and verify your account before signing in.');
       screenNotifier.value = AccountScreenType.signIn;

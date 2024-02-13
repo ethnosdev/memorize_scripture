@@ -37,3 +37,16 @@ flutter build ipa
 ```
 flutter build appbundle
 ```
+
+## For rebuilding macos folder
+
+Need the following in `macos/Runner/DebugProfile.entitlements` and `macos/Runner/Release.entitlements`:
+
+```
+<key>com.apple.security.network.client</key>
+<true/>
+<key>keychain-access-groups</key>
+<array/>
+```
+
+The first is to connect to the internet. The second is to use flutter_secure_storage.
