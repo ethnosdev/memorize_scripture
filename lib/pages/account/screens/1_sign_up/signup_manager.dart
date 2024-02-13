@@ -15,7 +15,7 @@ class SignUpManager {
     required this.onSignedUp,
   });
   final ValueNotifier<AccountScreenType> screenNotifier;
-  final void Function(String) onSignedUp;
+  final void Function(String, String) onSignedUp;
 
   final emailNotifier = ValueNotifier<String?>(null);
   final passwordNotifier = ValueNotifier(
@@ -34,7 +34,7 @@ class SignUpManager {
         email: email,
         passphrase: passphrase,
       );
-      onSignedUp.call('Account created successfully.\n\n'
+      onSignedUp.call('Account created',
           'Check your email and verify your account before signing in.');
       screenNotifier.value = AccountScreenType.signIn;
     } on EmailException catch (e) {

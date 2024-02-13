@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memorize_scripture/common/dialog/dialog.dart';
 import 'package:memorize_scripture/pages/account/screens/1_sign_up/signup_manager.dart';
 import 'package:memorize_scripture/pages/account/shared/account_screen_type.dart';
 import 'package:memorize_scripture/pages/account/shared/textfield_data.dart';
@@ -26,7 +27,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.initState();
     manager = SignUpManager(
       screenNotifier: widget.screenNotifier,
-      onSignedUp: _showMessageDialog,
+      onSignedUp: (title, message) => showMessageDialog(
+        context: context,
+        title: title,
+        message: message,
+      ),
     );
   }
 
@@ -133,23 +138,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  void _showMessageDialog(String message) {
-    final okButton = TextButton(
-      child: const Text("OK"),
-      onPressed: () => Navigator.of(context).pop(),
-    );
-
-    final alert = AlertDialog(
-      content: Text(message),
-      actions: [okButton],
-    );
-
-    showDialog(
-      context: context,
-      builder: (context) => alert,
     );
   }
 }
