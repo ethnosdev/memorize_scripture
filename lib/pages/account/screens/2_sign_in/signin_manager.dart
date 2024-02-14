@@ -1,7 +1,4 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/src/widgets/editable_text.dart';
+import 'package:flutter/widgets.dart';
 import 'package:memorize_scripture/pages/account/shared/account_screen_type.dart';
 import 'package:memorize_scripture/pages/account/shared/textfield_data.dart';
 import 'package:memorize_scripture/service_locator.dart';
@@ -16,6 +13,8 @@ class SignInManager {
     required this.screenNotifier,
   });
   final ValueNotifier<AccountScreenType> screenNotifier;
+
+  VoidCallback? onUserNotVerified;
 
   final emailNotifier = ValueNotifier<String?>(null);
   final passwordNotifier = ValueNotifier(
@@ -55,7 +54,7 @@ class SignInManager {
     try {
       await getIt<AuthService>().signIn(email: email, passphrase: passphrase);
     } on UserNotVerifiedException {
-      screenNotifier.value = AccountScreenType.verifyEmail;
+      onUserNotVerified?.call();
     }
   }
 
@@ -84,4 +83,6 @@ class SignInManager {
     if (email == null) return;
     emailController.text = email;
   }
+
+  void resendEmailVerification() {}
 }

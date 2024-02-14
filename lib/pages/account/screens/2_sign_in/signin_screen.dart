@@ -27,6 +27,7 @@ class _SignInScreenState extends State<SignInScreen> {
       screenNotifier: widget.screenNotifier,
     );
     manager.setSavedEmail(emailController);
+    manager.onUserNotVerified = _showEmailNotVerifiedDialog;
   }
 
   @override
@@ -109,6 +110,34 @@ class _SignInScreenState extends State<SignInScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _showEmailNotVerifiedDialog() async {
+    const message = 'Your email has not been verified yet. '
+        'Please check your email and click the "Verify" button.';
+
+    final okButton = TextButton(
+      child: const Text("OK"),
+      onPressed: () => Navigator.of(context).pop(),
+    );
+
+    final resendButton = TextButton(
+      child: const Text("Resend email"),
+      onPressed: () {
+        manager.resendEmailVerification();
+        Navigator.of(context).pop();
+      },
+    );
+
+    final alert = AlertDialog(
+      content: const Text(message),
+      actions: [resendButton, okButton],
+    );
+
+    await showDialog(
+      context: context,
+      builder: (root) => alert,
     );
   }
 }

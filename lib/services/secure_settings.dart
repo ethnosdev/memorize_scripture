@@ -12,6 +12,7 @@ class LocalSecureStorage implements SecureStorage {
     aOptions: AndroidOptions(
       encryptedSharedPreferences: true,
     ),
+    mOptions: MacOsOptions(),
   );
 
   @override
@@ -24,6 +25,7 @@ class LocalSecureStorage implements SecureStorage {
   @override
   Future<void> setEmail(String email) async {
     print('writing email: $email');
+    await _storage.delete(key: _emailKey);
     await _storage.write(key: _emailKey, value: email);
     final read = await _storage.read(key: _emailKey);
     print('reading email: $read');

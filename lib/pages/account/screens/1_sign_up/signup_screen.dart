@@ -8,10 +8,8 @@ class SignUpScreen extends StatefulWidget {
   const SignUpScreen({
     super.key,
     required this.screenNotifier,
-    // required this.onSignedUp,
   });
   final ValueNotifier<AccountScreenType> screenNotifier;
-  // final void Function(String) onSignedUp;
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();

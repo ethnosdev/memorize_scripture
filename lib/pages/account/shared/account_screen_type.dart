@@ -1,6 +1,6 @@
 enum AccountScreenType {
   signUp,
-  verifyEmail,
+  // verifyEmail,
   signIn,
   newPassword,
 }

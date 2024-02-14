@@ -15,8 +15,6 @@ class AccountPageManager {
   final screenNotifier = ValueNotifier(AccountScreenType.signUp);
   final statusNotifier = ValueNotifier(LoginStatus.initial);
 
-  String? get currentEmail => null;
-
   Future<void> init() async {
     statusNotifier.value = LoginStatus.initial;
     // await Future.delayed(Duration(seconds: 2));

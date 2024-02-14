@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:memorize_scripture/pages/account/screens/4_new_password/new_password_manager.dart';
+import 'package:memorize_scripture/pages/account/screens/3_new_password/new_password_manager.dart';
 import 'package:memorize_scripture/pages/account/shared/textfield_data.dart';
 
 class NewPasswordScreen extends StatefulWidget {
