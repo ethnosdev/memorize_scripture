@@ -4,6 +4,8 @@ import 'package:pocketbase/pocketbase.dart';
 class AuthService {
   final pb = PocketBase('http://127.0.0.1:8090/');
 
+  bool get isLoggedIn => pb.authStore.isValid;
+
   Future<void> init() async {}
 
   Future<void> createAccount({
@@ -19,6 +21,7 @@ class AuthService {
     try {
       final record = await pb.collection('users').create(body: body);
       print(record);
+      await pb.collection('users').requestVerification(email);
     } on ClientException catch (e) {
       final data = e.response['data'];
       if (data['email'] != null) {
@@ -28,6 +31,7 @@ class AuthService {
         final message = data['password']['message'];
         throw PasswordException(message);
       }
+      throw Exception(e);
     }
   }
 

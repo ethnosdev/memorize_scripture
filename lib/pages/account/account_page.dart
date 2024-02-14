@@ -19,28 +19,34 @@ class _AccountPageState extends State<AccountPage> {
   @override
   void initState() {
     super.initState();
-    // manager.onEventCompletion = _showMessageDialog;
     manager.init();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<LoginStatus>(
-      valueListenable: manager.statusNotifier,
+    return ValueListenableBuilder<AccountScreenType>(
+      valueListenable: manager.screenNotifier,
       builder: (context, status, child) {
         switch (status) {
-          case LoginStatus.initial:
+          case AccountScreenType.initial:
             return const LoadingOverlay();
-          case LoginStatus.loading:
+          case AccountScreenType.loading:
             return LoadingOverlay(
               background: SignUpScreen(
                 screenNotifier: manager.screenNotifier,
-                // onSignedUp: _showMessageDialog,
               ),
             );
-          case LoginStatus.notLoggedIn:
-            return NotLoggedInScreen(manager: manager);
-          case LoginStatus.loggedIn:
+          case AccountScreenType.signUp:
+            return SignUpScreen(
+              screenNotifier: manager.screenNotifier,
+            );
+          case AccountScreenType.signIn:
+            return SignInScreen(
+              screenNotifier: manager.screenNotifier,
+            );
+          case AccountScreenType.newPassword:
+            return const NewPasswordScreen();
+          case AccountScreenType.loggedIn:
             return const Text('logged in');
         }
       },
@@ -70,38 +76,6 @@ class LoadingOverlay extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class NotLoggedInScreen extends StatelessWidget {
-  const NotLoggedInScreen({super.key, required this.manager});
-
-  final AccountPageManager manager;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<AccountScreenType>(
-      valueListenable: manager.screenNotifier,
-      builder: (context, type, child) {
-        switch (type) {
-          case AccountScreenType.signUp:
-            return SignUpScreen(
-              screenNotifier: manager.screenNotifier,
-              // onSignedUp: _showMessageDialog,
-            );
-          // case AccountScreenType.verifyEmail:
-          //   return VerifyEmailScreen(
-          //     screenNotifier: manager.screenNotifier,
-          //   );
-          case AccountScreenType.signIn:
-            return SignInScreen(
-              screenNotifier: manager.screenNotifier,
-            );
-          case AccountScreenType.newPassword:
-            return NewPasswordScreen();
-        }
-      },
     );
   }
 }
