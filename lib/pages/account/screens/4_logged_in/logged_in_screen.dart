@@ -71,7 +71,7 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
                   SizedBox(
                     width: 200,
                     child: OutlinedButton(
-                      onPressed: () {},
+                      onPressed: _showVerifyDeleteDialog,
                       child: const Text('Delete account'),
                     ),
                   ),
@@ -82,6 +82,40 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showVerifyDeleteDialog() async {
+    Widget cancelButton = TextButton(
+      child: const Text("Cancel"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    Widget deleteButton = TextButton(
+      child: const Text("Delete"),
+      onPressed: () {
+        Navigator.of(context).pop();
+        manager.deleteAccount();
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      content: const Text(
+        'Are you sure you want to delete your account?\n\n'
+        'This will only delete your user profile and online data. '
+        'If you wish to also delete the verse collections on this device, '
+        'you can uninstall the app.',
+      ),
+      actions: [cancelButton, deleteButton],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }

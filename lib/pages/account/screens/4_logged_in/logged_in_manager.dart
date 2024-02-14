@@ -9,6 +9,9 @@ class LoggedInManager {
 
   final emailNotifier = ValueNotifier('');
 
+  // Future<bool> Function()? onConfirmDeleteAccount;
+  // void Function()? onAccountDeleted;
+
   Future<void> init() async {
     final user = await getIt<AuthService>().getUser();
     emailNotifier.value = user.email;
@@ -18,5 +21,12 @@ class LoggedInManager {
     await getIt<AuthService>().signOut();
     screenNotifier.value = AccountScreenType.signIn;
     // TODO: delete token from secure storage
+  }
+
+  Future<void> deleteAccount() async {
+    await getIt<AuthService>().deleteAccount();
+    screenNotifier.value = AccountScreenType.signUp;
+    // TODO: delete token and email from secure storage
+    // TODO: mark all verses as unsynced
   }
 }

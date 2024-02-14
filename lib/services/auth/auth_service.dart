@@ -62,4 +62,10 @@ class AuthService {
   Future<void> signOut() async {
     pb.authStore.clear();
   }
+
+  Future<void> deleteAccount() async {
+    final model = pb.authStore.model as RecordModel;
+    await pb.collection('users').delete(model.id);
+    pb.authStore.clear();
+  }
 }
