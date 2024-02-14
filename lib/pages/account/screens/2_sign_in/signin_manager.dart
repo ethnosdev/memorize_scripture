@@ -53,7 +53,10 @@ class SignInManager {
     if (!_emailAndPasswordOk(email, passphrase)) return;
     await getIt<SecureStorage>().setEmail(email);
     try {
-      await getIt<AuthService>().signIn(email: email, passphrase: passphrase);
+      final user = await getIt<AuthService>().signIn(
+        email: email,
+        passphrase: passphrase,
+      );
       screenNotifier.value = AccountScreenType.loggedIn;
     } on UserNotVerifiedException {
       onUserNotVerified?.call(email);

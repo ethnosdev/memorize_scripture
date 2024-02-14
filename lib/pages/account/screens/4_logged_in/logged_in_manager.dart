@@ -9,9 +9,6 @@ class LoggedInManager {
 
   final emailNotifier = ValueNotifier('');
 
-  // Future<bool> Function()? onConfirmDeleteAccount;
-  // void Function()? onAccountDeleted;
-
   Future<void> init() async {
     final user = await getIt<AuthService>().getUser();
     emailNotifier.value = user.email;

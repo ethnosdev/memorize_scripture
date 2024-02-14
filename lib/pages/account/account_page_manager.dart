@@ -5,25 +5,19 @@ import 'package:memorize_scripture/services/secure_settings.dart';
 
 import 'shared/account_screen_type.dart';
 
-// enum LoginStatus {
-//   initial,
-//   loading,
-//   notLoggedIn,
-//   loggedIn,
-// }
-
 class AccountPageManager {
   final screenNotifier = ValueNotifier(AccountScreenType.signUp);
 
   Future<void> init() async {
     screenNotifier.value = AccountScreenType.initial;
-    // await Future.delayed(Duration(seconds: 2));
+    await getIt<AuthService>().init();
+
     final loggedIn = getIt<AuthService>().isLoggedIn;
-    // await getIt<AuthService>().init();
     if (loggedIn) {
       screenNotifier.value = AccountScreenType.loggedIn;
       return;
     }
+
     final storedEmail = await getIt<SecureStorage>().getEmail();
     if (storedEmail == null) {
       screenNotifier.value = AccountScreenType.signUp;
