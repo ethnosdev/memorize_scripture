@@ -14,7 +14,8 @@ class SignInManager {
   });
   final ValueNotifier<AccountScreenType> screenNotifier;
 
-  VoidCallback? onUserNotVerified;
+  void Function(String)? onUserNotVerified;
+  void Function()? onVerificationEmailSent;
 
   final emailNotifier = ValueNotifier<String?>(null);
   final passwordNotifier = ValueNotifier(
@@ -50,11 +51,11 @@ class SignInManager {
 
   void signIn({required String email, required String passphrase}) async {
     if (!_emailAndPasswordOk(email, passphrase)) return;
-
+    await getIt<SecureStorage>().setEmail(email);
     try {
       await getIt<AuthService>().signIn(email: email, passphrase: passphrase);
     } on UserNotVerifiedException {
-      onUserNotVerified?.call();
+      onUserNotVerified?.call(email);
     }
   }
 
@@ -84,5 +85,8 @@ class SignInManager {
     emailController.text = email;
   }
 
-  void resendEmailVerification() {}
+  Future<void> resendEmailVerification(String email) async {
+    await getIt<AuthService>().resendVerificationEmail(email);
+    onVerificationEmailSent?.call();
+  }
 }

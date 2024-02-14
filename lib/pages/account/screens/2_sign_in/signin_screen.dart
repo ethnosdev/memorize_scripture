@@ -28,6 +28,7 @@ class _SignInScreenState extends State<SignInScreen> {
     );
     manager.setSavedEmail(emailController);
     manager.onUserNotVerified = _showEmailNotVerifiedDialog;
+    manager.onVerificationEmailSent = _notifyVerificationEmailSent;
   }
 
   @override
@@ -113,7 +114,7 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  Future<void> _showEmailNotVerifiedDialog() async {
+  void _showEmailNotVerifiedDialog(String email) {
     const message = 'Your email has not been verified yet. '
         'Please check your email and click the "Verify" button.';
 
@@ -125,7 +126,7 @@ class _SignInScreenState extends State<SignInScreen> {
     final resendButton = TextButton(
       child: const Text("Resend email"),
       onPressed: () {
-        manager.resendEmailVerification();
+        manager.resendEmailVerification(email);
         Navigator.of(context).pop();
       },
     );
@@ -135,9 +136,17 @@ class _SignInScreenState extends State<SignInScreen> {
       actions: [resendButton, okButton],
     );
 
-    await showDialog(
+    showDialog(
       context: context,
       builder: (root) => alert,
+    );
+  }
+
+  void _notifyVerificationEmailSent() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Verification email was sent.'),
+      ),
     );
   }
 }
