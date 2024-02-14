@@ -1,4 +1,5 @@
 import 'package:memorize_scripture/services/auth/exceptions.dart';
+import 'package:memorize_scripture/services/auth/user.dart';
 import 'package:pocketbase/pocketbase.dart';
 
 class AuthService {
@@ -50,5 +51,15 @@ class AuthService {
 
   Future<void> resendVerificationEmail(String email) async {
     await pb.collection('users').requestVerification(email);
+  }
+
+  Future<User> getUser() async {
+    print(pb.authStore.model);
+    final model = pb.authStore.model as RecordModel;
+    return User(email: model.getStringValue('email'));
+  }
+
+  Future<void> signOut() async {
+    pb.authStore.clear();
   }
 }
