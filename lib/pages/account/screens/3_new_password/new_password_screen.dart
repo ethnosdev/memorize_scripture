@@ -31,8 +31,14 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 20),
-                Text(widget.email),
+                const SizedBox(height: 32),
+                const Text('Account email:'),
+                const SizedBox(height: 8),
+                Text(
+                  widget.email,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 32),
                 ValueListenableBuilder<TextFieldData>(
                   valueListenable: manager.passwordNotifier,
                   builder: (context, data, child) {
