@@ -8,6 +8,11 @@ class PasswordException implements Exception {
   final String message;
 }
 
+class FailedToAuthenticateException implements Exception {
+  FailedToAuthenticateException(this.message);
+  final String message;
+}
+
 class UserNotVerifiedException implements Exception {
   UserNotVerifiedException(this.message);
   final String message;

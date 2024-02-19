@@ -51,14 +51,24 @@ class AuthService {
     required String email,
     required String passphrase,
   }) async {
-    final authData =
-        await _pb.collection('users').authWithPassword(email, passphrase);
-    print(authData);
-    final isVerified = authData.record?.getBoolValue('verified') ?? false;
-    if (!isVerified) {
-      throw UserNotVerifiedException('User not verified');
+    RecordAuth authData;
+    try {
+      authData = await _pb.collection('users').authWithPassword(
+            email,
+            passphrase,
+          );
+      print(authData);
+      final isVerified = authData.record?.getBoolValue('verified') ?? false;
+      if (!isVerified) {
+        throw UserNotVerifiedException('User not verified');
+      }
+      return User(email: email, token: authData.token);
+    } on ClientException catch (e) {
+      if (e.statusCode == 400) {
+        throw FailedToAuthenticateException('Email or password was incorrect');
+      }
+      throw Exception(e);
     }
-    return User(email: email, token: authData.token);
   }
 
   Future<void> resendVerificationEmail(String email) async {
