@@ -10,7 +10,10 @@ class AuthService {
 
   bool get isLoggedIn => _pb.authStore.isValid;
 
+  bool _isInitialized = false;
+
   Future<void> init() async {
+    if (_isInitialized) return;
     final storage = getIt<SecureStorage>();
     final store = AsyncAuthStore(
       initial: await storage.getToken(),
@@ -18,6 +21,7 @@ class AuthService {
       clear: storage.deleteToken,
     );
     _pb = PocketBase(_baseUrl, authStore: store);
+    _isInitialized = true;
   }
 
   Future<void> createAccount({
