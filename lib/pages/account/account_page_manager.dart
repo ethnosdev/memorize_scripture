@@ -6,23 +6,23 @@ import 'package:memorize_scripture/services/secure_settings.dart';
 import 'shared/account_screen_type.dart';
 
 class AccountPageManager {
-  final screenNotifier = ValueNotifier(AccountScreenType.signUp);
+  final screenNotifier = ValueNotifier<AccountScreenType>(Initial());
 
   Future<void> init() async {
-    screenNotifier.value = AccountScreenType.initial;
+    screenNotifier.value = Initial();
     await getIt<AuthService>().init();
 
     final loggedIn = getIt<AuthService>().isLoggedIn;
     if (loggedIn) {
-      screenNotifier.value = AccountScreenType.loggedIn;
+      screenNotifier.value = LoggedIn();
       return;
     }
 
     final storedEmail = await getIt<SecureStorage>().getEmail();
     if (storedEmail == null) {
-      screenNotifier.value = AccountScreenType.signUp;
+      screenNotifier.value = SignUp();
     } else {
-      screenNotifier.value = AccountScreenType.signIn;
+      screenNotifier.value = SignIn(email: storedEmail);
     }
   }
 }

@@ -29,25 +29,20 @@ class _AccountPageState extends State<AccountPage> {
       valueListenable: manager.screenNotifier,
       builder: (context, status, child) {
         switch (status) {
-          case AccountScreenType.initial:
-            return const LoadingOverlay();
-          case AccountScreenType.loading:
-            return LoadingOverlay(
-              background: SignUpScreen(
-                screenNotifier: manager.screenNotifier,
-              ),
-            );
-          case AccountScreenType.signUp:
-            return SignUpScreen(
-              screenNotifier: manager.screenNotifier,
-            );
-          case AccountScreenType.signIn:
+          case Initial():
+            return const Spinner();
+          case Loading():
+            return const Spinner();
+          case SignUp():
+            return SignUpScreen(screenNotifier: manager.screenNotifier);
+          case SignIn():
             return SignInScreen(
               screenNotifier: manager.screenNotifier,
+              email: status.email,
             );
-          case AccountScreenType.newPassword:
-            return const NewPasswordScreen();
-          case AccountScreenType.loggedIn:
+          case NewPassword():
+            return NewPasswordScreen(email: status.email);
+          case LoggedIn():
             return LoggedInScreen(
               screenNotifier: manager.screenNotifier,
             );
@@ -57,27 +52,19 @@ class _AccountPageState extends State<AccountPage> {
   }
 }
 
-class LoadingOverlay extends StatelessWidget {
-  const LoadingOverlay({super.key, this.background});
+class Spinner extends StatelessWidget {
+  const Spinner({super.key, this.background});
 
   final Widget? background;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          if (background != null) background!,
-          AbsorbPointer(
-            absorbing: true,
-            child: ColoredBox(
-              color: Theme.of(context).colorScheme.background.withOpacity(0.8),
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          ),
-        ],
+      body: ColoredBox(
+        color: Theme.of(context).colorScheme.background.withOpacity(0.8),
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
     );
   }

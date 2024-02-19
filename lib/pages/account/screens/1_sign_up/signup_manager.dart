@@ -38,7 +38,7 @@ class SignUpManager {
       await getIt<SecureStorage>().setEmail(email);
       onSignedUp.call('Account created',
           'Check your email and verify your account before signing in.');
-      screenNotifier.value = AccountScreenType.signIn;
+      screenNotifier.value = SignIn(email: email);
     } on EmailException catch (e) {
       emailNotifier.value = e.message;
     } on PasswordException catch (e) {
@@ -100,8 +100,8 @@ class SignUpManager {
     }
   }
 
-  void showSignInScreen() {
-    screenNotifier.value = AccountScreenType.signIn;
+  void showSignInScreen(String email) {
+    screenNotifier.value = SignIn(email: email);
     passwordNotifier.value = const TextFieldData(isObscured: true);
   }
 }

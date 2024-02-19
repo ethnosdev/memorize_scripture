@@ -8,8 +8,10 @@ class SignInScreen extends StatefulWidget {
   const SignInScreen({
     super.key,
     required this.screenNotifier,
+    required this.email,
   });
   final ValueNotifier<AccountScreenType> screenNotifier;
+  final String email;
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
@@ -26,7 +28,7 @@ class _SignInScreenState extends State<SignInScreen> {
     manager = SignInManager(
       screenNotifier: widget.screenNotifier,
     );
-    manager.setSavedEmail(emailController);
+    emailController.text = widget.email;
     manager.onUserNotVerified = _showEmailNotVerifiedDialog;
     manager.onVerificationEmailSent = _notifyVerificationEmailSent;
   }
@@ -103,7 +105,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 const SizedBox(height: 16),
                 TextButton(
-                  onPressed: manager.forgotPassword,
+                  onPressed: () => manager.forgotPassword(emailController.text),
                   child: const Text('Forgot password?'),
                 ),
               ],

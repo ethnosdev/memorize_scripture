@@ -23,7 +23,7 @@ class SignInManager {
   );
 
   void showSignUpScreen() {
-    screenNotifier.value = AccountScreenType.signUp;
+    screenNotifier.value = SignUp();
   }
 
   void onEmailChanged(String value) {
@@ -57,7 +57,7 @@ class SignInManager {
         email: email,
         passphrase: passphrase,
       );
-      screenNotifier.value = AccountScreenType.loggedIn;
+      screenNotifier.value = LoggedIn();
     } on UserNotVerifiedException {
       onUserNotVerified?.call(email);
     } on FailedToAuthenticateException catch (e) {
@@ -84,15 +84,20 @@ class SignInManager {
     return true;
   }
 
-  void forgotPassword() {
-    screenNotifier.value = AccountScreenType.newPassword;
+  void forgotPassword(String email) {
+    final error = validateEmail(email);
+    if (error != null) {
+      emailNotifier.value = error;
+      return;
+    }
+    screenNotifier.value = NewPassword(email: email);
   }
 
-  Future<void> setSavedEmail(TextEditingController emailController) async {
-    final email = await getIt<SecureStorage>().getEmail();
-    if (email == null) return;
-    emailController.text = email;
-  }
+  // Future<void> setSavedEmail(TextEditingController emailController) async {
+  //   final email = await getIt<SecureStorage>().getEmail();
+  //   if (email == null) return;
+  //   emailController.text = email;
+  // }
 
   Future<void> resendEmailVerification(String email) async {
     await getIt<AuthService>().resendVerificationEmail(email);

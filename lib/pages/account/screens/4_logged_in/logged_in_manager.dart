@@ -16,13 +16,13 @@ class LoggedInManager {
 
   Future<void> signOut() async {
     await getIt<AuthService>().signOut();
-    screenNotifier.value = AccountScreenType.signIn;
+    screenNotifier.value = SignIn(email: emailNotifier.value);
     // TODO: delete token from secure storage
   }
 
   Future<void> deleteAccount() async {
     await getIt<AuthService>().deleteAccount();
-    screenNotifier.value = AccountScreenType.signUp;
+    screenNotifier.value = SignUp();
     // TODO: delete token and email from secure storage
     // TODO: mark all verses as unsynced
   }

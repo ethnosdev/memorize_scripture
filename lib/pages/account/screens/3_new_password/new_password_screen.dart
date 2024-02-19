@@ -3,8 +3,8 @@ import 'package:memorize_scripture/pages/account/screens/3_new_password/new_pass
 import 'package:memorize_scripture/pages/account/shared/textfield_data.dart';
 
 class NewPasswordScreen extends StatefulWidget {
-  const NewPasswordScreen({super.key});
-  // final AccountPageManager manager;
+  const NewPasswordScreen({super.key, required this.email});
+  final String email;
 
   @override
   State<NewPasswordScreen> createState() => _NewPasswordScreenState();
@@ -32,6 +32,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 20),
+                Text(widget.email),
                 ValueListenableBuilder<TextFieldData>(
                   valueListenable: manager.passwordNotifier,
                   builder: (context, data, child) {

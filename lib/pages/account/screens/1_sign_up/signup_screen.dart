@@ -40,7 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         title: const Text('Sign Up'),
         actions: [
           TextButton(
-            onPressed: manager.showSignInScreen,
+            onPressed: () => manager.showSignInScreen(emailController.text),
             child: const Text('Sign in'),
           )
         ],
