@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/pages/account/shared/account_screen_type.dart';
+import 'package:memorize_scripture/services/auth/user.dart';
 
 import 'logged_in_manager.dart';
 
@@ -7,8 +8,10 @@ class LoggedInScreen extends StatefulWidget {
   const LoggedInScreen({
     super.key,
     required this.screenNotifier,
+    required this.user,
   });
   final ValueNotifier<AccountScreenType> screenNotifier;
+  final User user;
 
   @override
   State<LoggedInScreen> createState() => _LoggedInScreenState();
@@ -23,7 +26,6 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
     manager = LoggedInManager(
       screenNotifier: widget.screenNotifier,
     );
-    manager.init();
   }
 
   @override
@@ -43,14 +45,10 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
                   const SizedBox(height: 32),
                   const Text('Signed in as'),
                   const SizedBox(height: 8),
-                  ValueListenableBuilder<String>(
-                      valueListenable: manager.emailNotifier,
-                      builder: (context, email, child) {
-                        return Text(
-                          email,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        );
-                      }),
+                  Text(
+                    widget.user.email,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                   const SizedBox(height: 32),
                   SizedBox(
                     width: 200,

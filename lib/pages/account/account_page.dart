@@ -45,6 +45,7 @@ class _AccountPageState extends State<AccountPage> {
           case LoggedIn():
             return LoggedInScreen(
               screenNotifier: manager.screenNotifier,
+              user: status.user,
             );
         }
       },

@@ -12,9 +12,9 @@ class AccountPageManager {
     screenNotifier.value = Initial();
     await getIt<AuthService>().init();
 
-    final loggedIn = getIt<AuthService>().isLoggedIn;
-    if (loggedIn) {
-      screenNotifier.value = LoggedIn();
+    final user = getIt<AuthService>().getUser();
+    if (user != null) {
+      screenNotifier.value = LoggedIn(user: user);
       return;
     }
 

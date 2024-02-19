@@ -9,10 +9,11 @@ class LoggedInManager {
 
   final emailNotifier = ValueNotifier('');
 
-  Future<void> init() async {
-    final user = await getIt<AuthService>().getUser();
-    emailNotifier.value = user.email;
-  }
+  // Future<void> init() async {
+  //   final user = getIt<AuthService>().getUser();
+
+  //   emailNotifier.value = user.email;
+  // }
 
   Future<void> signOut() async {
     await getIt<AuthService>().signOut();

@@ -79,12 +79,15 @@ class AuthService {
     await _pb.collection('users').requestVerification(email);
   }
 
-  Future<User> getUser() async {
+  User? getUser() {
     print(_pb.authStore.model);
     final model = _pb.authStore.model as RecordModel;
+    final email = model.getStringValue('email', '');
+    final token = model.getStringValue('token', '');
+    if (email.isEmpty || token.isEmpty) return null;
     return User(
-      email: model.getStringValue('email'),
-      token: model.getStringValue('token'),
+      email: email,
+      token: token,
     );
   }
 

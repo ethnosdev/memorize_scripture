@@ -7,6 +7,8 @@
 //   loggedIn,
 // }
 
+import 'package:memorize_scripture/services/auth/user.dart';
+
 sealed class AccountScreenType {}
 
 class Initial extends AccountScreenType {}
@@ -25,4 +27,7 @@ class NewPassword extends AccountScreenType {
   final String email;
 }
 
-class LoggedIn extends AccountScreenType {}
+class LoggedIn extends AccountScreenType {
+  LoggedIn({required this.user});
+  final User user;
+}
