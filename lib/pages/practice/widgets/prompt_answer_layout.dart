@@ -98,7 +98,7 @@ class Prompt extends StatelessWidget {
           child: SelectableText.rich(
             text,
             textAlign: TextAlign.center,
-            textScaleFactor: textScaleFactor,
+            textScaler: const TextScaler.linear(textScaleFactor),
           ),
         );
       },
@@ -124,7 +124,7 @@ class Answer extends StatelessWidget {
           child: SelectableText.rich(
             answerContent,
             textAlign: TextAlign.center,
-            textScaleFactor: textScaleFactor,
+            textScaler: const TextScaler.linear(textScaleFactor),
           ),
         );
       },

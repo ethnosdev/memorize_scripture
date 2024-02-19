@@ -41,7 +41,7 @@ class ResponseButton extends StatelessWidget {
                       subtitle!,
                       style: DefaultTextStyle.of(context).style.copyWith(
                           color: Theme.of(context).colorScheme.secondary),
-                      textScaleFactor: 0.9,
+                      textScaler: const TextScaler.linear(0.9),
                     ),
                 ],
               ),
