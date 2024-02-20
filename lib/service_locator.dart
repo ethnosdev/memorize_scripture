@@ -7,6 +7,7 @@ import 'package:memorize_scripture/services/local_storage/sqflite/database.dart'
 import 'package:memorize_scripture/services/notification_service.dart';
 import 'package:memorize_scripture/services/auth/auth_service.dart';
 import 'package:memorize_scripture/services/secure_settings.dart';
+import 'package:memorize_scripture/services/web_api/web_api.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:memorize_scripture/app_manager.dart';
 
@@ -22,4 +23,5 @@ void setupServiceLocator() {
   getIt.registerLazySingleton<HomePageManager>(() => HomePageManager());
   getIt.registerLazySingleton<BibleData>(() => BibleData());
   getIt.registerLazySingleton<AuthService>(() => AuthService());
+  getIt.registerLazySingleton<WebApi>(() => WebApi());
 }

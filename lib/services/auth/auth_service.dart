@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/auth/exceptions.dart';
 import 'package:memorize_scripture/services/auth/user.dart';
@@ -6,7 +8,9 @@ import 'package:pocketbase/pocketbase.dart';
 
 class AuthService {
   late final PocketBase _pb;
-  static const _baseUrl = 'http://127.0.0.1:8090/';
+  final _baseUrl = (Platform.isAndroid) //
+      ? 'http://10.0.2.2:8090/'
+      : 'http://127.0.0.1:8090/';
 
   bool get isLoggedIn => _pb.authStore.isValid;
 

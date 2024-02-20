@@ -5,10 +5,12 @@ import 'package:memorize_scripture/services/auth/auth_service.dart';
 import 'package:memorize_scripture/services/auth/exceptions.dart';
 import 'package:memorize_scripture/services/auth/user.dart';
 import 'package:memorize_scripture/services/secure_settings.dart';
+import 'package:memorize_scripture/services/web_api/web_api.dart';
 
 class LoggedInManager {
   LoggedInManager({required this.screenNotifier});
   final ValueNotifier<AccountScreenType> screenNotifier;
+  final waitingNotifier = ValueNotifier<bool>(false);
 
   void Function(String title, String message)? onResult;
 
@@ -28,12 +30,15 @@ class LoggedInManager {
     }
   }
 
-  void syncVerses() {
+  Future<void> syncVerses() async {
     final user = getIt<AuthService>().getUser();
-    // get collections and verses that have been
-    //   modified and deleted since the last sync
-    // send them to the server
-    // server response are the updates from the server
-    // update local database depending on server response
+    waitingNotifier.value = true;
+    try {
+      await getIt<WebApi>().syncVerses(user);
+    } on UserNotLoggedInException {
+      screenNotifier.value = SignIn(email: '');
+    } finally {
+      waitingNotifier.value = false;
+    }
   }
 }

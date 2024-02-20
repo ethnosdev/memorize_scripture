@@ -554,4 +554,16 @@ class SqfliteStorage implements LocalStorage {
       whereArgs: [collectionId],
     );
   }
+
+  @override
+  Future<Map<String, dynamic>> fetchUnsyncedChanges() async {
+    // TODO: implement fetchUnsyncedChanges
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateFromRemoteSync(Map<String, dynamic> updates) async {
+    // TODO: implement updateFromRemoteSync
+    throw UnimplementedError();
+  }
 }

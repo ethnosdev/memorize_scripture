@@ -56,12 +56,24 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 32),
-                  SizedBox(
-                    width: 200,
-                    child: OutlinedButton(
-                      onPressed: manager.syncVerses,
-                      child: const Text('Sync verses'),
-                    ),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: manager.waitingNotifier,
+                    builder: (context, isProcessing, _) {
+                      if (isProcessing) {
+                        return const SizedBox(
+                          height: 32,
+                          width: 32,
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      return SizedBox(
+                        width: 200,
+                        child: OutlinedButton(
+                          onPressed: manager.syncVerses,
+                          child: const Text('Sync verses'),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 16),
                   SizedBox(

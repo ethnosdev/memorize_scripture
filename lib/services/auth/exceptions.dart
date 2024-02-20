@@ -21,3 +21,5 @@ class UserNotVerifiedException implements Exception {
   UserNotVerifiedException(this.message);
   final String message;
 }
+
+class UserNotLoggedInException implements Exception {}
