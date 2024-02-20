@@ -98,4 +98,8 @@ class AuthService {
     await _pb.collection('users').delete(model.id);
     _pb.authStore.clear();
   }
+
+  Future<void> resetPassword({required String email}) async {
+    await _pb.collection('users').requestPasswordReset(email);
+  }
 }

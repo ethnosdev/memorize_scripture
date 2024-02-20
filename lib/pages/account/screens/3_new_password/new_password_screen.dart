@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:memorize_scripture/common/dialog/dialog.dart';
 import 'package:memorize_scripture/pages/account/screens/3_new_password/new_password_manager.dart';
-import 'package:memorize_scripture/pages/account/shared/textfield_data.dart';
+import 'package:memorize_scripture/pages/account/shared/account_screen_type.dart';
 
 class NewPasswordScreen extends StatefulWidget {
-  const NewPasswordScreen({super.key, required this.email});
+  const NewPasswordScreen({
+    super.key,
+    required this.screenNotifier,
+    required this.email,
+  });
+  final ValueNotifier<AccountScreenType> screenNotifier;
   final String email;
 
   @override
@@ -17,7 +23,14 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
   @override
   void initState() {
     super.initState();
-    manager = NewPasswordManager();
+    manager = NewPasswordManager(
+      screenNotifier: widget.screenNotifier,
+      onResetSent: (title, message) => showMessageDialog(
+        context: context,
+        title: title,
+        message: message,
+      ),
+    );
   }
 
   @override
@@ -28,52 +41,24 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 32),
-                const Text('Account email:'),
-                const SizedBox(height: 8),
-                Text(
-                  widget.email,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 32),
-                ValueListenableBuilder<TextFieldData>(
-                  valueListenable: manager.passwordNotifier,
-                  builder: (context, data, child) {
-                    return TextField(
-                      controller: passwordController,
-                      autofocus: true,
-                      obscureText: data.isObscured,
-                      decoration: InputDecoration(
-                        labelText: 'Enter a new passphrase',
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        border: const OutlineInputBorder(),
-                        suffixIcon: IconButton(
-                          onPressed: manager.togglePasswordVisibility,
-                          icon: (data.isObscured)
-                              ? const Icon(Icons.visibility_off)
-                              : const Icon(Icons.visibility),
-                        ),
-                        hintText: 'Four random words',
-                        errorText: data.errorText,
-                        errorMaxLines: 3,
-                      ),
-                      onChanged: manager.onPasswordChanged,
-                    );
-                  },
-                ),
-                const SizedBox(height: 32),
-                OutlinedButton(
-                  onPressed: () {
-                    manager.resetPassword(
-                      password: passwordController.text,
-                    );
-                  },
-                  child: const Text('Reset password'),
-                ),
-              ],
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 32),
+                  Text(
+                    widget.email,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 32),
+                  OutlinedButton(
+                    onPressed: () {
+                      manager.resetPassword(email: widget.email);
+                    },
+                    child: const Text('Reset password'),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

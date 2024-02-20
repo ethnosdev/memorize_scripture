@@ -41,7 +41,10 @@ class _AccountPageState extends State<AccountPage> {
               email: status.email,
             );
           case NewPassword():
-            return NewPasswordScreen(email: status.email);
+            return NewPasswordScreen(
+              screenNotifier: manager.screenNotifier,
+              email: status.email,
+            );
           case LoggedIn():
             return LoggedInScreen(
               screenNotifier: manager.screenNotifier,
