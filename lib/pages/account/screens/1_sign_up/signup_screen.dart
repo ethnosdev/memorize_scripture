@@ -25,7 +25,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.initState();
     manager = SignUpManager(
       screenNotifier: widget.screenNotifier,
-      onSignedUp: (title, message) => showMessageDialog(
+      onResult: (title, message) => showMessageDialog(
         context: context,
         title: title,
         message: message,

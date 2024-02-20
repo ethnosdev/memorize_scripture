@@ -39,6 +39,10 @@ class AuthService {
       print(record);
       await _pb.collection('users').requestVerification(email);
     } on ClientException catch (e) {
+      print(e);
+      if (e.statusCode == 0) {
+        throw ConnectionRefusedException();
+      }
       final data = e.response['data'];
       if (data['email'] != null) {
         final message = data['email']['message'];
@@ -68,10 +72,16 @@ class AuthService {
       }
       return User(email: email, token: authData.token);
     } on ClientException catch (e) {
-      if (e.statusCode == 400) {
-        throw FailedToAuthenticateException('Email or password was incorrect');
+      final code = e.statusCode;
+      switch (code) {
+        case 0:
+          throw ConnectionRefusedException();
+        case 400:
+          throw FailedToAuthenticateException(
+              'Email or password was incorrect');
+        default:
+          throw Exception(e);
       }
-      throw Exception(e);
     }
   }
 
@@ -94,12 +104,26 @@ class AuthService {
   }
 
   Future<void> deleteAccount() async {
-    final model = _pb.authStore.model as RecordModel;
-    await _pb.collection('users').delete(model.id);
-    _pb.authStore.clear();
+    try {
+      final model = _pb.authStore.model as RecordModel;
+      await _pb.collection('users').delete(model.id);
+      _pb.authStore.clear();
+    } on ClientException catch (e) {
+      if (e.statusCode == 0) {
+        throw ConnectionRefusedException();
+      }
+      throw Exception(e);
+    }
   }
 
   Future<void> resetPassword({required String email}) async {
-    await _pb.collection('users').requestPasswordReset(email);
+    try {
+      await _pb.collection('users').requestPasswordReset(email);
+    } on ClientException catch (e) {
+      if (e.statusCode == 0) {
+        throw ConnectionRefusedException();
+      }
+      throw Exception(e);
+    }
   }
 }

@@ -13,6 +13,10 @@ class FailedToAuthenticateException implements Exception {
   final String message;
 }
 
+class ConnectionRefusedException implements Exception {
+  final message = 'There was a problem connecting to the server';
+}
+
 class UserNotVerifiedException implements Exception {
   UserNotVerifiedException(this.message);
   final String message;

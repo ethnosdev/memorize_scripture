@@ -25,7 +25,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
     super.initState();
     manager = NewPasswordManager(
       screenNotifier: widget.screenNotifier,
-      onResetSent: (title, message) => showMessageDialog(
+      onResult: (title, message) => showMessageDialog(
         context: context,
         title: title,
         message: message,

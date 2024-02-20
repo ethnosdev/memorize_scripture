@@ -30,7 +30,7 @@ class _SignInScreenState extends State<SignInScreen> {
     );
     emailController.text = widget.email;
     manager.onUserNotVerified = _showEmailNotVerifiedDialog;
-    manager.onVerificationEmailSent = _notifyVerificationEmailSent;
+    manager.onResult = _notifyResult;
   }
 
   @override
@@ -94,14 +94,26 @@ class _SignInScreenState extends State<SignInScreen> {
                       );
                     }),
                 const SizedBox(height: 32),
-                OutlinedButton(
-                  onPressed: () {
-                    manager.signIn(
-                      email: emailController.text,
-                      passphrase: passwordController.text,
+                ValueListenableBuilder<bool>(
+                  valueListenable: manager.waitingNotifier,
+                  builder: (context, isProcessing, _) {
+                    if (isProcessing) {
+                      return const SizedBox(
+                        height: 32,
+                        width: 32,
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    return OutlinedButton(
+                      onPressed: () {
+                        manager.signIn(
+                          email: emailController.text,
+                          passphrase: passwordController.text,
+                        );
+                      },
+                      child: const Text('Sign in'),
                     );
                   },
-                  child: const Text('Sign in'),
                 ),
                 const SizedBox(height: 16),
                 TextButton(
@@ -144,10 +156,10 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  void _notifyVerificationEmailSent() {
+  void _notifyResult(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Verification email was sent.'),
+      SnackBar(
+        content: Text(message),
       ),
     );
   }

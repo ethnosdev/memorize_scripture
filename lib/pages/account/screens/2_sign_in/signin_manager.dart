@@ -15,12 +15,13 @@ class SignInManager {
   final ValueNotifier<AccountScreenType> screenNotifier;
 
   void Function(String)? onUserNotVerified;
-  void Function()? onVerificationEmailSent;
+  void Function(String)? onResult;
 
   final emailNotifier = ValueNotifier<String?>(null);
   final passwordNotifier = ValueNotifier(
     const TextFieldData(isObscured: true),
   );
+  final waitingNotifier = ValueNotifier<bool>(false);
 
   void showSignUpScreen() {
     screenNotifier.value = SignUp();
@@ -51,6 +52,7 @@ class SignInManager {
 
   void signIn({required String email, required String passphrase}) async {
     if (!_emailAndPasswordOk(email, passphrase)) return;
+    waitingNotifier.value = true;
     await getIt<SecureStorage>().setEmail(email);
     try {
       final user = await getIt<AuthService>().signIn(
@@ -65,6 +67,10 @@ class SignInManager {
         errorText: e.message,
         isObscured: passwordNotifier.value.isObscured,
       );
+    } on ConnectionRefusedException catch (e) {
+      onResult?.call(e.message);
+    } finally {
+      waitingNotifier.value = false;
     }
   }
 
@@ -93,14 +99,8 @@ class SignInManager {
     screenNotifier.value = NewPassword(email: email);
   }
 
-  // Future<void> setSavedEmail(TextEditingController emailController) async {
-  //   final email = await getIt<SecureStorage>().getEmail();
-  //   if (email == null) return;
-  //   emailController.text = email;
-  // }
-
   Future<void> resendEmailVerification(String email) async {
     await getIt<AuthService>().resendVerificationEmail(email);
-    onVerificationEmailSent?.call();
+    onResult?.call('Verification email was sent.');
   }
 }
