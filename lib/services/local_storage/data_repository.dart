@@ -1,7 +1,7 @@
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/verse.dart';
 
-abstract class DataRepository {
+abstract class LocalStorage {
   Future<void> init();
 
   /// Returns all collections

@@ -27,4 +27,13 @@ class LoggedInManager {
       onResult?.call('Error', e.message);
     }
   }
+
+  void syncVerses() {
+    final user = getIt<AuthService>().getUser();
+    // get collections and verses that have been
+    //   modified and deleted since the last sync
+    // send them to the server
+    // server response are the updates from the server
+    // update local database depending on server response
+  }
 }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
-import 'package:memorize_scripture/services/data_repository/data_repository.dart';
+import 'package:memorize_scripture/services/local_storage/data_repository.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:test/test.dart';
 
-@GenerateNiceMocks([MockSpec<DataRepository>()])
+@GenerateNiceMocks([MockSpec<LocalStorage>()])
 @GenerateNiceMocks([MockSpec<UserSettings>()])
 import 'practice_page_manager_test.mocks.dart';
 

@@ -6,7 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/data_repository/data_repository.dart';
+import 'package:memorize_scripture/services/local_storage/data_repository.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -15,13 +15,13 @@ import 'package:uuid/uuid.dart';
 
 class HomePageManager {
   HomePageManager({
-    DataRepository? dataRepository,
+    LocalStorage? dataRepository,
     UserSettings? userSettings,
   }) {
-    this.dataRepository = dataRepository ?? getIt<DataRepository>();
+    this.dataRepository = dataRepository ?? getIt<LocalStorage>();
     this.userSettings = userSettings ?? getIt<UserSettings>();
   }
-  late final DataRepository dataRepository;
+  late final LocalStorage dataRepository;
   late final UserSettings userSettings;
 
   final collectionNotifier =

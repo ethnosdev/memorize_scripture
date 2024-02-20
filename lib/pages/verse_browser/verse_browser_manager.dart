@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/data_repository/data_repository.dart';
+import 'package:memorize_scripture/services/local_storage/data_repository.dart';
 
 class VerseBrowserManager {
-  final dataRepo = getIt<DataRepository>();
+  final dataRepo = getIt<LocalStorage>();
   final listNotifier = ValueNotifier<List<Verse>>([]);
 
   late String _collectionId;

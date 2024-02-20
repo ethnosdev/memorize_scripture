@@ -1,11 +1,11 @@
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/pages/home/home_page_manager.dart';
-import 'package:memorize_scripture/services/data_repository/data_repository.dart';
+import 'package:memorize_scripture/services/local_storage/data_repository.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-@GenerateNiceMocks([MockSpec<DataRepository>()])
+@GenerateNiceMocks([MockSpec<LocalStorage>()])
 import 'home_page_manager_test.mocks.dart';
 
 void main() {

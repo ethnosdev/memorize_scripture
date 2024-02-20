@@ -5,7 +5,7 @@ import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/pages/practice/helpers/letters_hint.dart';
 import 'package:memorize_scripture/pages/practice/helpers/words_hint.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/data_repository/data_repository.dart';
+import 'package:memorize_scripture/services/local_storage/data_repository.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 
 enum PracticeState {
@@ -42,13 +42,13 @@ class HintButtonState {
 
 class PracticePageManager {
   PracticePageManager({
-    DataRepository? dataRepository,
+    LocalStorage? dataRepository,
     UserSettings? userSettings,
   }) {
-    this.dataRepository = dataRepository ?? getIt<DataRepository>();
+    this.dataRepository = dataRepository ?? getIt<LocalStorage>();
     this.userSettings = userSettings ?? getIt<UserSettings>();
   }
-  late final DataRepository dataRepository;
+  late final LocalStorage dataRepository;
   late final UserSettings userSettings;
   final _wordsHintHelper = WordsHintHelper();
 

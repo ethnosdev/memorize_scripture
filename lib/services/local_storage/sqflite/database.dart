@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/verse.dart';
-import 'package:memorize_scripture/services/data_repository/data_repository.dart';
-import 'package:memorize_scripture/services/data_repository/sqflite/schema.dart';
+import 'package:memorize_scripture/services/local_storage/data_repository.dart';
+import 'package:memorize_scripture/services/local_storage/sqflite/schema.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class LocalStorage implements DataRepository {
+class SqfliteStorage implements LocalStorage {
   final String _databaseName = "database.db";
   // If you change the database version, also update the json backup version.
   static const int _databaseVersion = 2;

@@ -59,7 +59,7 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
                   SizedBox(
                     width: 200,
                     child: OutlinedButton(
-                      onPressed: () {},
+                      onPressed: manager.syncVerses,
                       child: const Text('Sync verses'),
                     ),
                   ),

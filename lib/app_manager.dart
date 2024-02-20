@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/data_repository/data_repository.dart';
+import 'package:memorize_scripture/services/local_storage/data_repository.dart';
 import 'package:memorize_scripture/services/notification_service.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 
@@ -12,7 +12,7 @@ class AppManager {
   Future<void> init() async {
     await userSettings.init();
     await _setDarkLightTheme();
-    await getIt<DataRepository>().init();
+    await getIt<LocalStorage>().init();
     await getIt<NotificationService>().init();
     await getIt<NotificationService>().scheduleNotifications();
   }
