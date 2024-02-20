@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/local_storage/data_repository.dart';
+import 'package:memorize_scripture/services/local_storage/sqflite/database.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -126,7 +127,7 @@ class HomePageManager {
 
     final backup = {
       'date': _dateToSecondsSinceEpoch(DateTime.now()),
-      'version': 2, // should match the database version
+      'version': databaseVersion,
       'collections': collections,
       'verses': verses,
     };

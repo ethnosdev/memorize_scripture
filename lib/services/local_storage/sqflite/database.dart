@@ -6,10 +6,12 @@ import 'package:memorize_scripture/services/local_storage/sqflite/schema.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+// If the database version changes, you also need to
+// update the json backup logic.
+const databaseVersion = 3;
+
 class SqfliteStorage implements LocalStorage {
   final String _databaseName = "database.db";
-  // If you change the database version, also update the json backup version.
-  static const int _databaseVersion = 2;
   late Database _database;
 
   @override
@@ -20,13 +22,15 @@ class SqfliteStorage implements LocalStorage {
       path,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
-      version: _databaseVersion,
+      version: databaseVersion,
     );
   }
 
   Future<void> _onCreate(Database db, int version) async {
-    await db.execute(CollectionEntry.createCollectionTable);
-    await db.execute(VerseEntry.createVocabTable);
+    await db.execute(CollectionEntry.createTable);
+    await db.execute(VerseEntry.createTable);
+    await db.execute(DeletedVerseEntry.createTable);
+    await db.execute(DeletedCollectionEntry.createTable);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -34,16 +38,30 @@ class SqfliteStorage implements LocalStorage {
     if (oldVersion == 1) {
       await _upgradeFrom1to2(db);
     }
+    if (oldVersion == 2) {
+      await _upgradeFrom2to3(db);
+    }
   }
 
   Future<void> _upgradeFrom1to2(Database db) async {
     await db.execute('ALTER TABLE verses ADD COLUMN hint TEXT');
   }
 
+  Future<void> _upgradeFrom2to3(Database db) async {
+    await db
+        .execute('ALTER TABLE verses ADD COLUMN synced BOOLEAN DEFAULT FALSE');
+    await db.execute(
+        'ALTER TABLE collection ADD COLUMN synced BOOLEAN DEFAULT FALSE');
+    await db.execute(
+        'CREATE TABLE deleted_verses (_id TEXT PRIMARY KEY, date INTEGER)');
+    await db.execute(
+        'CREATE TABLE deleted_collections (_id TEXT PRIMARY KEY, date INTEGER)');
+  }
+
   @override
   Future<List<Collection>> fetchCollections() async {
     final collections = await _database.query(
-      CollectionEntry.collectionTable,
+      CollectionEntry.tableName,
       orderBy: 'LOWER(${CollectionEntry.name}) ASC',
     );
     return List.generate(collections.length, (i) {
@@ -59,12 +77,12 @@ class SqfliteStorage implements LocalStorage {
     List<Map<String, Object?>> verses;
     if (collectionId != null) {
       verses = await _database.query(
-        VerseEntry.verseTable,
+        VerseEntry.tableName,
         where: '${VerseEntry.collectionId} = ?',
         whereArgs: [collectionId],
       );
     } else {
-      verses = await _database.query(VerseEntry.verseTable);
+      verses = await _database.query(VerseEntry.tableName);
     }
     return List.generate(verses.length, (i) {
       final verse = verses[i];
@@ -116,7 +134,7 @@ class SqfliteStorage implements LocalStorage {
     int? limit,
   ) async {
     return await _database.query(
-      VerseEntry.verseTable,
+      VerseEntry.tableName,
       where: '${VerseEntry.collectionId} = ? '
           'AND ${VerseEntry.nextDueDate} IS NULL',
       whereArgs: [collectionId],
@@ -129,7 +147,7 @@ class SqfliteStorage implements LocalStorage {
       String collectionId) async {
     final today = _timestampNow();
     return await _database.query(
-      VerseEntry.verseTable,
+      VerseEntry.tableName,
       where: '${VerseEntry.collectionId} = ? '
           'AND ${VerseEntry.nextDueDate} <= ?',
       whereArgs: [collectionId, today],
@@ -140,7 +158,7 @@ class SqfliteStorage implements LocalStorage {
   @override
   Future<Verse?> fetchVerse({required String verseId}) async {
     final results = await _database.query(
-      VerseEntry.verseTable,
+      VerseEntry.tableName,
       where: '${VerseEntry.id} = ?',
       whereArgs: [verseId],
     );
@@ -159,7 +177,7 @@ class SqfliteStorage implements LocalStorage {
   @override
   Future<void> insertVerse(String collectionId, Verse verse) async {
     await _database.insert(
-      VerseEntry.verseTable,
+      VerseEntry.tableName,
       {
         VerseEntry.id: verse.id,
         VerseEntry.collectionId: collectionId,
@@ -169,6 +187,7 @@ class SqfliteStorage implements LocalStorage {
         VerseEntry.modifiedDate: _timestampNow(),
         VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
         VerseEntry.interval: verse.interval.inDays,
+        VerseEntry.synced: false,
       },
     );
   }
@@ -176,7 +195,7 @@ class SqfliteStorage implements LocalStorage {
   @override
   Future<void> updateVerse(String collectionId, Verse verse) async {
     await _database.update(
-      VerseEntry.verseTable,
+      VerseEntry.tableName,
       {
         VerseEntry.collectionId: collectionId,
         VerseEntry.prompt: verse.prompt,
@@ -185,6 +204,7 @@ class SqfliteStorage implements LocalStorage {
         VerseEntry.modifiedDate: _timestampNow(),
         VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
         VerseEntry.interval: verse.interval.inDays,
+        VerseEntry.synced: false,
       },
       where: '${VerseEntry.id} = ?',
       whereArgs: [verse.id],
@@ -209,7 +229,7 @@ class SqfliteStorage implements LocalStorage {
     final timestamp = _timestampNow();
     for (Verse verse in verses) {
       batch.insert(
-        VerseEntry.verseTable,
+        VerseEntry.tableName,
         {
           VerseEntry.id: verse.id,
           VerseEntry.collectionId: collection.id,
@@ -219,6 +239,7 @@ class SqfliteStorage implements LocalStorage {
           VerseEntry.modifiedDate: timestamp,
           VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
           VerseEntry.interval: verse.interval.inDays,
+          VerseEntry.synced: false,
         },
       );
     }
@@ -229,9 +250,16 @@ class SqfliteStorage implements LocalStorage {
   @override
   Future<void> deleteVerse({required String verseId}) async {
     await _database.delete(
-      VerseEntry.verseTable,
+      VerseEntry.tableName,
       where: '${VerseEntry.id} = ?',
       whereArgs: [verseId],
+    );
+    await _database.insert(
+      DeletedVerseEntry.tableName,
+      {
+        DeletedVerseEntry.id: verseId,
+        DeletedVerseEntry.date: _timestampNow(),
+      },
     );
   }
 
@@ -248,7 +276,7 @@ class SqfliteStorage implements LocalStorage {
   Future<void> _upsertCollection(Collection collection) async {
     // Check if another collection has the same name
     final results = await _database.query(
-      CollectionEntry.collectionTable,
+      CollectionEntry.tableName,
       where: '${CollectionEntry.name} = ?',
       whereArgs: [collection.name.trim()],
     );
@@ -260,11 +288,12 @@ class SqfliteStorage implements LocalStorage {
 
     // Insert or replace the collection
     await _database.insert(
-      CollectionEntry.collectionTable,
+      CollectionEntry.tableName,
       {
         CollectionEntry.id: collection.id,
         CollectionEntry.name: collection.name.trim(),
         CollectionEntry.modifiedDate: _timestampNow(),
+        CollectionEntry.synced: false,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -273,14 +302,21 @@ class SqfliteStorage implements LocalStorage {
   @override
   Future<void> deleteCollection({required String collectionId}) async {
     await _database.delete(
-      CollectionEntry.collectionTable,
+      CollectionEntry.tableName,
       where: '${CollectionEntry.id} = ?',
       whereArgs: [collectionId],
     );
     await _database.delete(
-      VerseEntry.verseTable,
+      VerseEntry.tableName,
       where: '${VerseEntry.collectionId} = ?',
       whereArgs: [collectionId],
+    );
+    await _database.insert(
+      DeletedCollectionEntry.tableName,
+      {
+        DeletedCollectionEntry.id: collectionId,
+        DeletedCollectionEntry.date: _timestampNow(),
+      },
     );
   }
 
@@ -290,7 +326,7 @@ class SqfliteStorage implements LocalStorage {
     required String prompt,
   }) async {
     final results = await _database.query(
-      VerseEntry.verseTable,
+      VerseEntry.tableName,
       where: '${VerseEntry.collectionId} = ? AND ${VerseEntry.prompt} = ?',
       whereArgs: [collectionId, prompt],
     );
@@ -301,7 +337,7 @@ class SqfliteStorage implements LocalStorage {
   Future<int> numberInCollection(String collectionId) async {
     final List<Map<String, dynamic>> result = await _database.rawQuery('''
       SELECT COUNT(*)
-      FROM ${VerseEntry.verseTable}
+      FROM ${VerseEntry.tableName}
       WHERE ${VerseEntry.collectionId} = ?
     ''', [collectionId]);
 
@@ -315,10 +351,10 @@ class SqfliteStorage implements LocalStorage {
     String? collectionId,
   ]) async {
     if (collectionId == null) {
-      return await _database.query(CollectionEntry.collectionTable);
+      return await _database.query(CollectionEntry.tableName);
     }
     return await _database.query(
-      CollectionEntry.collectionTable,
+      CollectionEntry.tableName,
       where: '${CollectionEntry.id} = ?',
       whereArgs: [collectionId],
     );
@@ -329,10 +365,10 @@ class SqfliteStorage implements LocalStorage {
     String? collectionId,
   ]) async {
     if (collectionId == null) {
-      return await _database.query(VerseEntry.verseTable);
+      return await _database.query(VerseEntry.tableName);
     }
     return await _database.query(
-      VerseEntry.verseTable,
+      VerseEntry.tableName,
       columns: [
         VerseEntry.id,
         VerseEntry.collectionId,
@@ -374,7 +410,7 @@ class SqfliteStorage implements LocalStorage {
 
         // insert/update the new collection
         await _database.insert(
-          CollectionEntry.collectionTable,
+          CollectionEntry.tableName,
           {
             CollectionEntry.id: id,
             CollectionEntry.name: name,
@@ -392,7 +428,7 @@ class SqfliteStorage implements LocalStorage {
 
   Future<bool> _collectionExists(String collectionId) async {
     final result = await _database.rawQuery(
-      'SELECT EXISTS(SELECT 1 FROM ${CollectionEntry.collectionTable} '
+      'SELECT EXISTS(SELECT 1 FROM ${CollectionEntry.tableName} '
       'WHERE ${CollectionEntry.id}=?)',
       [collectionId],
     );
@@ -401,7 +437,7 @@ class SqfliteStorage implements LocalStorage {
 
   Future<int?> _collectionModifiedDate(String collectionId) async {
     final result = await _database.query(
-      CollectionEntry.collectionTable,
+      CollectionEntry.tableName,
       columns: [CollectionEntry.modifiedDate],
       where: '${CollectionEntry.id} = ?',
       whereArgs: [collectionId],
@@ -412,7 +448,7 @@ class SqfliteStorage implements LocalStorage {
 
   Future<bool> _collectionNameExists(String name) async {
     final result = await _database.rawQuery(
-      'SELECT EXISTS(SELECT 1 FROM ${CollectionEntry.collectionTable} '
+      'SELECT EXISTS(SELECT 1 FROM ${CollectionEntry.tableName} '
       'WHERE ${CollectionEntry.name}=?)',
       [name],
     );
@@ -421,7 +457,8 @@ class SqfliteStorage implements LocalStorage {
 
   @override
   Future<(int added, int updated, int errorCount)> restoreVerses(
-      List<Map<String, Object?>> verses) async {
+    List<Map<String, Object?>> verses,
+  ) async {
     int addedCount = 0;
     int updatedCount = 0;
     int errorCount = 0;
@@ -480,7 +517,7 @@ class SqfliteStorage implements LocalStorage {
 
   Future<int?> _existingVerseModifiedDate(String verseId) async {
     final result = await _database.query(
-      VerseEntry.verseTable,
+      VerseEntry.tableName,
       columns: [VerseEntry.modifiedDate],
       where: '${VerseEntry.id} = ?',
       whereArgs: [verseId],
@@ -500,7 +537,7 @@ class SqfliteStorage implements LocalStorage {
     required int interval,
   }) async {
     await _database.update(
-      VerseEntry.verseTable,
+      VerseEntry.tableName,
       {
         VerseEntry.collectionId: collectionId,
         VerseEntry.prompt: prompt,
@@ -509,6 +546,7 @@ class SqfliteStorage implements LocalStorage {
         VerseEntry.modifiedDate: modifiedDate,
         VerseEntry.nextDueDate: dueDate,
         VerseEntry.interval: interval,
+        VerseEntry.synced: false,
       },
       where: '${VerseEntry.id} = ?',
       whereArgs: [id],
@@ -526,7 +564,7 @@ class SqfliteStorage implements LocalStorage {
     required int interval,
   }) async {
     await _database.insert(
-      VerseEntry.verseTable,
+      VerseEntry.tableName,
       {
         VerseEntry.id: id,
         VerseEntry.collectionId: collectionId,
@@ -536,6 +574,7 @@ class SqfliteStorage implements LocalStorage {
         VerseEntry.modifiedDate: modifiedDate,
         VerseEntry.nextDueDate: dueDate,
         VerseEntry.interval: interval,
+        VerseEntry.synced: false,
       },
     );
   }
@@ -544,11 +583,12 @@ class SqfliteStorage implements LocalStorage {
   Future<int> resetDueDates({required String collectionId}) async {
     final now = _timestampNow();
     return await _database.update(
-      VerseEntry.verseTable,
+      VerseEntry.tableName,
       {
         VerseEntry.modifiedDate: now,
         VerseEntry.nextDueDate: null,
         VerseEntry.interval: 0,
+        VerseEntry.synced: false,
       },
       where: '${VerseEntry.collectionId} = ?',
       whereArgs: [collectionId],
@@ -557,6 +597,18 @@ class SqfliteStorage implements LocalStorage {
 
   @override
   Future<Map<String, dynamic>> fetchUnsyncedChanges() async {
+    // get unsynced verses
+    final unsyncedVerses = await _database.query(
+      VerseEntry.tableName,
+      where: '${VerseEntry.nextDueDate} IS NOT NULL',
+      orderBy: '${VerseEntry.nextDueDate} ASC',
+      limit: 100,
+      offset: 0,
+    );
+    // get unsynced collections
+    // get deleted verses
+    // get deleted collections
+
     // TODO: implement fetchUnsyncedChanges
     throw UnimplementedError();
   }
