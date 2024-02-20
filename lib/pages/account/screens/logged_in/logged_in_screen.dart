@@ -67,7 +67,7 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
                   SizedBox(
                     width: 200,
                     child: OutlinedButton(
-                      onPressed: manager.signOut,
+                      onPressed: () => manager.signOut(widget.user),
                       child: const Text('Sign out'),
                     ),
                   ),

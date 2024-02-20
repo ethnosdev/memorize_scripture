@@ -1,12 +1,3 @@
-// enum AccountScreenType {
-//   initial,
-//   loading,
-//   signUp,
-//   signIn,
-//   newPassword,
-//   loggedIn,
-// }
-
 import 'package:memorize_scripture/services/auth/user.dart';
 
 sealed class AccountScreenType {}

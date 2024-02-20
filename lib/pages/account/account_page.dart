@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/pages/account/account_page_manager.dart';
-import 'package:memorize_scripture/pages/account/screens/1_sign_up/signup_screen.dart';
-import 'package:memorize_scripture/pages/account/screens/3_new_password/new_password_screen.dart';
-import 'package:memorize_scripture/pages/account/screens/4_logged_in/logged_in_screen.dart';
+import 'package:memorize_scripture/pages/account/screens/sign_up/signup_screen.dart';
+import 'package:memorize_scripture/pages/account/screens/new_password/new_password_screen.dart';
+import 'package:memorize_scripture/pages/account/screens/logged_in/logged_in_screen.dart';
 
-import 'screens/2_sign_in/signin_screen.dart';
+import 'screens/sign_in/signin_screen.dart';
 import 'shared/account_screen_type.dart';
 
 class AccountPage extends StatefulWidget {

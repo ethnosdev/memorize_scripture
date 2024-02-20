@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/dialog/dialog.dart';
-import 'package:memorize_scripture/pages/account/screens/1_sign_up/signup_manager.dart';
+import 'package:memorize_scripture/pages/account/screens/sign_up/signup_manager.dart';
 import 'package:memorize_scripture/pages/account/shared/account_screen_type.dart';
 import 'package:memorize_scripture/pages/account/shared/textfield_data.dart';
 
