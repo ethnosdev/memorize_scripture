@@ -37,6 +37,8 @@ class LoggedInManager {
       await getIt<WebApi>().syncVerses(user);
     } on UserNotLoggedInException {
       screenNotifier.value = SignIn(email: '');
+    } on ConnectionRefusedException catch (e) {
+      onResult?.call('Error', e.message);
     } finally {
       waitingNotifier.value = false;
     }

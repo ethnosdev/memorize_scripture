@@ -10,8 +10,8 @@ import 'package:memorize_scripture/services/local_storage/data_repository.dart';
 
 class WebApi {
   final _baseUrl = (Platform.isAndroid) //
-      ? 'http://10.0.2.2:8080/'
-      : 'http://127.0.0.1:8080/';
+      ? 'http://10.0.2.2:8080'
+      : 'http://127.0.0.1:8080';
 
   Future<void> syncVerses(User? user) async {
     if (user == null) throw UserNotLoggedInException();
@@ -21,13 +21,24 @@ class WebApi {
     final jsonChanges = await compute(jsonEncode, changes);
     print(jsonChanges);
 
+    print('---------------');
+
     // send them to the server
-    // final url = Uri.parse('$_baseUrl/sync');
-    // final headers = {
-    //   'Authorization': 'Bearer ${user.token}',
-    //   'Content-Type': 'application/json'
-    // };
-    // final result = await http.put(url, headers: headers, body: jsonChanges);
+    final url = Uri.parse('$_baseUrl/sync');
+    final headers = {
+      'Authorization': 'Bearer ${user.token}',
+      'Content-Type': 'application/json'
+    };
+    try {
+      final result = await http.put(
+        url,
+        headers: headers,
+        body: jsonChanges,
+      );
+      print(result.body);
+    } on http.ClientException {
+      throw ConnectionRefusedException();
+    }
 
     // // update local database with server response
     // final updates = jsonDecode(result.body);
