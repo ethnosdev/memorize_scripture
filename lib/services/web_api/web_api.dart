@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/auth/exceptions.dart';
@@ -17,18 +18,19 @@ class WebApi {
 
     // get unsynced local changes
     final changes = await getIt<LocalStorage>().fetchUnsyncedChanges();
-    final jsonChanges = jsonEncode(changes);
+    final jsonChanges = await compute(jsonEncode, changes);
+    print(jsonChanges);
 
     // send them to the server
-    final url = Uri.parse('$_baseUrl/sync');
-    final headers = {
-      'Authorization': 'Bearer ${user.token}',
-      'Content-Type': 'application/json'
-    };
-    final result = await http.put(url, headers: headers, body: jsonChanges);
+    // final url = Uri.parse('$_baseUrl/sync');
+    // final headers = {
+    //   'Authorization': 'Bearer ${user.token}',
+    //   'Content-Type': 'application/json'
+    // };
+    // final result = await http.put(url, headers: headers, body: jsonChanges);
 
-    // update local database with server response
-    final updates = jsonDecode(result.body);
-    await getIt<LocalStorage>().updateFromRemoteSync(updates);
+    // // update local database with server response
+    // final updates = jsonDecode(result.body);
+    // await getIt<LocalStorage>().updateFromRemoteSync(updates);
   }
 }

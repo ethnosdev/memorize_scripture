@@ -600,17 +600,16 @@ class SqfliteStorage implements LocalStorage {
     // get unsynced verses
     final unsyncedVerses = await _database.query(
       VerseEntry.tableName,
-      where: '${VerseEntry.nextDueDate} IS NOT NULL',
-      orderBy: '${VerseEntry.nextDueDate} ASC',
-      limit: 100,
-      offset: 0,
+      where: '${VerseEntry.synced} = ?',
+      whereArgs: [0],
     );
-    // get unsynced collections
-    // get deleted verses
-    // get deleted collections
 
-    // TODO: implement fetchUnsyncedChanges
-    throw UnimplementedError();
+    return {
+      'verses': unsyncedVerses,
+      'collections': [], // TODO: implement collections
+      'deletedVerses': [], // TODO: implement deleted verses
+      'deletedCollections': [], // TODO: implement deleted collections
+    };
   }
 
   @override
