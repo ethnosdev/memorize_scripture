@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/local_storage/data_repository.dart';
+import 'package:memorize_scripture/services/local_storage/local_storage.dart';
 import 'package:memorize_scripture/services/notification_service.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 

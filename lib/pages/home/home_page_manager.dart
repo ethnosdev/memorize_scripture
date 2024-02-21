@@ -6,7 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/local_storage/data_repository.dart';
+import 'package:memorize_scripture/services/local_storage/local_storage.dart';
 import 'package:memorize_scripture/services/local_storage/sqflite/database.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:path/path.dart';

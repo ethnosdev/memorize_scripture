@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
-import 'package:memorize_scripture/services/local_storage/data_repository.dart';
+import 'package:memorize_scripture/services/local_storage/local_storage.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';

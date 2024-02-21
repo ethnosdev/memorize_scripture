@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/pages/account/shared/account_screen_type.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/auth/auth_service.dart';
-import 'package:memorize_scripture/services/auth/exceptions.dart';
-import 'package:memorize_scripture/services/auth/user.dart';
+import 'package:memorize_scripture/services/backend/auth/exceptions.dart';
+import 'package:memorize_scripture/services/backend/auth/user.dart';
+import 'package:memorize_scripture/services/backend/backend_service.dart';
 import 'package:memorize_scripture/services/secure_settings.dart';
-import 'package:memorize_scripture/services/web_api/web_api.dart';
+import 'package:memorize_scripture/services/backend/web_api/web_api.dart';
 
 class LoggedInManager {
   LoggedInManager({required this.screenNotifier});
@@ -15,13 +15,13 @@ class LoggedInManager {
   void Function(String title, String message)? onResult;
 
   Future<void> signOut(User user) async {
-    await getIt<AuthService>().signOut();
+    await getIt<BackendService>().auth.signOut();
     screenNotifier.value = SignIn(email: user.email);
   }
 
   Future<void> deleteAccount() async {
     try {
-      await getIt<AuthService>().deleteAccount();
+      await getIt<BackendService>().auth.deleteAccount();
       screenNotifier.value = SignUp();
       await getIt<SecureStorage>().deleteEmail();
       // TODO: mark all verses as unsynced
@@ -31,7 +31,7 @@ class LoggedInManager {
   }
 
   Future<void> syncVerses() async {
-    final user = getIt<AuthService>().getUser();
+    final user = getIt<BackendService>().auth.getUser();
     waitingNotifier.value = true;
     try {
       await getIt<WebApi>().syncVerses(user);

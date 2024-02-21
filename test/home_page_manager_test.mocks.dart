@@ -7,7 +7,7 @@ import 'dart:async' as _i3;
 
 import 'package:memorize_scripture/common/collection.dart' as _i4;
 import 'package:memorize_scripture/common/verse.dart' as _i5;
-import 'package:memorize_scripture/services/local_storage/data_repository.dart'
+import 'package:memorize_scripture/services/local_storage/local_storage.dart'
     as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 

@@ -1,6 +1,6 @@
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/pages/home/home_page_manager.dart';
-import 'package:memorize_scripture/services/local_storage/data_repository.dart';
+import 'package:memorize_scripture/services/local_storage/local_storage.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';

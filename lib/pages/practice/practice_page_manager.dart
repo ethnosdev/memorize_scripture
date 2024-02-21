@@ -5,7 +5,7 @@ import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/pages/practice/helpers/letters_hint.dart';
 import 'package:memorize_scripture/pages/practice/helpers/words_hint.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/local_storage/data_repository.dart';
+import 'package:memorize_scripture/services/local_storage/local_storage.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 
 enum PracticeState {

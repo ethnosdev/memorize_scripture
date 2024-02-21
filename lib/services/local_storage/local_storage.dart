@@ -85,11 +85,11 @@ abstract class LocalStorage {
   /// Returns the number of verses updated.
   Future<int> resetDueDates({required String collectionId});
 
-  /// Returns the collections and verses that have been modified and deleted
-  /// since the last sync.
-  Future<Map<String, dynamic>> fetchUnsyncedChanges();
+  // /// Returns the collections and verses that have been modified and deleted
+  // /// since the last sync.
+  // Future<Map<String, dynamic>> fetchUnsyncedChanges();
 
-  /// After a remote sync, there may be even newer changes from the server.
-  /// These need to be stored locally.
-  Future<void> updateFromRemoteSync(Map<String, dynamic> updates);
+  // /// After a remote sync, there may be even newer changes from the server.
+  // /// These need to be stored locally.
+  // Future<void> updateFromRemoteSync(Map<String, dynamic> updates);
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/verse.dart';
-import 'package:memorize_scripture/services/local_storage/data_repository.dart';
+import 'package:memorize_scripture/services/local_storage/local_storage.dart';
 import 'package:memorize_scripture/services/local_storage/sqflite/schema.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -598,29 +598,29 @@ class SqfliteStorage implements LocalStorage {
     );
   }
 
-  @override
-  Future<Map<String, dynamic>> fetchUnsyncedChanges() async {
-    final unsyncedVerses = await _database.query(
-      VerseEntry.tableName,
-      where: '${VerseEntry.synced} = ?',
-      whereArgs: [0],
-    );
-    final unsyncedCollections = await _database.query(
-      CollectionEntry.tableName,
-      where: '${CollectionEntry.synced} = ?',
-      whereArgs: [0],
-    );
+  // @override
+  // Future<Map<String, dynamic>> fetchUnsyncedChanges() async {
+  //   final unsyncedVerses = await _database.query(
+  //     VerseEntry.tableName,
+  //     where: '${VerseEntry.synced} = ?',
+  //     whereArgs: [0],
+  //   );
+  //   final unsyncedCollections = await _database.query(
+  //     CollectionEntry.tableName,
+  //     where: '${CollectionEntry.synced} = ?',
+  //     whereArgs: [0],
+  //   );
 
-    return {
-      'version': databaseVersion,
-      'verses': unsyncedVerses,
-      'collections': unsyncedCollections,
-    };
-  }
+  //   return {
+  //     'version': databaseVersion,
+  //     'verses': unsyncedVerses,
+  //     'collections': unsyncedCollections,
+  //   };
+  // }
 
-  @override
-  Future<void> updateFromRemoteSync(Map<String, dynamic> updates) async {
-    // TODO: implement updateFromRemoteSync
-    throw UnimplementedError();
-  }
+  // @override
+  // Future<void> updateFromRemoteSync(Map<String, dynamic> updates) async {
+  //   // TODO: implement updateFromRemoteSync
+  //   throw UnimplementedError();
+  // }
 }

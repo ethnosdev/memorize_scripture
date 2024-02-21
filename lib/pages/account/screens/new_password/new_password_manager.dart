@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:memorize_scripture/pages/account/shared/account_screen_type.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/auth/auth_service.dart';
-import 'package:memorize_scripture/services/auth/exceptions.dart';
+import 'package:memorize_scripture/services/backend/auth/exceptions.dart';
+import 'package:memorize_scripture/services/backend/backend_service.dart';
 
 class NewPasswordManager {
   NewPasswordManager({
@@ -18,9 +18,9 @@ class NewPasswordManager {
   }) async {
     waitingNotifier.value = true;
     try {
-      await getIt<AuthService>().resetPassword(
-        email: email,
-      );
+      await getIt<BackendService>().auth.resetPassword(
+            email: email,
+          );
       onResult.call(
           'Reset sent',
           'You need to check your email and click the Verify button '

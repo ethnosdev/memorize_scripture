@@ -1,4 +1,4 @@
-import 'package:memorize_scripture/services/auth/user.dart';
+import 'package:memorize_scripture/services/backend/auth/user.dart';
 
 sealed class AccountScreenType {}
 

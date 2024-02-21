@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/dialog/dialog.dart';
 import 'package:memorize_scripture/pages/account/shared/account_screen_type.dart';
-import 'package:memorize_scripture/services/auth/user.dart';
+import 'package:memorize_scripture/services/backend/auth/user.dart';
 
 import 'logged_in_manager.dart';
 

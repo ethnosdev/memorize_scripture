@@ -1,32 +1,14 @@
-import 'dart:io';
-
-import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/auth/exceptions.dart';
-import 'package:memorize_scripture/services/auth/user.dart';
-import 'package:memorize_scripture/services/secure_settings.dart';
+import 'package:memorize_scripture/services/backend/auth/exceptions.dart';
+import 'package:memorize_scripture/services/backend/auth/user.dart';
 import 'package:pocketbase/pocketbase.dart';
 
 class AuthService {
-  late final PocketBase _pb;
-  final _baseUrl = (Platform.isAndroid) //
-      ? 'http://10.0.2.2:8090/'
-      : 'http://127.0.0.1:8090/';
+  AuthService(PocketBase pb) : _pb = pb;
+  final PocketBase _pb;
 
   bool get isLoggedIn => _pb.authStore.isValid;
 
-  bool _isInitialized = false;
-
-  Future<void> init() async {
-    if (_isInitialized) return;
-    final storage = getIt<SecureStorage>();
-    final store = AsyncAuthStore(
-      initial: await storage.getToken(),
-      save: (String data) => storage.setToken(data),
-      clear: storage.deleteToken,
-    );
-    _pb = PocketBase(_baseUrl, authStore: store);
-    _isInitialized = true;
-  }
+  Future<void> init() async {}
 
   Future<void> createAccount({
     required String email,

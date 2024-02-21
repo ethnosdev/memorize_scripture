@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/local_storage/data_repository.dart';
+import 'package:memorize_scripture/services/local_storage/local_storage.dart';
 import 'package:uuid/uuid.dart';
 
 class AddEditVersePageManager {

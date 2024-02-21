@@ -2,8 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:memorize_scripture/pages/account/shared/account_screen_type.dart';
 import 'package:memorize_scripture/pages/account/shared/textfield_data.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/auth/auth_service.dart';
-import 'package:memorize_scripture/services/auth/exceptions.dart';
+import 'package:memorize_scripture/services/backend/auth/exceptions.dart';
+import 'package:memorize_scripture/services/backend/backend_service.dart';
 import 'package:memorize_scripture/services/secure_settings.dart';
 
 import '../../shared/validation.dart';
@@ -55,10 +55,10 @@ class SignInManager {
     waitingNotifier.value = true;
     await getIt<SecureStorage>().setEmail(email);
     try {
-      final user = await getIt<AuthService>().signIn(
-        email: email,
-        passphrase: passphrase,
-      );
+      final user = await getIt<BackendService>().auth.signIn(
+            email: email,
+            passphrase: passphrase,
+          );
       screenNotifier.value = LoggedIn(user: user);
     } on UserNotVerifiedException {
       onUserNotVerified?.call(email);
@@ -100,7 +100,7 @@ class SignInManager {
   }
 
   Future<void> resendEmailVerification(String email) async {
-    await getIt<AuthService>().resendVerificationEmail(email);
+    await getIt<BackendService>().auth.resendVerificationEmail(email);
     onResult?.call('Verification email was sent.');
   }
 }
