@@ -35,10 +35,10 @@ class SqfliteStorage implements LocalStorage {
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     debugPrint('upgrading database version from $oldVersion to $newVersion');
-    if (oldVersion == 1) {
+    if (oldVersion < 2) {
       await _upgradeFrom1to2(db);
     }
-    if (oldVersion == 2) {
+    if (oldVersion < 3) {
       await _upgradeFrom2to3(db);
     }
   }
@@ -48,14 +48,28 @@ class SqfliteStorage implements LocalStorage {
   }
 
   Future<void> _upgradeFrom2to3(Database db) async {
+    // Add synced column to verses and collection tables
     await db
         .execute('ALTER TABLE verses ADD COLUMN synced BOOLEAN DEFAULT FALSE');
     await db.execute(
         'ALTER TABLE collection ADD COLUMN synced BOOLEAN DEFAULT FALSE');
+
+    // Add deleted tables (also for purposes of syncing)
     await db.execute(
         'CREATE TABLE deleted_verses (_id TEXT PRIMARY KEY, date INTEGER)');
     await db.execute(
         'CREATE TABLE deleted_collections (_id TEXT PRIMARY KEY, date INTEGER)');
+
+    // rename access_date to modified_date in collection table
+    await db.execute('ALTER TABLE collection ADD COLUMN modified_date INTEGER');
+    await db.execute('UPDATE collection SET modified_date = access_date');
+    await db.execute('ALTER TABLE collection DROP COLUMN access_date');
+
+    // add created_date to verses and collection tables
+    await db.execute(
+        'ALTER TABLE verses ADD COLUMN created_date INTEGER DEFAULT 0');
+    await db.execute(
+        'ALTER TABLE collection ADD COLUMN created_date INTEGER DEFAULT 0');
   }
 
   @override
@@ -184,6 +198,7 @@ class SqfliteStorage implements LocalStorage {
         VerseEntry.prompt: verse.prompt,
         VerseEntry.verseText: verse.text,
         VerseEntry.hint: verse.hint,
+        VerseEntry.createdDate: _timestampNow(),
         VerseEntry.modifiedDate: _timestampNow(),
         VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
         VerseEntry.interval: verse.interval.inDays,
@@ -236,6 +251,7 @@ class SqfliteStorage implements LocalStorage {
           VerseEntry.prompt: verse.prompt,
           VerseEntry.verseText: verse.text,
           VerseEntry.hint: verse.hint,
+          VerseEntry.createdDate: timestamp,
           VerseEntry.modifiedDate: timestamp,
           VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
           VerseEntry.interval: verse.interval.inDays,
@@ -391,6 +407,7 @@ class SqfliteStorage implements LocalStorage {
         final id = collection[CollectionEntry.id] as String;
         var name = collection[CollectionEntry.name] as String;
         final modifiedDate = collection[CollectionEntry.modifiedDate] as int?;
+        final createdDate = collection[CollectionEntry.createdDate] as int?;
 
         // if collection id exists do nothing
         if (await _collectionExists(id)) {
@@ -414,6 +431,7 @@ class SqfliteStorage implements LocalStorage {
           {
             CollectionEntry.id: id,
             CollectionEntry.name: name,
+            CollectionEntry.createdDate: createdDate ?? 0,
             CollectionEntry.modifiedDate: modifiedDate ?? _timestampNow(),
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
@@ -470,6 +488,7 @@ class SqfliteStorage implements LocalStorage {
         final prompt = verse[VerseEntry.prompt] as String;
         final verseText = verse[VerseEntry.verseText] as String;
         final hint = (verse[VerseEntry.hint] as String?) ?? '';
+        final createdDate = verse[VerseEntry.createdDate] as int?;
         final modifiedDate = verse[VerseEntry.modifiedDate] as int?;
         final dueDate = verse[VerseEntry.nextDueDate] as int?;
         final interval = (verse[VerseEntry.interval] as int?) ?? 0;
@@ -484,6 +503,7 @@ class SqfliteStorage implements LocalStorage {
             prompt: prompt,
             verseText: verseText,
             hint: hint,
+            createdDate: createdDate ?? 0,
             modifiedDate: modifiedDate ?? _timestampNow(),
             dueDate: dueDate,
             interval: interval,
@@ -501,6 +521,7 @@ class SqfliteStorage implements LocalStorage {
             prompt: prompt,
             verseText: verseText,
             hint: hint,
+            createdDate: createdDate ?? 0,
             modifiedDate: modifiedDate,
             dueDate: dueDate,
             interval: interval,
@@ -532,6 +553,7 @@ class SqfliteStorage implements LocalStorage {
     required String prompt,
     required String verseText,
     required String hint,
+    required int createdDate,
     required int modifiedDate,
     required int? dueDate,
     required int interval,
@@ -543,6 +565,7 @@ class SqfliteStorage implements LocalStorage {
         VerseEntry.prompt: prompt,
         VerseEntry.verseText: verseText,
         VerseEntry.hint: hint,
+        VerseEntry.createdDate: createdDate,
         VerseEntry.modifiedDate: modifiedDate,
         VerseEntry.nextDueDate: dueDate,
         VerseEntry.interval: interval,
@@ -559,6 +582,7 @@ class SqfliteStorage implements LocalStorage {
     required String prompt,
     required String verseText,
     required String hint,
+    required int createdDate,
     required int modifiedDate,
     required int? dueDate,
     required int interval,
@@ -571,6 +595,7 @@ class SqfliteStorage implements LocalStorage {
         VerseEntry.prompt: prompt,
         VerseEntry.verseText: verseText,
         VerseEntry.hint: hint,
+        VerseEntry.createdDate: createdDate,
         VerseEntry.modifiedDate: modifiedDate,
         VerseEntry.nextDueDate: dueDate,
         VerseEntry.interval: interval,
@@ -615,6 +640,7 @@ class SqfliteStorage implements LocalStorage {
     );
 
     return {
+      'version': databaseVersion,
       'verses': unsyncedVerses,
       'collections': unsyncedCollections,
       'deletedVerses': deletedVerses,
