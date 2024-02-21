@@ -58,37 +58,3 @@ class CollectionEntry {
     $synced BOOLEAN DEFAULT FALSE)
   ''';
 }
-
-class DeletedVerseEntry {
-  // Deleted verses table
-  static const String tableName = "deleted_verses";
-
-  // Column names
-  static const String id = '_id';
-  // seconds since epoch
-  static const String date = 'date';
-
-  // SQL statements
-  static const String createTable = '''
-  CREATE TABLE $tableName (
-    $id TEXT PRIMARY KEY,
-    $date INTEGER)
-  ''';
-}
-
-class DeletedCollectionEntry {
-  // Deleted collections table
-  static const String tableName = "deleted_collections";
-
-  // Column names
-  static const String id = '_id';
-  // seconds since epoch
-  static const String date = 'date';
-
-  // SQL statements
-  static const String createTable = '''
-  CREATE TABLE $tableName (
-    $id TEXT PRIMARY KEY,
-    $date INTEGER)
-  ''';
-}

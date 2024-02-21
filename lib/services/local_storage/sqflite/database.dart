@@ -29,8 +29,6 @@ class SqfliteStorage implements LocalStorage {
   Future<void> _onCreate(Database db, int version) async {
     await db.execute(CollectionEntry.createTable);
     await db.execute(VerseEntry.createTable);
-    await db.execute(DeletedVerseEntry.createTable);
-    await db.execute(DeletedCollectionEntry.createTable);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -53,12 +51,6 @@ class SqfliteStorage implements LocalStorage {
         .execute('ALTER TABLE verses ADD COLUMN synced BOOLEAN DEFAULT FALSE');
     await db.execute(
         'ALTER TABLE collection ADD COLUMN synced BOOLEAN DEFAULT FALSE');
-
-    // Add deleted tables (also for purposes of syncing)
-    await db.execute(
-        'CREATE TABLE deleted_verses (_id TEXT PRIMARY KEY, date INTEGER)');
-    await db.execute(
-        'CREATE TABLE deleted_collections (_id TEXT PRIMARY KEY, date INTEGER)');
 
     // rename access_date to modified_date in collection table
     await db.execute('ALTER TABLE collection ADD COLUMN modified_date INTEGER');
@@ -270,13 +262,6 @@ class SqfliteStorage implements LocalStorage {
       where: '${VerseEntry.id} = ?',
       whereArgs: [verseId],
     );
-    await _database.insert(
-      DeletedVerseEntry.tableName,
-      {
-        DeletedVerseEntry.id: verseId,
-        DeletedVerseEntry.date: _timestampNow(),
-      },
-    );
   }
 
   @override
@@ -326,13 +311,6 @@ class SqfliteStorage implements LocalStorage {
       VerseEntry.tableName,
       where: '${VerseEntry.collectionId} = ?',
       whereArgs: [collectionId],
-    );
-    await _database.insert(
-      DeletedCollectionEntry.tableName,
-      {
-        DeletedCollectionEntry.id: collectionId,
-        DeletedCollectionEntry.date: _timestampNow(),
-      },
     );
   }
 
@@ -632,19 +610,11 @@ class SqfliteStorage implements LocalStorage {
       where: '${CollectionEntry.synced} = ?',
       whereArgs: [0],
     );
-    final deletedVerses = await _database.query(
-      DeletedVerseEntry.tableName,
-    );
-    final deletedCollections = await _database.query(
-      DeletedCollectionEntry.tableName,
-    );
 
     return {
       'version': databaseVersion,
       'verses': unsyncedVerses,
       'collections': unsyncedCollections,
-      'deletedVerses': deletedVerses,
-      'deletedCollections': deletedCollections,
     };
   }
 
