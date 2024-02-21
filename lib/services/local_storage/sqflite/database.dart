@@ -597,18 +597,28 @@ class SqfliteStorage implements LocalStorage {
 
   @override
   Future<Map<String, dynamic>> fetchUnsyncedChanges() async {
-    // get unsynced verses
     final unsyncedVerses = await _database.query(
       VerseEntry.tableName,
       where: '${VerseEntry.synced} = ?',
       whereArgs: [0],
     );
+    final unsyncedCollections = await _database.query(
+      CollectionEntry.tableName,
+      where: '${CollectionEntry.synced} = ?',
+      whereArgs: [0],
+    );
+    final deletedVerses = await _database.query(
+      DeletedVerseEntry.tableName,
+    );
+    final deletedCollections = await _database.query(
+      DeletedCollectionEntry.tableName,
+    );
 
     return {
       'verses': unsyncedVerses,
-      'collections': [], // TODO: implement collections
-      'deletedVerses': [], // TODO: implement deleted verses
-      'deletedCollections': [], // TODO: implement deleted collections
+      'collections': unsyncedCollections,
+      'deletedVerses': deletedVerses,
+      'deletedCollections': deletedCollections,
     };
   }
 
