@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:memorize_scripture/pages/account/shared/account_screen_type.dart';
 import 'package:memorize_scripture/pages/account/shared/textfield_data.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/backend/auth/exceptions.dart';
+import 'package:memorize_scripture/services/backend/exceptions.dart';
 import 'package:memorize_scripture/services/backend/backend_service.dart';
 import 'package:memorize_scripture/services/secure_settings.dart';
 

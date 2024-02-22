@@ -23,3 +23,5 @@ class UserNotVerifiedException implements Exception {
 }
 
 class UserNotLoggedInException implements Exception {}
+
+// class ResourceNotFoundException implements Exception {}

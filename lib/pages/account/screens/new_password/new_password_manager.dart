@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:memorize_scripture/pages/account/shared/account_screen_type.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/backend/auth/exceptions.dart';
+import 'package:memorize_scripture/services/backend/exceptions.dart';
 import 'package:memorize_scripture/services/backend/backend_service.dart';
 
 class NewPasswordManager {

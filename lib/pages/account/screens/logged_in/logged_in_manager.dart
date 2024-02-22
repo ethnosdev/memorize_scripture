@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/pages/account/shared/account_screen_type.dart';
 import 'package:memorize_scripture/service_locator.dart';
-import 'package:memorize_scripture/services/backend/auth/exceptions.dart';
+import 'package:memorize_scripture/services/backend/exceptions.dart';
 import 'package:memorize_scripture/services/backend/auth/user.dart';
 import 'package:memorize_scripture/services/backend/backend_service.dart';
 import 'package:memorize_scripture/services/secure_settings.dart';
@@ -34,7 +34,7 @@ class LoggedInManager {
     final user = getIt<BackendService>().auth.getUser();
     waitingNotifier.value = true;
     try {
-      await getIt<WebApi>().syncVerses(user);
+      await getIt<BackendService>().webApi.syncVerses(user);
     } on UserNotLoggedInException {
       screenNotifier.value = SignIn(email: '');
     } on ConnectionRefusedException catch (e) {

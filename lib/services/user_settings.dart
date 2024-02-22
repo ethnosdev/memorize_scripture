@@ -28,6 +28,8 @@ abstract class UserSettings {
   Future<void> setChapterForBook(String book, int chapter);
   List<String> get pinnedCollections;
   Future<void> setPinnedCollections(List<String> ids);
+  DateTime? get lastSync;
+  Future<void> setLastSync(DateTime value);
 }
 
 class SharedPreferencesStorage extends UserSettings {
@@ -39,6 +41,7 @@ class SharedPreferencesStorage extends UserSettings {
   static const String _notificationTimeKey = 'notificationTime';
   static const String _recentReferenceKey = 'recentReference';
   static const String _pinnedCollectionsKey = 'pinnedCollections';
+  static const String _lastSyncKey = 'lastSync';
 
   // getters cache
   late final SharedPreferences prefs;
@@ -156,5 +159,17 @@ class SharedPreferencesStorage extends UserSettings {
   @override
   Future<void> setPinnedCollections(List<String> ids) async {
     await prefs.setStringList(_pinnedCollectionsKey, ids);
+  }
+
+  @override
+  DateTime? get lastSync {
+    final timestamp = prefs.getString(_lastSyncKey);
+    if (timestamp == null) return null;
+    return DateTime.tryParse(timestamp);
+  }
+
+  @override
+  Future<void> setLastSync(DateTime value) async {
+    await prefs.setString(_lastSyncKey, value.toUtc().toIso8601String());
   }
 }

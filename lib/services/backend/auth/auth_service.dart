@@ -1,4 +1,4 @@
-import 'package:memorize_scripture/services/backend/auth/exceptions.dart';
+import 'package:memorize_scripture/services/backend/exceptions.dart';
 import 'package:memorize_scripture/services/backend/auth/user.dart';
 import 'package:pocketbase/pocketbase.dart';
 
@@ -7,8 +7,6 @@ class AuthService {
   final PocketBase _pb;
 
   bool get isLoggedIn => _pb.authStore.isValid;
-
-  Future<void> init() async {}
 
   Future<void> createAccount({
     required String email,
@@ -56,7 +54,11 @@ class AuthService {
       if (!isVerified) {
         throw UserNotVerifiedException('User not verified');
       }
-      return User(email: email, token: authData.token);
+      return User(
+        id: authData.record!.id,
+        email: email,
+        token: authData.token,
+      );
     } on ClientException catch (e) {
       final code = e.statusCode;
       switch (code) {
@@ -80,6 +82,7 @@ class AuthService {
     print(_pb.authStore.model);
     final model = _pb.authStore.model as RecordModel;
     return User(
+      id: model.id,
       email: model.getStringValue('email'),
       token: model.getStringValue('token'),
     );
