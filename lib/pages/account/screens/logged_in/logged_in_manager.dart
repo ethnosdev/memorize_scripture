@@ -5,7 +5,6 @@ import 'package:memorize_scripture/services/backend/exceptions.dart';
 import 'package:memorize_scripture/services/backend/auth/user.dart';
 import 'package:memorize_scripture/services/backend/backend_service.dart';
 import 'package:memorize_scripture/services/secure_settings.dart';
-import 'package:memorize_scripture/services/backend/web_api/web_api.dart';
 
 class LoggedInManager {
   LoggedInManager({required this.screenNotifier});

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/verse.dart';
@@ -46,12 +48,6 @@ class SqfliteStorage implements LocalStorage {
   }
 
   Future<void> _upgradeFrom2to3(Database db) async {
-    // Add synced column to verses and collection tables
-    await db
-        .execute('ALTER TABLE verses ADD COLUMN synced BOOLEAN DEFAULT FALSE');
-    await db.execute(
-        'ALTER TABLE collection ADD COLUMN synced BOOLEAN DEFAULT FALSE');
-
     // rename access_date to modified_date in collection table
     await db.execute('ALTER TABLE collection ADD COLUMN modified_date INTEGER');
     await db.execute('UPDATE collection SET modified_date = access_date');
@@ -194,7 +190,6 @@ class SqfliteStorage implements LocalStorage {
         VerseEntry.modifiedDate: _timestampNow(),
         VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
         VerseEntry.interval: verse.interval.inDays,
-        VerseEntry.synced: false,
       },
     );
   }
@@ -211,7 +206,6 @@ class SqfliteStorage implements LocalStorage {
         VerseEntry.modifiedDate: _timestampNow(),
         VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
         VerseEntry.interval: verse.interval.inDays,
-        VerseEntry.synced: false,
       },
       where: '${VerseEntry.id} = ?',
       whereArgs: [verse.id],
@@ -247,7 +241,6 @@ class SqfliteStorage implements LocalStorage {
           VerseEntry.modifiedDate: timestamp,
           VerseEntry.nextDueDate: _dateToSecondsSinceEpoch(verse.nextDueDate),
           VerseEntry.interval: verse.interval.inDays,
-          VerseEntry.synced: false,
         },
       );
     }
@@ -293,8 +286,8 @@ class SqfliteStorage implements LocalStorage {
       {
         CollectionEntry.id: collection.id,
         CollectionEntry.name: collection.name.trim(),
+        // TODO: handle creation date
         CollectionEntry.modifiedDate: _timestampNow(),
-        CollectionEntry.synced: false,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -341,27 +334,35 @@ class SqfliteStorage implements LocalStorage {
   Future<void> close() async => _database.close();
 
   @override
-  Future<List<Map<String, Object?>>> dumpCollections([
-    String? collectionId,
-  ]) async {
-    if (collectionId == null) {
-      return await _database.query(CollectionEntry.tableName);
-    }
-    return await _database.query(
+  Future<String> backupCollections() async {
+    final collections = await _database.query(CollectionEntry.tableName);
+    var verses = await _database.query(VerseEntry.tableName);
+    return await _encodeBackup(collections, verses);
+  }
+
+  Future<String> _encodeBackup(
+    List<Map<String, Object?>> collections,
+    List<Map<String, Object?>> verses,
+  ) {
+    final backup = {
+      'date': _dateToSecondsSinceEpoch(DateTime.now()),
+      'version': databaseVersion,
+      'collections': collections,
+      'verses': verses,
+    };
+    const encoder = JsonEncoder.withIndent('  ');
+    return compute(encoder.convert, backup);
+  }
+
+  @override
+  Future<String> getSharedCollection(String collectionId) async {
+    final collection = await _database.query(
       CollectionEntry.tableName,
       where: '${CollectionEntry.id} = ?',
       whereArgs: [collectionId],
     );
-  }
-
-  @override
-  Future<List<Map<String, Object?>>> dumpVerses([
-    String? collectionId,
-  ]) async {
-    if (collectionId == null) {
-      return await _database.query(VerseEntry.tableName);
-    }
-    return await _database.query(
+    // For the purposes or sharing, not all columns are needed.
+    final verse = await _database.query(
       VerseEntry.tableName,
       columns: [
         VerseEntry.id,
@@ -373,10 +374,22 @@ class SqfliteStorage implements LocalStorage {
       where: '${VerseEntry.collectionId} = ?',
       whereArgs: [collectionId],
     );
+    return await _encodeBackup(collection, verse);
   }
 
   @override
-  Future<int> restoreCollections(
+  Future<(int added, int updated, int errors)> restoreBackup(
+    String backup,
+  ) async {
+    dynamic json = jsonDecode(backup);
+    final collections =
+        (json['collections'] as List).cast<Map<String, Object?>>();
+    final verses = (json['verses'] as List).cast<Map<String, Object?>>();
+    await _restoreCollections(collections);
+    return await _restoreVerses(verses);
+  }
+
+  Future<int> _restoreCollections(
     List<Map<String, Object?>> collections,
   ) async {
     int collectionAddedUpdatedCount = 0;
@@ -451,8 +464,7 @@ class SqfliteStorage implements LocalStorage {
     return (Sqflite.firstIntValue(result) == 1);
   }
 
-  @override
-  Future<(int added, int updated, int errorCount)> restoreVerses(
+  Future<(int added, int updated, int errorCount)> _restoreVerses(
     List<Map<String, Object?>> verses,
   ) async {
     int addedCount = 0;
@@ -547,7 +559,6 @@ class SqfliteStorage implements LocalStorage {
         VerseEntry.modifiedDate: modifiedDate,
         VerseEntry.nextDueDate: dueDate,
         VerseEntry.interval: interval,
-        VerseEntry.synced: false,
       },
       where: '${VerseEntry.id} = ?',
       whereArgs: [id],
@@ -577,7 +588,6 @@ class SqfliteStorage implements LocalStorage {
         VerseEntry.modifiedDate: modifiedDate,
         VerseEntry.nextDueDate: dueDate,
         VerseEntry.interval: interval,
-        VerseEntry.synced: false,
       },
     );
   }
@@ -591,36 +601,9 @@ class SqfliteStorage implements LocalStorage {
         VerseEntry.modifiedDate: now,
         VerseEntry.nextDueDate: null,
         VerseEntry.interval: 0,
-        VerseEntry.synced: false,
       },
       where: '${VerseEntry.collectionId} = ?',
       whereArgs: [collectionId],
     );
   }
-
-  // @override
-  // Future<Map<String, dynamic>> fetchUnsyncedChanges() async {
-  //   final unsyncedVerses = await _database.query(
-  //     VerseEntry.tableName,
-  //     where: '${VerseEntry.synced} = ?',
-  //     whereArgs: [0],
-  //   );
-  //   final unsyncedCollections = await _database.query(
-  //     CollectionEntry.tableName,
-  //     where: '${CollectionEntry.synced} = ?',
-  //     whereArgs: [0],
-  //   );
-
-  //   return {
-  //     'version': databaseVersion,
-  //     'verses': unsyncedVerses,
-  //     'collections': unsyncedCollections,
-  //   };
-  // }
-
-  // @override
-  // Future<void> updateFromRemoteSync(Map<String, dynamic> updates) async {
-  //   // TODO: implement updateFromRemoteSync
-  //   throw UnimplementedError();
-  // }
 }

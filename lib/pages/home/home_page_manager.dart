@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/local_storage/local_storage.dart';
-import 'package:memorize_scripture/services/local_storage/sqflite/database.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -19,10 +18,10 @@ class HomePageManager {
     LocalStorage? dataRepository,
     UserSettings? userSettings,
   }) {
-    this.dataRepository = dataRepository ?? getIt<LocalStorage>();
+    this.localStorage = dataRepository ?? getIt<LocalStorage>();
     this.userSettings = userSettings ?? getIt<UserSettings>();
   }
-  late final LocalStorage dataRepository;
+  late final LocalStorage localStorage;
   late final UserSettings userSettings;
 
   final collectionNotifier =
@@ -38,7 +37,7 @@ class HomePageManager {
   }
 
   Future<void> _reloadCollections() async {
-    final collections = await dataRepository.fetchCollections();
+    final collections = await localStorage.fetchCollections();
     final withPins = _updatePinnedStatus(collections);
     final sorted = _sortPinned(withPins);
     collectionNotifier.value = LoadedCollections(sorted);
@@ -68,14 +67,14 @@ class HomePageManager {
       id: const Uuid().v4(),
       name: name,
     );
-    await dataRepository.insertCollection(collection);
+    await localStorage.insertCollection(collection);
     await _reloadCollections();
   }
 
   Future<void> renameCollection({required int index, String? newName}) async {
     if (newName == null || newName.isEmpty) return;
     final oldCollection = _getList[index];
-    await dataRepository.updateCollection(
+    await localStorage.updateCollection(
       oldCollection.copyWith(name: newName),
     );
     await _reloadCollections();
@@ -86,7 +85,7 @@ class HomePageManager {
     required void Function(int numberReset) onFinished,
   }) async {
     final collection = _getList[index];
-    final count = await dataRepository.resetDueDates(
+    final count = await localStorage.resetDueDates(
       collectionId: collection.id,
     );
     onFinished.call(count);
@@ -96,7 +95,7 @@ class HomePageManager {
     final list = _getList.toList();
     final collection = list[index];
     list.removeAt(index);
-    dataRepository.deleteCollection(collectionId: collection.id);
+    localStorage.deleteCollection(collectionId: collection.id);
     collectionNotifier.value = LoadedCollections(list);
   }
 
@@ -110,31 +109,13 @@ class HomePageManager {
   }) async {
     final collection = _getList[index];
     final name = collection.name.replaceAll(' ', '-');
-    await backupCollections(
-      collectionId: collection.id,
-      name: name,
-      sharePositionOrigin: sharePositionOrigin,
-    );
+    final backup = await localStorage.getSharedCollection(collection.id);
+    final file = await _saveTempFile(name, backup);
+    _shareFile(file, sharePositionOrigin);
   }
 
-  Future<void> backupCollections({
-    String? collectionId,
-    String? name,
-    Rect? sharePositionOrigin,
-  }) async {
-    final collections = await dataRepository.dumpCollections(collectionId);
-    var verses = await dataRepository.dumpVerses(collectionId);
-
-    final backup = {
-      'date': _dateToSecondsSinceEpoch(DateTime.now()),
-      'version': databaseVersion,
-      'collections': collections,
-      'verses': verses,
-    };
-
-    const encoder = JsonEncoder.withIndent('  ');
-    final serialized = encoder.convert(backup);
-    final uint8list = Uint8List.fromList(utf8.encode(serialized));
+  Future<File> _saveTempFile(String? name, String backup) async {
+    final uint8list = Uint8List.fromList(utf8.encode(backup));
     final directory = await getTemporaryDirectory();
     final prefix = name ?? 'ms-backup';
     final time = DateTime.now().toIso8601String();
@@ -142,12 +123,23 @@ class HomePageManager {
     final fileName = '$prefix-$timeFormatted.json';
     final path = join(directory.path, fileName);
     final file = File(path);
-    await file.writeAsBytes(uint8list);
+    return await file.writeAsBytes(uint8list);
+  }
 
+  void _shareFile(File file, Rect? sharePositionOrigin) {
     Share.shareXFiles(
       [XFile(file.path)],
       sharePositionOrigin: sharePositionOrigin,
     );
+  }
+
+  Future<void> backupCollections({
+    String? name,
+    Rect? sharePositionOrigin,
+  }) async {
+    final backup = await localStorage.backupCollections();
+    final file = await _saveTempFile(name, backup);
+    _shareFile(file, sharePositionOrigin);
   }
 
   int? _dateToSecondsSinceEpoch(DateTime? date) {
@@ -171,13 +163,8 @@ class HomePageManager {
     final file = File(path);
     final jsonString = await file.readAsString();
     try {
-      dynamic json = jsonDecode(jsonString);
-      final collections =
-          (json['collections'] as List).cast<Map<String, Object?>>();
-      final verses = (json['verses'] as List).cast<Map<String, Object?>>();
-      await dataRepository.restoreCollections(collections);
       final (added, updated, errorCount) =
-          await dataRepository.restoreVerses(verses);
+          await localStorage.restoreBackup(jsonString);
       onResult.call(_resultString(added, updated, errorCount));
     } on FormatException {
       onResult.call('The data in the file was in the wrong format.');

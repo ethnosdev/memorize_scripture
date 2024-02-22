@@ -61,25 +61,54 @@ abstract class LocalStorage {
   /// Return the number of verses in the collection, regardless of due date.
   Future<int> numberInCollection(String collectionId);
 
+  /// Returns a JSON string with a single collection and its verses in
+  /// reduced content.
+  ///
+  /// {
+  ///   "date": <seconds since epoch>,
+  ///   "version": <database schema version>,
+  ///   "collections": JSON list of maps,
+  ///   "verses": JSON list of maps
+  /// }
+  Future<String> getSharedCollection(String collectionId);
+
+  /// Returns a JSON string of all the collections and verses in the database.
+  ///
+  /// {
+  ///   "date": <seconds since epoch>,
+  ///   "version": <database schema version>,
+  ///   "collections": JSON list of maps,
+  ///   "verses": JSON list of maps
+  /// }
+  Future<String> backupCollections();
+
+  /// Restores the collections and verses from JSON string backup.
+  ///
+  /// The data must be in the form defined by [backupCollections].
+  ///
+  /// Returns the number of verses [added] and [updated] along with a
+  /// potential [errorCount].
+  Future<(int added, int updated, int errorCount)> restoreBackup(String backup);
+
   /// Return all of the database rows for the collections table.
   /// This is useful for backup.
   /// If collectionId is provided then only return one row.
-  Future<List<Map<String, Object?>>> dumpCollections([String? collectionId]);
+  // Future<List<Map<String, Object?>>> dumpCollections([String? collectionId]);
 
-  /// Return all of the database rows for the verses table.
-  /// This is useful for backup.
-  /// If collectionId is provided then only return verse rows for this
-  /// collection.
-  Future<List<Map<String, Object?>>> dumpVerses([String? collectionId]);
+  // /// Return all of the database rows for the verses table.
+  // /// This is useful for backup.
+  // /// If collectionId is provided then only return verse rows for this
+  // /// collection.
+  // Future<List<Map<String, Object?>>> dumpVerses([String? collectionId]);
 
-  /// Restores collections from a backup in JSON form.
-  /// Returns the number of collections added or updated.
-  Future<int> restoreCollections(List<Map<String, Object?>> collections);
+  // /// Restores collections from a backup in JSON form.
+  // /// Returns the number of collections added or updated.
+  // Future<int> restoreCollections(List<Map<String, Object?>> collections);
 
-  /// Restores verses from a backup in JSON form.
-  /// Returns the number of verses added and updated.
-  Future<(int added, int updated, int errorCount)> restoreVerses(
-      List<Map<String, Object?>> verses);
+  // /// Restores verses from a backup in JSON form.
+  // /// Returns the number of verses added and updated.
+  // Future<(int added, int updated, int errorCount)> restoreVerses(
+  //     List<Map<String, Object?>> verses);
 
   /// Resets all the due dates in the collection and makes verses like new.
   /// Returns the number of verses updated.

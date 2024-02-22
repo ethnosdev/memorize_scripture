@@ -14,7 +14,6 @@ class VerseEntry {
   static const String nextDueDate = 'next_due_date';
   // interval in days
   static const String interval = 'interval';
-  static const String synced = 'synced';
 
   // SQL statements
   static const String createTable = '''
@@ -28,7 +27,6 @@ class VerseEntry {
     $modifiedDate INTEGER,
     $nextDueDate INTEGER,
     $interval INTEGER DEFAULT 0,
-    $synced BOOLEAN DEFAULT FALSE,
     FOREIGN KEY($collectionId) 
     REFERENCES ${CollectionEntry.tableName} (${CollectionEntry.id}),
     UNIQUE ($collectionId, $prompt)
@@ -46,7 +44,6 @@ class CollectionEntry {
   // seconds since epoch
   static const String createdDate = 'created_date';
   static const String modifiedDate = 'modified_date';
-  static const String synced = 'synced';
 
   // SQL statements
   static const String createTable = '''
@@ -54,7 +51,6 @@ class CollectionEntry {
     $id TEXT PRIMARY KEY,
     $name TEXT NOT NULL UNIQUE,
     $createdDate INTEGER DEFAULT 0,
-    $modifiedDate INTEGER,
-    $synced BOOLEAN DEFAULT FALSE)
+    $modifiedDate INTEGER)
   ''';
 }
