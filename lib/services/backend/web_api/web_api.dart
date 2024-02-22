@@ -73,11 +73,13 @@ class WebApi {
       // Create a new record
       print('_pushLocalChangesToServer: create');
 
-      final record = await _pb.collection('backup').create(body: {
-        "db_version": databaseVersion,
-        "data": dbBackup,
-        "user": user.id,
-      });
+      final record = await _pb.collection('backup').create(
+        body: {
+          "user": user.id,
+          "data": dbBackup,
+        },
+        fields: 'id',
+      );
       print('record: $record');
     } else {
       // Update the existing record
