@@ -8,8 +8,8 @@ import 'package:memorize_scripture/services/local_storage/sqflite/schema.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-// If the database version changes, you also need to
-// update the json backup logic.
+// This affects both the schema in this file and also the backup/restore
+// features of the app.
 const databaseVersion = 3;
 
 class SqfliteStorage implements LocalStorage {

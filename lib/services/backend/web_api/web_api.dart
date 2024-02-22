@@ -2,6 +2,7 @@ import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/backend/exceptions.dart';
 import 'package:memorize_scripture/services/backend/auth/user.dart';
 import 'package:memorize_scripture/services/local_storage/local_storage.dart';
+import 'package:memorize_scripture/services/local_storage/sqflite/database.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:pocketbase/pocketbase.dart';
 
@@ -66,10 +67,18 @@ class WebApi {
   }) async {
     // Get all the local changes
     final dbBackup = await _prepareLocalBackup();
+    print(dbBackup);
     // Push them to the server
     if (create) {
       // Create a new record
       print('_pushLocalChangesToServer: create');
+
+      final record = await _pb.collection('backup').create(body: {
+        "db_version": databaseVersion,
+        "data": dbBackup,
+        "user": user.id,
+      });
+      print('record: $record');
     } else {
       // Update the existing record
       print('_pushLocalChangesToServer: update');
