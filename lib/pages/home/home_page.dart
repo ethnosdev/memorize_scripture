@@ -112,7 +112,10 @@ class NoCollections extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('Press the + button to add a collection.'),
+          const Text(
+            'Press the + button to add a collection.',
+            textAlign: TextAlign.center,
+          ),
           const SizedBox(height: 50),
           OutlinedButton(
             onPressed: () async {
