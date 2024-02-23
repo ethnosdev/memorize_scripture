@@ -2,7 +2,6 @@ import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/backend/exceptions.dart';
 import 'package:memorize_scripture/services/backend/auth/user.dart';
 import 'package:memorize_scripture/services/local_storage/local_storage.dart';
-import 'package:memorize_scripture/services/local_storage/sqflite/database.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:pocketbase/pocketbase.dart';
 
@@ -13,44 +12,46 @@ class WebApi {
   Future<void> syncVerses(User? user) async {
     if (user == null) throw UserNotLoggedInException();
 
-    // check last update from server
-    final lastServerUpdate = await _getLastServerUpdate(user);
-    if (lastServerUpdate == null) {
-      _pushLocalChangesToServer(user: user, create: true);
+    final lastLocalUpdate = getIt<UserSettings>().lastLocalUpdate;
+    final idDate = await _getLastServerUpdate(user);
+
+    // no changes anywhere
+    if (idDate == null && lastLocalUpdate == null) {
       return;
     }
 
-    // check last update from settings
-    final lastLocalUpdate = getIt<UserSettings>().lastSync;
-    if (lastLocalUpdate == null) {
-      _pullLocalChangesFromServer(user);
+    // server null but local has changes
+    if (idDate == null) {
+      await _createNewServerRecord(user);
       return;
     }
 
-    // no need to do anything if both are the same
-    if (lastLocalUpdate == lastServerUpdate) {
+    final (id, lastServerUpdate) = idDate;
+
+    // local same as server
+    if (lastServerUpdate == lastLocalUpdate) {
       return;
     }
 
-    // if local newer then push local changes to server
-    if (lastLocalUpdate.isAfter(lastServerUpdate)) {
-      _pushLocalChangesToServer(user: user, create: false);
+    // server has newer update
+    if (lastLocalUpdate!.isBefore(lastServerUpdate)) {
+      await _getUpdateFromServer(user);
       return;
     }
 
-    // else pull server changes to local storage
-    _pullLocalChangesFromServer(user);
+    // local has newer update
+    await _updateServerRecord(user, id);
   }
 
-  Future<DateTime?> _getLastServerUpdate(User user) async {
+  Future<(String, DateTime)?> _getLastServerUpdate(User user) async {
     try {
       final record = await _pb
           .collection('backup') //
           .getFirstListItem(
             'user="${user.id}"',
-            fields: 'updated',
+            fields: 'id,updated',
           );
-      return DateTime.parse(record.updated);
+      return (record.id, DateTime.parse(record.updated));
     } on ClientException catch (e) {
       if (e.statusCode == 404) {
         // There was no record for this user.
@@ -61,35 +62,35 @@ class WebApi {
     }
   }
 
-  Future<void> _pushLocalChangesToServer({
-    required User user,
-    required bool create,
-  }) async {
-    // Get all the local changes
+  Future<void> _createNewServerRecord(User user) async {
     final dbBackup = await _prepareLocalBackup();
-    print(dbBackup);
-    // Push them to the server
-    if (create) {
-      // Create a new record
-      print('_pushLocalChangesToServer: create');
-
-      final record = await _pb.collection('backup').create(
-        body: {
-          "user": user.id,
-          "data": dbBackup,
-        },
-        fields: 'id',
-      );
-      print('record: $record');
-    } else {
-      // Update the existing record
-      print('_pushLocalChangesToServer: update');
-    }
-    // if successful then update the last sync date
+    final record = await _pb.collection('backup').create(
+      body: {
+        "user": user.id,
+        "data": dbBackup,
+      },
+      fields: 'id,updated',
+    );
+    final updated = record.updated;
+    await getIt<UserSettings>().setLastLocalUpdate(updated);
   }
 
-  Future<void> _pullLocalChangesFromServer(User user) async {
-    print('_pullLocalChangesFromServer');
+  Future<void> _updateServerRecord(User user, String id) async {
+    final dbBackup = await _prepareLocalBackup();
+    final record = await _pb.collection('backup').update(
+          id,
+          body: {
+            "user": user.id,
+            "data": dbBackup,
+          },
+          fields: 'id,updated',
+        );
+    final updated = record.updated;
+    await getIt<UserSettings>().setLastLocalUpdate(updated);
+  }
+
+  Future<void> _getUpdateFromServer(User user) async {
+    // TODO
     // Get all the server changes
     // Store them locally
     // if successful then update the last sync date

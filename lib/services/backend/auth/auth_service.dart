@@ -78,9 +78,8 @@ class AuthService {
   }
 
   User? getUser() {
-    if (_pb.authStore.model == null) return null;
-    print(_pb.authStore.model);
-    final model = _pb.authStore.model as RecordModel;
+    final model = _pb.authStore.model as RecordModel?;
+    if (model == null) return null;
     return User(
       id: model.id,
       email: model.getStringValue('email'),
