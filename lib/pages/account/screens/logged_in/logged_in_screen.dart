@@ -69,7 +69,7 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
                       return SizedBox(
                         width: 200,
                         child: OutlinedButton(
-                          onPressed: manager.syncVerses,
+                          onPressed: () => manager.syncVerses(_notifyResult),
                           child: const Text('Sync verses'),
                         ),
                       );
@@ -132,6 +132,14 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
       builder: (BuildContext context) {
         return alert;
       },
+    );
+  }
+
+  void _notifyResult(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
     );
   }
 }

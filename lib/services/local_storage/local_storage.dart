@@ -82,43 +82,17 @@ abstract class LocalStorage {
   /// }
   Future<String> backupCollections();
 
-  /// Restores the collections and verses from JSON string backup.
+  /// Restores the collections and verses from JSON backup.
   ///
   /// The data must be in the form defined by [backupCollections].
   ///
   /// Returns the number of verses [added] and [updated] along with a
   /// potential [errorCount].
-  Future<(int added, int updated, int errorCount)> restoreBackup(String backup);
-
-  /// Return all of the database rows for the collections table.
-  /// This is useful for backup.
-  /// If collectionId is provided then only return one row.
-  // Future<List<Map<String, Object?>>> dumpCollections([String? collectionId]);
-
-  // /// Return all of the database rows for the verses table.
-  // /// This is useful for backup.
-  // /// If collectionId is provided then only return verse rows for this
-  // /// collection.
-  // Future<List<Map<String, Object?>>> dumpVerses([String? collectionId]);
-
-  // /// Restores collections from a backup in JSON form.
-  // /// Returns the number of collections added or updated.
-  // Future<int> restoreCollections(List<Map<String, Object?>> collections);
-
-  // /// Restores verses from a backup in JSON form.
-  // /// Returns the number of verses added and updated.
-  // Future<(int added, int updated, int errorCount)> restoreVerses(
-  //     List<Map<String, Object?>> verses);
+  Future<(int added, int updated, int errorCount)> restoreBackup(
+    Map<String, dynamic> json,
+  );
 
   /// Resets all the due dates in the collection and makes verses like new.
   /// Returns the number of verses updated.
   Future<int> resetDueDates({required String collectionId});
-
-  // /// Returns the collections and verses that have been modified and deleted
-  // /// since the last sync.
-  // Future<Map<String, dynamic>> fetchUnsyncedChanges();
-
-  // /// After a remote sync, there may be even newer changes from the server.
-  // /// These need to be stored locally.
-  // Future<void> updateFromRemoteSync(Map<String, dynamic> updates);
 }

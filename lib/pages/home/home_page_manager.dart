@@ -3,8 +3,10 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
+import 'package:memorize_scripture/common/dialog/result_from_restoring_backup.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/local_storage/local_storage.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
@@ -162,60 +164,15 @@ class HomePageManager {
     }
     final file = File(path);
     final jsonString = await file.readAsString();
+    final jsonMap = await compute(jsonDecode, jsonString);
     try {
       final (added, updated, errorCount) =
-          await localStorage.restoreBackup(jsonString);
-      onResult.call(_resultString(added, updated, errorCount));
+          await localStorage.restoreBackup(jsonMap);
+      onResult.call(resultOfRestoringBackup(added, updated, errorCount));
     } on FormatException {
       onResult.call('The data in the file was in the wrong format.');
     }
     init();
-  }
-
-  String _resultString(int added, int updated, int errorCount) {
-    // 000
-    if (added == 0 && updated == 0 && errorCount == 0) {
-      return 'No verses were added or updated.';
-    }
-    // 001
-    if (added == 0 && updated == 0 && errorCount != 0) {
-      final verses = (errorCount == 1) ? 'verse' : 'verses';
-      return '$errorCount $verses had errors and couldn\'t be imported.';
-    }
-    // 010
-    if (added == 0 && updated != 0 && errorCount == 0) {
-      return '$updated ${_versesWere(updated)} updated.';
-    }
-    // 011
-    if (added == 0 && updated != 0 && errorCount != 0) {
-      return '$updated ${_versesWere(updated)} updated, '
-          'but $errorCount ${_versesWere(errorCount)} not '
-          'added because of errors.';
-    }
-    // 100
-    if (added != 0 && updated == 0 && errorCount == 0) {
-      return '$added ${_versesWere(added)} added.';
-    }
-    // 101
-    if (added != 0 && updated == 0 && errorCount != 0) {
-      return '$added ${_versesWere(added)} added, '
-          'but $errorCount ${_versesWere(errorCount)} not '
-          'added because of errors.';
-    }
-    // 110
-    if (added != 0 && updated != 0 && errorCount == 0) {
-      return '$added verses were added, and $updated verses were updated.';
-    }
-
-    /// 111
-    return '$added ${_versesWere(added)} added, '
-        '$updated ${_versesWere(updated)} updated, '
-        'and $errorCount ${_versesWere(errorCount)} not added because of errors.';
-  }
-
-  String _versesWere(int count) {
-    if (count == 1) return 'verse was';
-    return 'verses were';
   }
 
   void togglePin(Collection collection) {

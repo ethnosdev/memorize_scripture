@@ -29,11 +29,14 @@ class LoggedInManager {
     }
   }
 
-  Future<void> syncVerses() async {
+  Future<void> syncVerses(void Function(String) onFinished) async {
     final user = getIt<BackendService>().auth.getUser();
     waitingNotifier.value = true;
     try {
-      await getIt<BackendService>().webApi.syncVerses(user);
+      await getIt<BackendService>().webApi.syncVerses(
+            user: user,
+            onFinished: onFinished,
+          );
     } on UserNotLoggedInException {
       screenNotifier.value = SignIn(email: '');
     } on ConnectionRefusedException catch (e) {
