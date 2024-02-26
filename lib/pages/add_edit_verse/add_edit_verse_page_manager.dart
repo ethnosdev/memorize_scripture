@@ -75,7 +75,7 @@ class AddEditVersePageManager {
     required String verseText,
     required String hint,
   }) async {
-    dataRepo.insertVerse(
+    await dataRepo.insertVerse(
       _collectionId,
       Verse(
         id: const Uuid().v4(),

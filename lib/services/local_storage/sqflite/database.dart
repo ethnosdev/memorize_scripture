@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/verse.dart';
+import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/local_storage/local_storage.dart';
 import 'package:memorize_scripture/services/local_storage/sqflite/schema.dart';
+import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -192,6 +194,7 @@ class SqfliteStorage implements LocalStorage {
         VerseEntry.interval: verse.interval.inDays,
       },
     );
+    await getIt<UserSettings>().setLastLocalUpdate();
   }
 
   @override
@@ -210,6 +213,7 @@ class SqfliteStorage implements LocalStorage {
       where: '${VerseEntry.id} = ?',
       whereArgs: [verse.id],
     );
+    await getIt<UserSettings>().setLastLocalUpdate();
   }
 
   int _timestampNow() => _dateToSecondsSinceEpoch(DateTime.now())!;
@@ -246,6 +250,7 @@ class SqfliteStorage implements LocalStorage {
     }
 
     await batch.commit(noResult: true);
+    await getIt<UserSettings>().setLastLocalUpdate();
   }
 
   @override
@@ -255,16 +260,20 @@ class SqfliteStorage implements LocalStorage {
       where: '${VerseEntry.id} = ?',
       whereArgs: [verseId],
     );
+    // Note: not setting lastLocalUpdate but if we start tracking deletes
+    // in the future, then we should set it also.
   }
 
   @override
   Future<void> insertCollection(Collection collection) async {
     await _upsertCollection(collection);
+    await getIt<UserSettings>().setLastLocalUpdate();
   }
 
   @override
   Future<void> updateCollection(Collection collection) async {
     await _upsertCollection(collection);
+    await getIt<UserSettings>().setLastLocalUpdate();
   }
 
   Future<void> _upsertCollection(Collection collection) async {
@@ -305,6 +314,8 @@ class SqfliteStorage implements LocalStorage {
       where: '${VerseEntry.collectionId} = ?',
       whereArgs: [collectionId],
     );
+    // Note: not setting lastLocalUpdate but if we start tracking deletes
+    // in the future, then we should set it also.
   }
 
   @override
@@ -378,13 +389,17 @@ class SqfliteStorage implements LocalStorage {
   }
 
   @override
-  Future<(int added, int updated, int errors)> restoreBackup(
-      Map<String, dynamic> json) async {
+  Future<(int added, int updated, int errors)> restoreBackup(String json,
+      {String? timestamp}) async {
+    print(json);
+    final jsonMap = await compute(jsonDecode, json);
     final collections =
-        (json['collections'] as List).cast<Map<String, Object?>>();
-    final verses = (json['verses'] as List).cast<Map<String, Object?>>();
+        (jsonMap['collections'] as List).cast<Map<String, Object?>>();
+    final verses = (jsonMap['verses'] as List).cast<Map<String, Object?>>();
     await _restoreCollections(collections);
-    return await _restoreVerses(verses);
+    final counts = await _restoreVerses(verses);
+    await getIt<UserSettings>().setLastLocalUpdate(timestamp);
+    return counts;
   }
 
   Future<int> _restoreCollections(
@@ -593,7 +608,7 @@ class SqfliteStorage implements LocalStorage {
   @override
   Future<int> resetDueDates({required String collectionId}) async {
     final now = _timestampNow();
-    return await _database.update(
+    final numberAffected = await _database.update(
       VerseEntry.tableName,
       {
         VerseEntry.modifiedDate: now,
@@ -603,5 +618,7 @@ class SqfliteStorage implements LocalStorage {
       where: '${VerseEntry.collectionId} = ?',
       whereArgs: [collectionId],
     );
+    await getIt<UserSettings>().setLastLocalUpdate();
+    return numberAffected;
   }
 }

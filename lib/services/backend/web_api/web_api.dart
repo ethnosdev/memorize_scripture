@@ -25,22 +25,29 @@ class WebApi {
       if (localHasChanges) {
         final (id, lastServerUpdate) = serverIdDate;
         if (lastLocalUpdate.isBefore(lastServerUpdate)) {
+          print('_pullChangesFromServer: local before server');
           await _pullChangesFromServer(user, onFinished);
         } else if (lastLocalUpdate.isAfter(lastServerUpdate)) {
+          print('_pushUpdateToServer: local after server');
           await _pushUpdateToServer(user, id);
         } else {
           // Server and local have the same date. Do nothing.
+          print('do nothing: local same as server');
         }
       } else {
         // server has changes but local has no changes
+        print('_pullChangesFromServer: server has changes but local none');
         await _pullChangesFromServer(user, onFinished);
       }
     } else {
       if (localHasChanges) {
         // Server has no record but there are local changes.
+        print(
+            '_pushUpdateToServer: server has no record but local has changes');
         await _pushNewRecordToServer(user);
       } else {
         // No changes anywhere. Do nothing.
+        print('do nothing: no changes anywhere');
       }
     }
   }
@@ -95,21 +102,20 @@ class WebApi {
         .getList(perPage: 1);
     if (result.items.isEmpty) return;
     final record = result.items.first;
-    final data = record.data;
+    final data = record.data['data'];
 
     // restore the verses locally
     try {
       final (added, updated, errorCount) =
-          await getIt<LocalStorage>().restoreBackup(data);
+          await getIt<LocalStorage>().restoreBackup(
+        data,
+        timestamp: record.updated,
+      );
       final message = resultOfRestoringBackup(added, updated, errorCount);
       onFinished.call(message);
     } on FormatException {
       onFinished.call('There was an error getting your verses from the server');
     }
-
-    // if successful then update the last sync date
-    final updated = record.updated;
-    await getIt<UserSettings>().setLastLocalUpdate(updated);
   }
 
   // Future<String> _prepareLocalBackup() async {

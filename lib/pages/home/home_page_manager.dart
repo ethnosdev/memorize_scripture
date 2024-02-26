@@ -17,10 +17,10 @@ import 'package:uuid/uuid.dart';
 
 class HomePageManager {
   HomePageManager({
-    LocalStorage? dataRepository,
+    LocalStorage? localStorage,
     UserSettings? userSettings,
   }) {
-    this.localStorage = dataRepository ?? getIt<LocalStorage>();
+    this.localStorage = localStorage ?? getIt<LocalStorage>();
     this.userSettings = userSettings ?? getIt<UserSettings>();
   }
   late final LocalStorage localStorage;
@@ -144,11 +144,6 @@ class HomePageManager {
     _shareFile(file, sharePositionOrigin);
   }
 
-  int? _dateToSecondsSinceEpoch(DateTime? date) {
-    if (date == null) return null;
-    return date.millisecondsSinceEpoch ~/ 1000;
-  }
-
   void import(void Function(String message) onResult) async {
     FilePickerResult? result;
     try {
@@ -164,10 +159,9 @@ class HomePageManager {
     }
     final file = File(path);
     final jsonString = await file.readAsString();
-    final jsonMap = await compute(jsonDecode, jsonString);
     try {
       final (added, updated, errorCount) =
-          await localStorage.restoreBackup(jsonMap);
+          await localStorage.restoreBackup(jsonString);
       onResult.call(resultOfRestoringBackup(added, updated, errorCount));
     } on FormatException {
       onResult.call('The data in the file was in the wrong format.');

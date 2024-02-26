@@ -45,10 +45,10 @@ class PracticePageManager {
     LocalStorage? dataRepository,
     UserSettings? userSettings,
   }) {
-    this.dataRepository = dataRepository ?? getIt<LocalStorage>();
+    this.localStorage = dataRepository ?? getIt<LocalStorage>();
     this.userSettings = userSettings ?? getIt<UserSettings>();
   }
-  late final LocalStorage dataRepository;
+  late final LocalStorage localStorage;
   late final UserSettings userSettings;
   final _wordsHintHelper = WordsHintHelper();
 
@@ -108,12 +108,12 @@ class PracticePageManager {
     _collectionId = collectionId;
     _isCasualPracticeMode = false;
     final newVerseLimit = userSettings.getDailyLimit;
-    _verses = await dataRepository.fetchTodaysVerses(
+    _verses = await localStorage.fetchTodaysVerses(
       collectionId: collectionId,
       newVerseLimit: newVerseLimit,
     );
     if (_verses.isEmpty) {
-      final number = await dataRepository.numberInCollection(collectionId);
+      final number = await localStorage.numberInCollection(collectionId);
       if (number > 0) {
         uiNotifier.value = PracticeState.noVersesDue;
       } else {
@@ -302,11 +302,11 @@ class PracticePageManager {
           if (_verses.isEmpty) {
             // If this is the only verse, we're finished.
             final updated = _adjustVerseStats(verse, response);
-            dataRepository.updateVerse(_collectionId, updated);
+            localStorage.updateVerse(_collectionId, updated);
           } else {
             // Giving it a due date will make it no longer new.
             final updated = verse.copyWith(nextDueDate: DateTime.now());
-            dataRepository.updateVerse(_collectionId, updated);
+            localStorage.updateVerse(_collectionId, updated);
             _verses.add(updated);
           }
         default:
@@ -328,7 +328,7 @@ class PracticePageManager {
         case Difficulty.good:
         case Difficulty.easy:
           final update = _adjustVerseStats(verse, response);
-          dataRepository.updateVerse(_collectionId, update);
+          localStorage.updateVerse(_collectionId, update);
       }
     }
   }
@@ -337,7 +337,7 @@ class PracticePageManager {
     final isTwoButtonMode = buttonMode == ResponseButtonMode.two;
     if (isTwoButtonMode) {
       final updatedVerse = _adjustVerseStats(verse, response);
-      dataRepository.updateVerse(_collectionId, updatedVerse);
+      localStorage.updateVerse(_collectionId, updatedVerse);
       if (response == Difficulty.hard) {
         _verses.add(updatedVerse);
       }
@@ -345,7 +345,7 @@ class PracticePageManager {
       switch (response) {
         case Difficulty.hard:
           final updatedVerse = _adjustVerseStats(verse, response);
-          dataRepository.updateVerse(_collectionId, updatedVerse);
+          localStorage.updateVerse(_collectionId, updatedVerse);
           if (_verses.length > hardNewInsertionIndex &&
               // insert last if good greater than 1
               verse.interval.inDays == 0) {
@@ -358,12 +358,12 @@ class PracticePageManager {
             _verses.add(verse);
           } else {
             final updatedVerse = _adjustVerseStats(verse, response);
-            dataRepository.updateVerse(_collectionId, updatedVerse);
+            localStorage.updateVerse(_collectionId, updatedVerse);
           }
         case Difficulty.good:
         case Difficulty.easy:
           final updatedVerse = _adjustVerseStats(verse, response);
-          dataRepository.updateVerse(_collectionId, updatedVerse);
+          localStorage.updateVerse(_collectionId, updatedVerse);
       }
     }
   }
@@ -399,7 +399,7 @@ class PracticePageManager {
       init(collectionId: _collectionId);
       return;
     }
-    final verse = await dataRepository.fetchVerse(verseId: verseId);
+    final verse = await localStorage.fetchVerse(verseId: verseId);
     if (verse == null) return;
     _verses[0] = verse;
     _resetUi();
@@ -409,13 +409,13 @@ class PracticePageManager {
     final verse = _undoVerse;
     if (verse == null) return;
     _verses.insert(0, verse);
-    dataRepository.updateVerse(_collectionId, verse);
+    localStorage.updateVerse(_collectionId, verse);
     _undoVerse = null;
     _resetUi();
   }
 
   Future<void> practiceAllVerses() async {
-    _verses = await dataRepository.fetchAllVerses(_collectionId);
+    _verses = await localStorage.fetchAllVerses(_collectionId);
     _isCasualPracticeMode = true;
     _resetUi();
   }

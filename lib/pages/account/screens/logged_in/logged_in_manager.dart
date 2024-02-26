@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/pages/account/shared/account_screen_type.dart';
+import 'package:memorize_scripture/pages/home/home_page_manager.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/backend/exceptions.dart';
 import 'package:memorize_scripture/services/backend/auth/user.dart';
@@ -37,6 +38,7 @@ class LoggedInManager {
             user: user,
             onFinished: onFinished,
           );
+      await getIt<HomePageManager>().init();
     } on UserNotLoggedInException {
       screenNotifier.value = SignIn(email: '');
     } on ConnectionRefusedException catch (e) {

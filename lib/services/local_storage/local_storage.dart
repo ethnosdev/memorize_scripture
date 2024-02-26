@@ -89,8 +89,9 @@ abstract class LocalStorage {
   /// Returns the number of verses [added] and [updated] along with a
   /// potential [errorCount].
   Future<(int added, int updated, int errorCount)> restoreBackup(
-    Map<String, dynamic> json,
-  );
+    String json, {
+    String? timestamp,
+  });
 
   /// Resets all the due dates in the collection and makes verses like new.
   /// Returns the number of verses updated.

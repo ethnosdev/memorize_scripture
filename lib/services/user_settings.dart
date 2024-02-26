@@ -29,7 +29,7 @@ abstract class UserSettings {
   List<String> get pinnedCollections;
   Future<void> setPinnedCollections(List<String> ids);
   DateTime? get lastLocalUpdate;
-  Future<void> setLastLocalUpdate(String? timestamp);
+  Future<void> setLastLocalUpdate([String? timestamp]);
 }
 
 class SharedPreferencesStorage extends UserSettings {
@@ -169,10 +169,13 @@ class SharedPreferencesStorage extends UserSettings {
   }
 
   @override
-  Future<void> setLastLocalUpdate(String? timestamp) {
+  Future<void> setLastLocalUpdate([String? timestamp]) async {
+    final dateTime = (timestamp != null)
+        ? timestamp
+        : DateTime.now().toUtc().toIso8601String();
     if (timestamp == null) {
-      return prefs.remove(_lastLocalUpdateKey);
+      await prefs.remove(_lastLocalUpdateKey);
     }
-    return prefs.setString(_lastLocalUpdateKey, timestamp);
+    await prefs.setString(_lastLocalUpdateKey, dateTime);
   }
 }
