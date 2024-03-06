@@ -27,6 +27,9 @@ class AuthService {
       if (e.statusCode == 0) {
         throw ConnectionRefusedException();
       }
+      if (e.statusCode >= 500) {
+        throw ServerErrorException();
+      }
       final data = e.response['data'];
       if (data['email'] != null) {
         final message = data['email']['message'];
@@ -67,8 +70,10 @@ class AuthService {
         case 400:
           throw FailedToAuthenticateException(
               'Email or password was incorrect');
+        case >= 500:
+          throw ServerErrorException();
         default:
-          throw Exception(e);
+          rethrow;
       }
     }
   }
@@ -100,6 +105,9 @@ class AuthService {
       if (e.statusCode == 0) {
         throw ConnectionRefusedException();
       }
+      if (e.statusCode >= 500) {
+        throw ServerErrorException();
+      }
       throw Exception(e);
     }
   }
@@ -110,6 +118,9 @@ class AuthService {
     } on ClientException catch (e) {
       if (e.statusCode == 0) {
         throw ConnectionRefusedException();
+      }
+      if (e.statusCode >= 500) {
+        throw ServerErrorException();
       }
       throw Exception(e);
     }

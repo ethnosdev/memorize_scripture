@@ -12,7 +12,7 @@ class LoggedInManager {
   final ValueNotifier<AccountScreenType> screenNotifier;
   final waitingNotifier = ValueNotifier<bool>(false);
 
-  void Function(String title, String message)? onResult;
+  void Function(String message)? onError;
 
   Future<void> signOut(User user) async {
     await getIt<BackendService>().auth.signOut();
@@ -24,9 +24,10 @@ class LoggedInManager {
       await getIt<BackendService>().auth.deleteAccount();
       screenNotifier.value = SignUp();
       await getIt<SecureStorage>().deleteEmail();
-      // TODO: mark all verses as unsynced
     } on ConnectionRefusedException catch (e) {
-      onResult?.call('Error', e.message);
+      onError?.call(e.message);
+    } on ServerErrorException catch (e) {
+      onError?.call(e.message);
     }
   }
 
@@ -42,7 +43,9 @@ class LoggedInManager {
     } on UserNotLoggedInException {
       screenNotifier.value = SignIn(email: '');
     } on ConnectionRefusedException catch (e) {
-      onResult?.call('Error', e.message);
+      onError?.call(e.message);
+    } on ServerErrorException catch (e) {
+      onError?.call(e.message);
     } finally {
       waitingNotifier.value = false;
     }

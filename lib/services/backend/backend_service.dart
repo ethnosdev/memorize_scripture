@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/backend/auth/auth_service.dart';
 import 'package:memorize_scripture/services/backend/web_api/web_api.dart';
@@ -16,9 +14,10 @@ abstract class BackendService {
 
 class PocketBaseBackend implements BackendService {
   late final PocketBase _pb;
-  final _baseUrl = (Platform.isAndroid) //
-      ? 'http://10.0.2.2:8090/'
-      : 'http://127.0.0.1:8090/';
+  // final _baseUrl = (Platform.isAndroid) //
+  //     ? 'http://10.0.2.2:8090/'
+  //     : 'http://127.0.0.1:8090/';
+  static const _baseUrl = 'https://api.memorize.ethnos.dev/';
 
   bool _isInitialized = false;
 

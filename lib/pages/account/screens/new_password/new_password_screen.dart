@@ -25,11 +25,12 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
     super.initState();
     manager = NewPasswordManager(
       screenNotifier: widget.screenNotifier,
-      onResult: (title, message) => showMessageDialog(
+      onSuccess: (title, message) => showMessageDialog(
         context: context,
         title: title,
         message: message,
       ),
+      onError: _notifyResult,
     );
   }
 
@@ -51,17 +52,36 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 32),
-                  OutlinedButton(
-                    onPressed: () {
-                      manager.resetPassword(email: widget.email);
-                    },
-                    child: const Text('Reset password'),
-                  ),
+                  ValueListenableBuilder<bool>(
+                      valueListenable: manager.waitingNotifier,
+                      builder: (context, isProcessing, _) {
+                        if (isProcessing) {
+                          return const SizedBox(
+                            height: 32,
+                            width: 32,
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return OutlinedButton(
+                          onPressed: () {
+                            manager.resetPassword(email: widget.email);
+                          },
+                          child: const Text('Reset password'),
+                        );
+                      }),
                 ],
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  void _notifyResult(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
       ),
     );
   }

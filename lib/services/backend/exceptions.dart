@@ -14,7 +14,11 @@ class FailedToAuthenticateException implements Exception {
 }
 
 class ConnectionRefusedException implements Exception {
-  final message = 'There was a problem connecting to the server';
+  final message = 'There was a problem connecting to the server.';
+}
+
+class ServerErrorException implements Exception {
+  final message = 'There was a problem with the server.';
 }
 
 class UserNotVerifiedException implements Exception {

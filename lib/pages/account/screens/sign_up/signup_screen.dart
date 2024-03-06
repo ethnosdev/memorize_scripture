@@ -25,11 +25,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.initState();
     manager = SignUpManager(
       screenNotifier: widget.screenNotifier,
-      onResult: (title, message) => showMessageDialog(
+      onSuccess: (title, message) => showMessageDialog(
         context: context,
         title: title,
         message: message,
       ),
+      onError: _notifyResult,
     );
   }
 
@@ -135,6 +136,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  void _notifyResult(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
       ),
     );
   }

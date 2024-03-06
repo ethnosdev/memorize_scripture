@@ -69,6 +69,8 @@ class SignInManager {
       );
     } on ConnectionRefusedException catch (e) {
       onResult?.call(e.message);
+    } on ServerErrorException catch (e) {
+      onResult?.call(e.message);
     } finally {
       waitingNotifier.value = false;
     }

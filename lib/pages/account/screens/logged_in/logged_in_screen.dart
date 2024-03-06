@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:memorize_scripture/common/dialog/dialog.dart';
 import 'package:memorize_scripture/pages/account/shared/account_screen_type.dart';
 import 'package:memorize_scripture/services/backend/auth/user.dart';
 
@@ -27,11 +26,7 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
     manager = LoggedInManager(
       screenNotifier: widget.screenNotifier,
     );
-    manager.onResult = (title, message) => showMessageDialog(
-          context: context,
-          title: title,
-          message: message,
-        );
+    manager.onError = _notifyResult;
   }
 
   @override

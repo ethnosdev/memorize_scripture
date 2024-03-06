@@ -13,10 +13,12 @@ import 'package:url_launcher/url_launcher.dart';
 class SignUpManager {
   SignUpManager({
     required this.screenNotifier,
-    required this.onResult,
+    required this.onSuccess,
+    required this.onError,
   });
   final ValueNotifier<AccountScreenType> screenNotifier;
-  final void Function(String, String) onResult;
+  final void Function(String, String) onSuccess;
+  final void Function(String) onError;
 
   final emailNotifier = ValueNotifier<String?>(null);
   final passwordNotifier = ValueNotifier(
@@ -36,7 +38,7 @@ class SignUpManager {
             passphrase: passphrase,
           );
       await getIt<SecureStorage>().setEmail(email);
-      onResult.call('Account created',
+      onSuccess.call('Account created',
           'Check your email and verify your account before signing in.');
       screenNotifier.value = SignIn(email: email);
     } on EmailException catch (e) {
@@ -44,7 +46,9 @@ class SignUpManager {
     } on PasswordException catch (e) {
       passwordNotifier.value = TextFieldData(errorText: e.message);
     } on ConnectionRefusedException catch (e) {
-      onResult.call('Error', e.message);
+      onError.call(e.message);
+    } on ServerErrorException catch (e) {
+      onError.call(e.message);
     } finally {
       waitingNotifier.value = false;
     }

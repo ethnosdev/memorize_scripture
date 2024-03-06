@@ -7,10 +7,12 @@ import 'package:memorize_scripture/services/backend/backend_service.dart';
 class NewPasswordManager {
   NewPasswordManager({
     required this.screenNotifier,
-    required this.onResult,
+    required this.onSuccess,
+    required this.onError,
   });
   final ValueNotifier<AccountScreenType> screenNotifier;
-  final void Function(String, String) onResult;
+  final void Function(String, String) onSuccess;
+  final void Function(String) onError;
   final waitingNotifier = ValueNotifier<bool>(false);
 
   Future<void> resetPassword({
@@ -21,13 +23,15 @@ class NewPasswordManager {
       await getIt<BackendService>().auth.resetPassword(
             email: email,
           );
-      onResult.call(
+      onSuccess.call(
           'Reset sent',
           'You need to check your email and click the Verify button '
               'before the change will take effect.');
       screenNotifier.value = SignIn(email: email);
     } on ConnectionRefusedException catch (e) {
-      onResult.call('Error', e.message);
+      onError.call(e.message);
+    } on ServerErrorException catch (e) {
+      onError.call(e.message);
     } finally {
       waitingNotifier.value = false;
     }
