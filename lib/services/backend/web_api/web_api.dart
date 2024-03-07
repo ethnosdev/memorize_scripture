@@ -21,34 +21,36 @@ class WebApi {
     final serverHasChanges = serverIdDate != null;
     final localHasChanges = lastLocalUpdate != null;
 
-    if (serverHasChanges) {
-      if (localHasChanges) {
-        final (id, lastServerUpdate) = serverIdDate;
-        if (lastLocalUpdate.isBefore(lastServerUpdate)) {
-          print('_pullChangesFromServer: local before server');
-          await _pullChangesFromServer(user, onFinished);
-        } else if (lastLocalUpdate.isAfter(lastServerUpdate)) {
-          print('_pushUpdateToServer: local after server');
-          await _pushUpdateToServer(user, id);
+    try {
+      if (serverHasChanges) {
+        if (localHasChanges) {
+          final (id, lastServerUpdate) = serverIdDate;
+          if (lastLocalUpdate.isBefore(lastServerUpdate)) {
+            await _pullChangesFromServer(user, onFinished);
+          } else if (lastLocalUpdate.isAfter(lastServerUpdate)) {
+            await _pushUpdateToServer(user, id);
+            onFinished
+                .call("You're changes were successfully saved on the server.");
+          } else {
+            onFinished.call('There are no changes to update.');
+          }
         } else {
-          // Server and local have the same date. Do nothing.
-          print('do nothing: local same as server');
+          // server has changes but local has no changes
+          await _pullChangesFromServer(user, onFinished);
         }
       } else {
-        // server has changes but local has no changes
-        print('_pullChangesFromServer: server has changes but local none');
-        await _pullChangesFromServer(user, onFinished);
+        if (localHasChanges) {
+          // Server has no record but there are local changes.
+          await _pushNewRecordToServer(user);
+          onFinished
+              .call('Your changes were successfully saved on the server.');
+        } else {
+          // No changes anywhere. Do nothing.
+          onFinished.call('There are no changes to update.');
+        }
       }
-    } else {
-      if (localHasChanges) {
-        // Server has no record but there are local changes.
-        print(
-            '_pushUpdateToServer: server has no record but local has changes');
-        await _pushNewRecordToServer(user);
-      } else {
-        // No changes anywhere. Do nothing.
-        print('do nothing: no changes anywhere');
-      }
+    } catch (e) {
+      onFinished.call('There was a problem connecting to the server: $e');
     }
   }
 
@@ -117,9 +119,4 @@ class WebApi {
       onFinished.call('There was an error getting your verses from the server');
     }
   }
-
-  // Future<String> _prepareLocalBackup() async {
-  //   // Get all the local changes
-  //   return await getIt<LocalStorage>().backupCollections();
-  // }
 }

@@ -5,12 +5,6 @@ A scripture memory app.
 Android: https://play.google.com/store/apps/details?id=dev.ethnos.memorize_scripture
 Apple: https://apps.apple.com/us/app/memorize-scripture-ethnosdev/id6449814205
 
-## For rebuilding tests
-
-```
-dart run build_runner build --delete-conflicting-outputs
-```
-
 ## For publishing iOS
 
 Screen sizes:
@@ -83,6 +77,8 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/memorize.ethnos.dev/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    client_max_body_size 10m;
 
     root /var/www/memorize.ethnos.dev/html;
     index index.html index.htm;
@@ -186,3 +182,18 @@ https://api.memorize.ethnos.dev/_/
 ```
 
 Use a very strong password.
+
+Add the following schema:
+
+```
+backup (collection name)
+  user (relation)
+  data (plain text)
+
+api rules (all)
+  user = @request.auth.id
+```
+
+Settings
+  Application name: Memorize Scripture
+  Application url: http://api.memorize.ethnos.dev

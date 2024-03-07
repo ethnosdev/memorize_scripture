@@ -46,6 +46,8 @@ class LoggedInManager {
       onError?.call(e.message);
     } on ServerErrorException catch (e) {
       onError?.call(e.message);
+    } catch (e) {
+      onError?.call(e.toString());
     } finally {
       waitingNotifier.value = false;
     }
