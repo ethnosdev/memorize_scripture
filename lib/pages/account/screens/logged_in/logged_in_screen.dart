@@ -26,7 +26,7 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
     manager = LoggedInManager(
       screenNotifier: widget.screenNotifier,
     );
-    manager.onError = _notifyResult;
+    //manager.onError = _notifyResult;
   }
 
   @override
@@ -108,7 +108,7 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
       child: const Text("Delete"),
       onPressed: () {
         Navigator.of(context).pop();
-        manager.deleteAccount();
+        manager.deleteAccount(_notifyResult);
       },
     );
 

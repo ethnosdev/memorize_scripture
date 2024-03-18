@@ -10,6 +10,8 @@ import 'package:memorize_scripture/pages/home/home_page_manager.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'widgets/syncing_overlay.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -28,76 +30,94 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            tooltip: 'Add collection',
-            onPressed: () async {
-              final name = await _showEditNameDialog(context);
-              manager.addCollection(name);
-            },
-          ),
-          Builder(builder: (context) {
-            return PopupMenuButton(
-              itemBuilder: (BuildContext context) => [
-                const PopupMenuItem(
-                  value: 1,
-                  child: IconTextRow(
-                    icon: Icons.sync,
-                    text: 'Sync',
-                  ),
+    return ValueListenableBuilder<bool>(
+      valueListenable: manager.isSyncingNotifier,
+      builder: (context, isSyncing, child) {
+        return SyncingOverlay(
+          isSyncing: isSyncing,
+          child: Scaffold(
+            appBar: AppBar(
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  tooltip: 'Add collection',
+                  onPressed: () async {
+                    final name = await _showEditNameDialog(context);
+                    manager.addCollection(name);
+                  },
                 ),
-                const PopupMenuItem(
-                  value: 2,
-                  child: IconTextRow(
-                    icon: Icons.upload,
-                    text: 'Backup',
-                  ),
-                ),
-                const PopupMenuItem(
-                  value: 3,
-                  child: IconTextRow(
-                    icon: Icons.download,
-                    text: 'Import',
-                  ),
-                ),
+                Builder(builder: (context) {
+                  return PopupMenuButton(
+                    itemBuilder: (BuildContext context) => [
+                      const PopupMenuItem(
+                        value: 1,
+                        child: IconTextRow(
+                          icon: Icons.sync,
+                          text: 'Sync',
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 2,
+                        child: IconTextRow(
+                          icon: Icons.upload,
+                          text: 'Backup',
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 3,
+                        child: IconTextRow(
+                          icon: Icons.download,
+                          text: 'Import',
+                        ),
+                      ),
+                    ],
+                    onSelected: (value) {
+                      switch (value) {
+                        case 1:
+                          manager.sync(
+                            onResult: _notifyResult,
+                            onUserNotLoggedIn: () {
+                              context.goNamed(RouteName.account);
+                            },
+                          );
+                        case 2:
+                          final box = context.findRenderObject() as RenderBox?;
+                          final rect =
+                              box!.localToGlobal(Offset.zero) & box.size;
+                          manager.backupCollections(sharePositionOrigin: rect);
+                        case 3:
+                          manager.import(
+                            (message) => _showMessage(context, message),
+                          );
+                      }
+                    },
+                  );
+                }),
               ],
-              onSelected: (value) {
-                switch (value) {
-                  case 1:
-                    if (manager.isLoggedIn) {
-                      manager.sync();
-                    } else {
-                      // TODO: prompt user to log in
-                    }
-                  case 2:
-                    final box = context.findRenderObject() as RenderBox?;
-                    final rect = box!.localToGlobal(Offset.zero) & box.size;
-                    manager.backupCollections(sharePositionOrigin: rect);
-                  case 3:
-                    manager.import(
-                      (message) => _showMessage(context, message),
-                    );
+            ),
+            drawer: const MenuDrawer(),
+            body: ValueListenableBuilder<HomePageUiState>(
+              valueListenable: manager.collectionNotifier,
+              builder: (context, uiState, child) {
+                switch (uiState) {
+                  case LoadingCollections():
+                    return const LoadingIndicator();
+                  case LoadedCollections(:final list):
+                    if (list.isEmpty) return const NoCollections();
+                    return BodyWidget(collections: list);
                 }
               },
-            );
-          }),
-        ],
-      ),
-      drawer: const MenuDrawer(),
-      body: ValueListenableBuilder<HomePageUiState>(
-        valueListenable: manager.collectionNotifier,
-        builder: (context, uiState, child) {
-          switch (uiState) {
-            case LoadingCollections():
-              return const LoadingIndicator();
-            case LoadedCollections(:final list):
-              if (list.isEmpty) return const NoCollections();
-              return BodyWidget(collections: list);
-          }
-        },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _notifyResult(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
       ),
     );
   }

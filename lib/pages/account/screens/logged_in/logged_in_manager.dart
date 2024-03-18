@@ -12,42 +12,42 @@ class LoggedInManager {
   final ValueNotifier<AccountScreenType> screenNotifier;
   final waitingNotifier = ValueNotifier<bool>(false);
 
-  void Function(String message)? onError;
+  //void Function(String message)? onError;
 
   Future<void> signOut(User user) async {
     await getIt<BackendService>().auth.signOut();
     screenNotifier.value = SignIn(email: user.email);
   }
 
-  Future<void> deleteAccount() async {
+  Future<void> deleteAccount(void Function(String) onError) async {
     try {
       await getIt<BackendService>().auth.deleteAccount();
       screenNotifier.value = SignUp();
       await getIt<SecureStorage>().deleteEmail();
     } on ConnectionRefusedException catch (e) {
-      onError?.call(e.message);
+      onError.call(e.message);
     } on ServerErrorException catch (e) {
-      onError?.call(e.message);
+      onError.call(e.message);
     }
   }
 
-  Future<void> syncVerses(void Function(String) onFinished) async {
+  Future<void> syncVerses(void Function(String) onResult) async {
     final user = getIt<BackendService>().auth.getUser();
     waitingNotifier.value = true;
     try {
       await getIt<BackendService>().webApi.syncVerses(
             user: user,
-            onFinished: onFinished,
+            onFinished: onResult,
           );
       await getIt<HomePageManager>().init();
     } on UserNotLoggedInException {
       screenNotifier.value = SignIn(email: '');
     } on ConnectionRefusedException catch (e) {
-      onError?.call(e.message);
+      onResult.call(e.message);
     } on ServerErrorException catch (e) {
-      onError?.call(e.message);
+      onResult.call(e.message);
     } catch (e) {
-      onError?.call(e.toString());
+      onResult.call(e.toString());
     } finally {
       waitingNotifier.value = false;
     }

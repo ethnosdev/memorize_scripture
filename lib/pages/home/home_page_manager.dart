@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -8,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/dialog/result_from_restoring_backup.dart';
 import 'package:memorize_scripture/service_locator.dart';
+import 'package:memorize_scripture/services/backend/backend_service.dart';
+import 'package:memorize_scripture/services/backend/exceptions.dart';
 import 'package:memorize_scripture/services/local_storage/local_storage.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:path/path.dart';
@@ -28,11 +29,10 @@ class HomePageManager {
 
   final collectionNotifier =
       ValueNotifier<HomePageUiState>(LoadingCollections());
+  var isSyncingNotifier = ValueNotifier<bool>(false);
 
   List<Collection> get _getList =>
       (collectionNotifier.value as LoadedCollections).list;
-
-  bool get isLoggedIn => false;
 
   Future<void> init() async {
     await _reloadCollections();
@@ -182,8 +182,31 @@ class HomePageManager {
     userSettings.setPinnedCollections(pinnedIds);
   }
 
-  Future<void> sync() async {
-    // TODO: show overlay while syncing
+  Future<void> sync({
+    required void Function(String) onResult,
+    required void Function() onUserNotLoggedIn,
+  }) async {
+    isSyncingNotifier.value = true;
+    final backend = getIt<BackendService>();
+    await backend.init();
+    final user = backend.auth.getUser();
+    try {
+      await backend.webApi.syncVerses(
+        user: user,
+        onFinished: onResult,
+      );
+      await init();
+    } on UserNotLoggedInException {
+      onUserNotLoggedIn.call();
+    } on ConnectionRefusedException catch (e) {
+      onResult.call(e.message);
+    } on ServerErrorException catch (e) {
+      onResult.call(e.message);
+    } catch (e) {
+      onResult.call(e.toString());
+    } finally {
+      isSyncingNotifier.value = false;
+    }
   }
 }
 
