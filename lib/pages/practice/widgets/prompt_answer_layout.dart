@@ -126,11 +126,6 @@ class Answer extends StatelessWidget {
               return const SizedBox();
             case CustomHint():
             case FinalAnswer():
-              return SelectableText.rich(
-                answer.textSpan,
-                textAlign: TextAlign.center,
-                textScaler: const TextScaler.linear(textScaleFactor),
-              );
             case LettersHint():
               return SelectableText.rich(
                 answer.textSpan,
