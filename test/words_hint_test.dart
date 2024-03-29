@@ -9,8 +9,6 @@ void main() {
       helper.init(
         text: "Hello world",
         textColor: Colors.black,
-        onTap: () {},
-        onFinished: () {},
       );
       final span = helper.nextWord();
       final text = (span.children!.first as TextSpan).text;
@@ -24,8 +22,6 @@ void main() {
       helper.init(
         text: "Hello world",
         textColor: Colors.black,
-        onTap: () {},
-        onFinished: () {},
       );
 
       final span1 = helper.nextWord();
@@ -40,8 +36,6 @@ void main() {
       helper.init(
         text: "Hello **world**",
         textColor: Colors.black,
-        onTap: () {},
-        onFinished: () {},
       );
 
       final span1 = helper.nextWord();

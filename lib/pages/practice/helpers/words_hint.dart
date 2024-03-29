@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/painting.dart';
 
 const transparent = Color(0x00000000);
@@ -6,28 +5,29 @@ const transparent = Color(0x00000000);
 class WordsHintHelper {
   Color _textColor = const Color(0xff000000);
   String _text = '';
-  void Function()? _onFinished;
-  void Function()? _onTap;
+  // void Function()? _onFinished;
 
   int _numberHintWordsShowing = 0;
 
   void init({
     required String text,
     required Color textColor,
-    required void Function() onTap,
-    required void Function() onFinished,
+    // required void Function() onFinished,
   }) {
     _numberHintWordsShowing = 0;
     _text = _removeBold(text);
     _textColor = textColor;
-    _onTap = onTap;
-    _onFinished = onFinished;
+    // _onFinished = onFinished;
   }
 
   String _removeBold(String text) {
     return text.replaceAll('**', '');
   }
 
+  /// Returns a text span with the next word visible.
+  ///
+  /// Throws an OnFinishedException if showing the next word would
+  /// cause the text to be finished.
   TextSpan nextWord() {
     _numberHintWordsShowing++;
     final textSpan = _formatForNumberOfWords(
@@ -46,21 +46,17 @@ class WordsHintHelper {
 
     final finished = index == null;
     if (finished) {
-      _onFinished?.call();
+      throw OnFinishedException();
     }
 
     final textSpan = TextSpan(children: [
       TextSpan(
         text: before,
         style: TextStyle(color: _textColor),
-        recognizer:
-            (!finished) ? (TapGestureRecognizer()..onTap = _onTap) : null,
       ),
       TextSpan(
         text: after,
         style: const TextStyle(color: transparent),
-        recognizer:
-            (!finished) ? (TapGestureRecognizer()..onTap = _onTap) : null,
       ),
     ]);
 
@@ -93,3 +89,5 @@ class WordsHintHelper {
     return (index < 0) ? null : index;
   }
 }
+
+class OnFinishedException implements Exception {}

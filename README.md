@@ -30,6 +30,7 @@ flutter build ipa
 
 ```
 flutter build appbundle
+flutter build apk
 ```
 
 ## For rebuilding macos folder

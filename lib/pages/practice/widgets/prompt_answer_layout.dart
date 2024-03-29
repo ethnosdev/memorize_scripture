@@ -116,18 +116,39 @@ class Answer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<TextSpan>(
-      valueListenable: manager.answerNotifier,
-      builder: (context, answerContent, child) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: SelectableText.rich(
-            answerContent,
-            textAlign: TextAlign.center,
-            textScaler: const TextScaler.linear(textScaleFactor),
-          ),
-        );
-      },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: ValueListenableBuilder<AnswerType>(
+        valueListenable: manager.answerNotifier,
+        builder: (context, answer, child) {
+          switch (answer) {
+            case NoAnswer():
+              return const SizedBox();
+            case CustomHint():
+            case FinalAnswer():
+              return SelectableText.rich(
+                answer.textSpan,
+                textAlign: TextAlign.center,
+                textScaler: const TextScaler.linear(textScaleFactor),
+              );
+            case LettersHint():
+              return Text.rich(
+                answer.textSpan,
+                textAlign: TextAlign.center,
+                textScaler: const TextScaler.linear(textScaleFactor),
+              );
+            case WordsHint():
+              return GestureDetector(
+                onTap: manager.showNextWordHint,
+                child: Text.rich(
+                  answer.textSpan,
+                  textAlign: TextAlign.center,
+                  textScaler: const TextScaler.linear(textScaleFactor),
+                ),
+              );
+          }
+        },
+      ),
     );
   }
 }

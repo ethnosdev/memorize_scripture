@@ -42,10 +42,10 @@ class HintButtonState {
 
 class PracticePageManager {
   PracticePageManager({
-    LocalStorage? dataRepository,
+    LocalStorage? localStorage,
     UserSettings? userSettings,
   }) {
-    this.localStorage = dataRepository ?? getIt<LocalStorage>();
+    this.localStorage = localStorage ?? getIt<LocalStorage>();
     this.userSettings = userSettings ?? getIt<UserSettings>();
   }
   late final LocalStorage localStorage;
@@ -55,7 +55,7 @@ class PracticePageManager {
   final uiNotifier = ValueNotifier<PracticeState>(PracticeState.loading);
   final countNotifier = ValueNotifier<String>('');
   final promptNotifier = ValueNotifier<TextSpan>(const TextSpan());
-  final answerNotifier = ValueNotifier<TextSpan>(const TextSpan());
+  final answerNotifier = ValueNotifier<AnswerType>(NoAnswer());
   final isShowingAnswerNotifier = ValueNotifier<bool>(false);
   final hintButtonNotifier =
       ValueNotifier<HintButtonState>(HintButtonState.initial());
@@ -90,7 +90,6 @@ class PracticePageManager {
   String goodTitle = '';
   String easyTitle = '';
 
-  //bool get isTwoButtonMode => userSettings.isTwoButtonMode;
   ResponseButtonMode get buttonMode {
     if (_isCasualPracticeMode) return ResponseButtonMode.casualPractice;
     if (userSettings.isTwoButtonMode) return ResponseButtonMode.two;
@@ -137,15 +136,13 @@ class PracticePageManager {
         isEnabled: true,
         hasCustomHint: _verses.first.hint.isNotEmpty,
       );
-      answerNotifier.value = const TextSpan();
+      answerNotifier.value = const NoAnswer();
       promptNotifier.value = _addHighlighting(_verses.first.prompt);
       countNotifier.value = _verses.length.toString();
       appBarNotifier.update(isPracticing: true, canUndo: canUndo);
       _wordsHintHelper.init(
         text: _verses.first.text,
         textColor: _textThemeColor,
-        onTap: showNextWordHint,
-        onFinished: _showResponseButtons,
       );
     }
   }
@@ -184,7 +181,8 @@ class PracticePageManager {
 
   void show() {
     _showResponseButtons();
-    answerNotifier.value = _addHighlighting(_verses.first.text);
+    final text = _addHighlighting(_verses.first.text);
+    answerNotifier.value = FinalAnswer(text);
   }
 
   void _showResponseButtons() {
@@ -246,21 +244,27 @@ class PracticePageManager {
       text: _verses.first.text,
       textColor: _textThemeColor,
       onUpdate: (textSpan) {
-        answerNotifier.value = textSpan;
+        answerNotifier.value = LettersHint(textSpan);
       },
     );
-    answerNotifier.value = helper.textSpan;
+    answerNotifier.value = LettersHint(helper.textSpan);
   }
 
   void showNextWordHint() {
-    answerNotifier.value = _wordsHintHelper.nextWord();
+    try {
+      final text = _wordsHintHelper.nextWord();
+      answerNotifier.value = WordsHint(text);
+    } on OnFinishedException {
+      show();
+    }
   }
 
   void showCustomHint() {
     final hint = _verses.first.hint;
-    final currentText = answerNotifier.value.text;
-    answerNotifier.value =
-        (currentText == hint) ? const TextSpan() : _addHighlighting(hint);
+    final currentText = answerNotifier.value.textSpan.text;
+    answerNotifier.value = (currentText == hint)
+        ? const NoAnswer()
+        : CustomHint(_addHighlighting(hint));
   }
 
   void onResponse(Difficulty response) {
@@ -432,4 +436,29 @@ class AppBarNotifier extends ValueNotifier<(bool, bool)> {
   void update({required bool isPracticing, required bool canUndo}) {
     value = (isPracticing, canUndo);
   }
+}
+
+sealed class AnswerType {
+  const AnswerType(this.textSpan);
+  final TextSpan textSpan;
+}
+
+class NoAnswer extends AnswerType {
+  const NoAnswer() : super(const TextSpan());
+}
+
+class LettersHint extends AnswerType {
+  const LettersHint(super.textSpan);
+}
+
+class WordsHint extends AnswerType {
+  const WordsHint(super.textSpan);
+}
+
+class CustomHint extends AnswerType {
+  const CustomHint(super.textSpan);
+}
+
+class FinalAnswer extends AnswerType {
+  const FinalAnswer(super.textSpan);
 }

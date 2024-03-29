@@ -1,6 +1,7 @@
 ## 2.0.0
 
 - Allow user registration for the purpose of online syncing.
+- Fix bug with word hints.
 
 ## 1.10.0 - October 28, 2023
 
