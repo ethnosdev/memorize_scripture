@@ -132,19 +132,28 @@ class Answer extends StatelessWidget {
                 textScaler: const TextScaler.linear(textScaleFactor),
               );
             case LettersHint():
-              return Text.rich(
+              return SelectableText.rich(
                 answer.textSpan,
                 textAlign: TextAlign.center,
                 textScaler: const TextScaler.linear(textScaleFactor),
               );
             case WordsHint():
-              return GestureDetector(
-                onTap: manager.showNextWordHint,
-                child: Text.rich(
-                  answer.textSpan,
-                  textAlign: TextAlign.center,
-                  textScaler: const TextScaler.linear(textScaleFactor),
-                ),
+              return Stack(
+                children: [
+                  SelectableText.rich(
+                    answer.textSpan,
+                    textAlign: TextAlign.center,
+                    textScaler: const TextScaler.linear(textScaleFactor),
+                  ),
+                  GestureDetector(
+                    onTap: manager.showNextWordHint,
+                    child: Container(
+                      color: Colors.transparent,
+                      width: double.infinity,
+                      height: 500,
+                    ),
+                  ),
+                ],
               );
           }
         },
