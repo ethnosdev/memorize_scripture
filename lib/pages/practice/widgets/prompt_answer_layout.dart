@@ -134,6 +134,7 @@ class Answer extends StatelessWidget {
               );
             case WordsHint():
               return Stack(
+                alignment: Alignment.topCenter,
                 children: [
                   SelectableText.rich(
                     answer.textSpan,
@@ -145,7 +146,7 @@ class Answer extends StatelessWidget {
                     child: Container(
                       color: Colors.transparent,
                       width: double.infinity,
-                      height: 500,
+                      height: 600,
                     ),
                   ),
                 ],
