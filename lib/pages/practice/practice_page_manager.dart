@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/pages/practice/helpers/letters_hint.dart';
 import 'package:memorize_scripture/pages/practice/helpers/words_hint.dart';
@@ -55,7 +56,7 @@ class PracticePageManager {
   final uiNotifier = ValueNotifier<PracticeState>(PracticeState.loading);
   final countNotifier = ValueNotifier<String>('');
   final promptNotifier = ValueNotifier<TextSpan>(const TextSpan());
-  final answerNotifier = ValueNotifier<AnswerType>(NoAnswer());
+  final answerNotifier = ValueNotifier<AnswerType>(const NoAnswer());
   final isShowingAnswerNotifier = ValueNotifier<bool>(false);
   final hintButtonNotifier =
       ValueNotifier<HintButtonState>(HintButtonState.initial());
@@ -99,6 +100,7 @@ class PracticePageManager {
   static const hardNewInsertionIndex = 2;
 
   late String _collectionId;
+  late List<Collection> _collections;
 
   Future<void> init({
     required String collectionId,
@@ -120,7 +122,7 @@ class PracticePageManager {
       }
       return;
     }
-
+    localStorage.fetchCollections().then((value) => _collections = value);
     _resetUi();
   }
 
@@ -421,6 +423,21 @@ class PracticePageManager {
   Future<void> practiceAllVerses() async {
     _verses = await localStorage.fetchAllVerses(_collectionId);
     _isCasualPracticeMode = true;
+    _resetUi();
+  }
+
+  bool get shouldShowMoveMenuItem => _collections.length > 1;
+
+  List<Collection> otherCollections() {
+    return _collections
+        .where((collection) => collection.id != _collectionId)
+        .toList();
+  }
+
+  void moveVerse(String toCollectionId) async {
+    final verse = _verses.removeAt(0);
+    _undoVerse = null;
+    await localStorage.updateVerse(toCollectionId, verse);
     _resetUi();
   }
 }

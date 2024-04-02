@@ -2,6 +2,8 @@
 
 - Allow user registration for the purpose of online syncing.
 - Increase tap area to show word hints.
+- Show verse browser menu item in finished practice page.
+- Show move verse menu item in practice page.
 
 ## 1.10.0 - October 28, 2023
 

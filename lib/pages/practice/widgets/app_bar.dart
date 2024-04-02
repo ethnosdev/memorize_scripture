@@ -34,24 +34,9 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                 tooltip: 'Undo',
                 onPressed: manager.undoResponse,
               ),
-            if (!isPracticing)
-              IconButton(
-                icon: const Icon(Icons.add),
-                tooltip: 'Add verse',
-                onPressed: () {
-                  context.pushNamed(
-                    RouteName.add,
-                    queryParameters: {
-                      Params.colId: collectionId,
-                      Params.colName: collectionName,
-                    },
-                    extra: manager.onFinishedAddingEditing,
-                  );
-                },
-              ),
-            if (isPracticing)
-              PopupMenuButton(
-                itemBuilder: (BuildContext context) => [
+            PopupMenuButton(
+              itemBuilder: (BuildContext context) => [
+                if (isPracticing)
                   const PopupMenuItem(
                     value: 1,
                     child: IconTextRow(
@@ -59,55 +44,90 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                       text: 'Edit',
                     ),
                   ),
+                if (isPracticing && manager.shouldShowMoveMenuItem)
                   const PopupMenuItem(
                     value: 2,
                     child: IconTextRow(
-                      icon: Icons.add,
-                      text: 'Add verse',
+                      icon: Icons.move_down,
+                      text: 'Move',
                     ),
                   ),
-                  const PopupMenuItem(
-                    value: 3,
-                    child: IconTextRow(
-                      icon: Icons.list,
-                      text: 'Verse browser',
-                    ),
+                const PopupMenuItem(
+                  value: 3,
+                  child: IconTextRow(
+                    icon: Icons.add,
+                    text: 'Add verse',
                   ),
-                ],
-                onSelected: (value) {
-                  switch (value) {
-                    case 1:
-                      context.pushNamed(
-                        RouteName.edit,
-                        queryParameters: {
-                          Params.colId: collectionId,
-                          Params.colName: collectionName,
-                          Params.verseId: manager.currentVerseId!,
-                        },
-                        extra: manager.onFinishedAddingEditing,
-                      );
-                    case 2:
-                      context.pushNamed(
-                        RouteName.add,
-                        queryParameters: {
-                          Params.colId: collectionId,
-                          Params.colName: collectionName,
-                        },
-                        extra: manager.onFinishedAddingEditing,
-                      );
-                    case 3:
-                      context.pushNamed(
-                        RouteName.verseBrowser,
-                        queryParameters: {
-                          Params.colId: collectionId,
-                          Params.colName: collectionName,
-                        },
-                        extra: manager.onFinishedAddingEditing,
-                      );
-                  }
-                },
-              ),
+                ),
+                const PopupMenuItem(
+                  value: 4,
+                  child: IconTextRow(
+                    icon: Icons.list,
+                    text: 'Verse browser',
+                  ),
+                ),
+              ],
+              onSelected: (value) {
+                switch (value) {
+                  case 1:
+                    context.pushNamed(
+                      RouteName.edit,
+                      queryParameters: {
+                        Params.colId: collectionId,
+                        Params.colName: collectionName,
+                        Params.verseId: manager.currentVerseId!,
+                      },
+                      extra: manager.onFinishedAddingEditing,
+                    );
+                  case 2:
+                    _showMoveDialog(context);
+                  case 3:
+                    context.pushNamed(
+                      RouteName.add,
+                      queryParameters: {
+                        Params.colId: collectionId,
+                        Params.colName: collectionName,
+                      },
+                      extra: manager.onFinishedAddingEditing,
+                    );
+                  case 4:
+                    context.pushNamed(
+                      RouteName.verseBrowser,
+                      queryParameters: {
+                        Params.colId: collectionId,
+                        Params.colName: collectionName,
+                      },
+                      extra: manager.onFinishedAddingEditing,
+                    );
+                }
+              },
+            ),
           ],
+        );
+      },
+    );
+  }
+
+  Future<String?> _showMoveDialog(BuildContext context) async {
+    final collections = manager.otherCollections();
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: collections.length,
+            itemBuilder: (context, index) {
+              final name = collections[index].name;
+              return ListTile(
+                title: Text(name),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  manager.moveVerse(collections[index].id);
+                },
+              );
+            },
+          ),
         );
       },
     );
