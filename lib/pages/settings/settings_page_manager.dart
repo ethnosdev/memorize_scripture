@@ -19,7 +19,11 @@ class SettingsPageManager extends ChangeNotifier {
 
   bool get isDarkMode => userSettings.isDarkMode;
 
-  String get dailyLimit => userSettings.getDailyLimit.toString();
+  String get dailyLimit {
+    final value = userSettings.getDailyLimit;
+    if (value >= UserSettings.defaultDailyLimit) return '';
+    return userSettings.getDailyLimit.toString();
+  }
 
   String get maxInterval {
     final value = userSettings.getMaxInterval;

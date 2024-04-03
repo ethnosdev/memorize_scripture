@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class UserSettings {
-  static const defaultDailyLimit = 10;
+  static const defaultDailyLimit = 100000;
   static const defaultMaxInterval = 100000;
   Future<void> init();
   bool get isTwoButtonMode;
