@@ -1,6 +1,6 @@
 # Memorize Scripture Privacy Policy
 
-## Effective Date: November 13, 2023
+## Effective Date: April 3, 2024
 
 Welcome to the Memorize Scripture app. Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information and user data.
 
@@ -10,11 +10,11 @@ When you create an account in the Memorize Scripture app, we collect your email 
 
 ## Collection and Use of User Data
 
-In addition to personal information, we collect and store your memory verse and practice data. This data is used to sync your progress across devices. We may also use this data internally to improve the app's functionality and user experience. The data is stored using a third-party cloud storage database solution named Supabase. We do not sell or use your data for any other purposes.
+In addition to personal information, we collect and store your memory verse and practice data. This data is used to sync your progress across devices. We may also use this data internally to improve the app's functionality and user experience. We do not sell or use your data for any other purposes.
 
 ## Data Security
 
-We take the security of your data seriously. All online data is stored securely in a Supabase database, and we implement industry-standard measures to protect your personal information and user data from unauthorized access or misuse.
+We take the security of your data seriously. All online data is stored securely in a server database, and we implement industry-standard measures to protect your personal information and user data from unauthorized access or misuse.
 
 ## User Control Over Data
 
@@ -22,7 +22,7 @@ You have full control over your data. If you wish to delete your account, you ca
 
 ## Non-Account Users
 
-Users who choose not to create an account can still use the app with all its features. For such users, no personal information or user data is stored online.
+Users who choose not to create an account can still use the app with all its offline features. For such users, no personal information or user data is stored online.
 
 ## Policy Changes
 

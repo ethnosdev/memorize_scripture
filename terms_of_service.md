@@ -1,12 +1,12 @@
 # Memorize Scripture App Terms of Service
 
-## Last Updated: November 13, 2023
+## Last Updated: April 3, 2024
 
 Welcome to the Memorize Scripture app. These Terms of Service ("Terms") govern your use of our app and services. By accessing or using our app, you agree to be bound by these Terms and our Privacy Policy.
 
 ### Description of Service
 
-The Memorize Scripture app helps users memorize Bible verses through spaced repetition. For registered users, the app allows for the online syncing of data to facilitate progress tracking across devices.
+The Memorize Scripture app helps users memorize Bible verses through spaced repetition. For registered users, the app allows for the online syncing of data to facilitate use across devices.
 
 ### User Registration and Responsibilities
 

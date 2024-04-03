@@ -6,7 +6,7 @@ class AuthService {
   AuthService(PocketBase pb) : _pb = pb;
   final PocketBase _pb;
 
-  bool get isLoggedIn => _pb.authStore.isValid;
+  // bool get isLoggedIn => _pb.authStore.isValid;
 
   Future<void> createAccount({
     required String email,
@@ -19,11 +19,9 @@ class AuthService {
     };
 
     try {
-      final record = await _pb.collection('users').create(body: body);
-      print(record);
+      await _pb.collection('users').create(body: body);
       await _pb.collection('users').requestVerification(email);
     } on ClientException catch (e) {
-      print(e);
       if (e.statusCode == 0) {
         throw ConnectionRefusedException();
       }
@@ -52,7 +50,6 @@ class AuthService {
             email,
             passphrase,
           );
-      print(authData);
       final isVerified = authData.record?.getBoolValue('verified') ?? false;
       if (!isVerified) {
         throw UserNotVerifiedException('User not verified');
@@ -83,12 +80,14 @@ class AuthService {
   }
 
   User? getUser() {
+    if (!_pb.authStore.isValid) return null;
     final model = _pb.authStore.model as RecordModel?;
-    if (model == null) return null;
+    final token = _pb.authStore.token;
+    if (model == null || token.isEmpty) return null;
     return User(
       id: model.id,
       email: model.getStringValue('email'),
-      token: model.getStringValue('token'),
+      token: token,
     );
   }
 

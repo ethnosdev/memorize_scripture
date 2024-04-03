@@ -10,7 +10,7 @@ import 'package:memorize_scripture/pages/home/home_page_manager.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'widgets/syncing_overlay.dart';
+import '../../common/widgets/syncing_overlay.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

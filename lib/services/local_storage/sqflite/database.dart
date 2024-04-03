@@ -391,7 +391,6 @@ class SqfliteStorage implements LocalStorage {
   @override
   Future<(int added, int updated, int errors)> restoreBackup(String json,
       {String? timestamp}) async {
-    print(json);
     final jsonMap = await compute(jsonDecode, json);
     final collections =
         (jsonMap['collections'] as List).cast<Map<String, Object?>>();

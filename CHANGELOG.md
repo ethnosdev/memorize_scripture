@@ -4,6 +4,7 @@
 - Increase tap area to show word hints.
 - Show verse browser menu item in finished practice page.
 - Show move verse menu item in practice page.
+- Change display name to Memorize on Android so that the whole name is visible under the launcher icon.
 
 ## 1.10.0 - October 28, 2023
 

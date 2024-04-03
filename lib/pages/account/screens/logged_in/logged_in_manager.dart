@@ -10,9 +10,7 @@ import 'package:memorize_scripture/services/secure_settings.dart';
 class LoggedInManager {
   LoggedInManager({required this.screenNotifier});
   final ValueNotifier<AccountScreenType> screenNotifier;
-  final waitingNotifier = ValueNotifier<bool>(false);
-
-  //void Function(String message)? onError;
+  final syncingNotifier = ValueNotifier<bool>(false);
 
   Future<void> signOut(User user) async {
     await getIt<BackendService>().auth.signOut();
@@ -33,7 +31,7 @@ class LoggedInManager {
 
   Future<void> syncVerses(void Function(String) onResult) async {
     final user = getIt<BackendService>().auth.getUser();
-    waitingNotifier.value = true;
+    syncingNotifier.value = true;
     try {
       await getIt<BackendService>().webApi.syncVerses(
             user: user,
@@ -49,7 +47,7 @@ class LoggedInManager {
     } catch (e) {
       onResult.call(e.toString());
     } finally {
-      waitingNotifier.value = false;
+      syncingNotifier.value = false;
     }
   }
 }

@@ -27,8 +27,7 @@ void main() {
       final span1 = helper.nextWord();
       expect((span1.children!.first as TextSpan).text, "Hello ");
 
-      final span2 = helper.nextWord();
-      expect((span2.children!.first as TextSpan).text, "Hello world");
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
     });
 
     test('hide ** bold markers', () {
@@ -41,8 +40,7 @@ void main() {
       final span1 = helper.nextWord();
       expect((span1.children!.first as TextSpan).text, "Hello ");
 
-      final span2 = helper.nextWord();
-      expect((span2.children!.first as TextSpan).text, "Hello world");
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
     });
   });
 }
