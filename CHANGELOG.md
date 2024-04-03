@@ -1,4 +1,4 @@
-## 2.0.0
+## 2.0.0 - April 3, 2024
 
 - Allow user registration for the purpose of online syncing.
 - Increase tap area to show word hints.
