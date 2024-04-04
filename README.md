@@ -46,6 +46,27 @@ Need the following in `macos/Runner/DebugProfile.entitlements` and `macos/Runner
 
 The first is to connect to the internet. The second is to use flutter_secure_storage.
 
+## For rebuilding android folder
+
+Rename `android` folder to `android_old`. Delete that when finished.
+
+```
+flutter create --org dev.ethnos.memorize_scripture .
+```
+
+Make sure that nothing is added to the package name (do a project search).
+
+- Overview: https://docs.flutter.dev/deployment/android
+- `flutter_local_notifications`: https://pub.dev/packages/flutter_local_notifications#-android-setup
+- `file_picker`: https://github.com/miguelpruivo/flutter_file_picker/wiki/Setup#android
+- `flutter_secure_storage`: https://pub.dev/packages/flutter_secure_storage#configure-android-version
+- `url_launcher`: https://pub.dev/packages/url_launcher#android
+- Launcher icon: https://stackoverflow.com/a/55054303 (1024 version in supplemental folder) Yellow background: #FFE800 
+- App signing: Copy `key.properties` from `android_old` to `android`.
+- Configure signing in gradle: https://docs.flutter.dev/deployment/android#configure-signing-in-gradle
+- AndroidManifest: Use internet permission.
+- AndroidManifest: label is `Memorize`.
+
 ## Deploying
 
 Add two A records to the DNS for the app so the subdomains are `memorize` and `api.memorize`.
