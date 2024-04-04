@@ -71,7 +71,7 @@ Return to the home screen with your collections list. Choose the three-dot menu 
 ![verse view menu](img/three-dot-menu-1.png)
 </div>
 
-This will give you two options:
+This will give you three options:
 
 <div class="bordered-image">
 
@@ -80,8 +80,9 @@ This will give you two options:
 
 This is the meaning:
 
-- **Backup**: This will extract all of your collections and verses from the app's database and put them in a text file. You'll be given an opportunity to choose a location to share this file to. For example, you could send yourself an email. It's a good idea to back up your collections every now and then so that if you loose your phone, you won't loose all of your hard work.
-- **Import**: Choose this option to restore a previous backup. If there are duplicates verses between the backup and your current collections, the app will go with the verses that were modified most recently.
+- **Sync**: This will save your collections on an online server so that you access them from another device or retrieve them if you lose your phone. To accomplish this, though, you'll have to create a new user account. 
+- **Backup**: Choose this option if you don't want to sign up for a new account. This will extract all of your collections and verses from the app's local database and put them in a text file. You'll be given an opportunity to choose a location to share this file to. For example, you could send yourself an email or store it as a file. It's a good idea to back up your collections every now and then so that if you loose your phone, you won't loose all of your hard work.
+- **Import**: This is for restoring a previous backup from a file. If there are duplicates verses between the backup and your current collections, the app will go with the verses that were modified most recently.
 
 You may also recall seeing the **Share** option in the collection menu:
 

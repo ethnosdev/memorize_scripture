@@ -29,11 +29,6 @@ The numbers correspond to the following parts:
 4. **Hints**: These give you a little help if you need it. More on them shortly.
 5. **Show verse text**: Press this button to check if you quoted the verse right.
 
-
-:::note
-If you entered new verses and they aren't all showing up, check the **Max new verses per day** value in settings. The default is 10.
-:::
-
 ## Showing hints
 
 There are two different types of hints: letters and words.
@@ -80,7 +75,7 @@ Now press the **Word** hint button. You'll see that it shows you the first word 
 
 This allows you to give yourself just the amount of help that you need.
 
-If you press the Word hint button enough, it'll reveal the entire verse text, which will disable the hint buttons and trigger the response buttons being shown at the bottom. That's fine, but for the sake of this tutorial, let's cancel the hints so that you can see how to show the verse text the normal way. To do that, go back out to the home screen by pressing the **<** back button. Then choose the **Hebrews 11** collection again.
+If you press the Word hint button enough, it'll reveal the entire verse text, which will disable the hint buttons and trigger the response buttons being shown at the bottom. That's fine, but for the sake of this tutorial, let's cancel the hints so that you can see how to show the verse text the normal way. To do that, go back out to the home screen by pressing the < back button. Then choose the **Hebrews 11** collection again.
 
 ## Showing the verse text
 

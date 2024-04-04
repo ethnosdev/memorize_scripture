@@ -31,9 +31,9 @@ Choose dark mode to make it easier on your eyes if you practice your verses earl
 
 ## Max new verses per day
 
-This is the maximum number of new verses the app will show you every day. The default is 10. Set it to a lower number if you don't want to have so many new verses in one day.
+This is the maximum number of new verses the app will show you every day. Set it to a number like 5 or 10 if you don't want to get too many new verses in one day.
 
-This setting is useful when you reset the due date for all of the verses in a collection but you don't want to practice them all at once.
+This setting is useful when you reset the due date for all of the verses in a collection, but you don't want to practice them all at once.
 
 ## Max days between reviews
 
