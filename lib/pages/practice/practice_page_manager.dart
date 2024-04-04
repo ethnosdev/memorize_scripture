@@ -60,7 +60,7 @@ class PracticePageManager {
   final isShowingAnswerNotifier = ValueNotifier<bool>(false);
   final hintButtonNotifier =
       ValueNotifier<HintButtonState>(HintButtonState.initial());
-  final appBarNotifier = AppBarNotifier();
+  final canUndoNotifier = ValueNotifier<bool>(false);
 
   late List<Verse> _verses;
   Verse? _undoVerse;
@@ -127,10 +127,9 @@ class PracticePageManager {
   }
 
   void _resetUi() {
-    final canUndo = _undoVerse != null;
+    canUndoNotifier.value = _undoVerse != null;
     if (_verses.isEmpty) {
       uiNotifier.value = PracticeState.finished;
-      appBarNotifier.update(isPracticing: false, canUndo: canUndo);
     } else {
       uiNotifier.value = PracticeState.practicing;
       isShowingAnswerNotifier.value = false;
@@ -141,7 +140,6 @@ class PracticePageManager {
       answerNotifier.value = const NoAnswer();
       promptNotifier.value = _addHighlighting(_verses.first.prompt);
       countNotifier.value = _verses.length.toString();
-      appBarNotifier.update(isPracticing: true, canUndo: canUndo);
       _wordsHintHelper.init(
         text: _verses.first.text,
         textColor: _textThemeColor,
@@ -450,7 +448,7 @@ class AppBarNotifier extends ValueNotifier<(bool, bool)> {
   bool get isPracticing => value.$1;
   bool get canUndo => value.$2;
 
-  void update({required bool isPracticing, required bool canUndo}) {
+  void updatek({required bool isPracticing, required bool canUndo}) {
     value = (isPracticing, canUndo);
   }
 }
