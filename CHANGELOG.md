@@ -6,6 +6,7 @@
 - Show move verse menu item in practice page.
 - Change display name to Memorize on Android so that the whole name is visible under the launcher icon.
 - Remove the default daily limit of 10 verses per day. (Still settable in Settings.)
+- Schedule notifications for same day if the time has not already passed.
 
 ## 1.10.0 - October 28, 2023
 

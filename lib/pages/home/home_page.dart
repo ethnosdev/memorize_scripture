@@ -33,8 +33,8 @@ class _HomePageState extends State<HomePage> {
     return ValueListenableBuilder<bool>(
       valueListenable: manager.isSyncingNotifier,
       builder: (context, isSyncing, child) {
-        return SyncingOverlay(
-          isSyncing: isSyncing,
+        return WaitingOverlay(
+          isWaiting: isSyncing,
           child: Scaffold(
             appBar: AppBar(
               actions: [

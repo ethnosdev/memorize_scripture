@@ -32,10 +32,10 @@ class _LoggedInScreenState extends State<LoggedInScreen> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
-      valueListenable: manager.syncingNotifier,
+      valueListenable: manager.waitingNotifier,
       builder: (context, isSyncing, _) {
-        return SyncingOverlay(
-          isSyncing: isSyncing,
+        return WaitingOverlay(
+          isWaiting: isSyncing,
           child: Scaffold(
             appBar: AppBar(
               title: const Text('Account'),

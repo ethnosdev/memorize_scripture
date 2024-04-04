@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-class SyncingOverlay extends StatelessWidget {
-  const SyncingOverlay({
+class WaitingOverlay extends StatelessWidget {
+  const WaitingOverlay({
     super.key,
-    required this.isSyncing,
+    required this.isWaiting,
     required this.child,
   });
 
-  final bool isSyncing;
+  final bool isWaiting;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    if (!isSyncing) return child;
+    if (!isWaiting) return child;
     return Stack(
       children: [
         child,
