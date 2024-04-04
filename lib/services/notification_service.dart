@@ -37,7 +37,10 @@ class NotificationService {
     // the ID for each day is the date yyyymmdd
   }
 
-  Future<void> scheduleNotifications({int days = 4}) async {
+  Future<void> scheduleNotifications({
+    int days = 4,
+    bool scheduleToday = false,
+  }) async {
     if (!userSettings.isNotificationsOn) return;
     await plugin.cancelAll();
 
@@ -58,7 +61,9 @@ class NotificationService {
     final (hour, minute) = userSettings.getNotificationTime;
     const type = UILocalNotificationDateInterpretation.wallClockTime;
 
-    for (int i = 1; i <= days; i++) {
+    final now = DateTime.now();
+    final startDay = (scheduleToday && now.hour <= hour) ? 0 : 1;
+    for (int i = startDay; i <= days; i++) {
       final date = DateTime.now().add(Duration(days: i));
 
       final scheduledTime = tz.TZDateTime.from(

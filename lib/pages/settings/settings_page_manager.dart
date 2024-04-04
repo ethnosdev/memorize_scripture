@@ -93,7 +93,10 @@ class SettingsPageManager extends ChangeNotifier {
     }
     final isGranted = await _requestNotificationPermission();
     if (isGranted) {
-      await service.scheduleNotifications();
+      await service.scheduleNotifications(
+        days: 5,
+        scheduleToday: true,
+      );
     } else {
       await userSettings.setNotifications(isGranted);
       notifyListeners();
@@ -128,6 +131,9 @@ class SettingsPageManager extends ChangeNotifier {
     await userSettings.setNotificationTime(hour: hour, minute: minute);
     notifyListeners();
     final service = getIt<NotificationService>();
-    await service.scheduleNotifications();
+    await service.scheduleNotifications(
+      days: 5,
+      scheduleToday: true,
+    );
   }
 }
