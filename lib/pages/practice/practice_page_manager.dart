@@ -113,6 +113,7 @@ class PracticePageManager {
       collectionId: collectionId,
       newVerseLimit: newVerseLimit,
     );
+    localStorage.fetchCollections().then((value) => _collections = value);
     if (_verses.isEmpty) {
       final number = await localStorage.numberInCollection(collectionId);
       if (number > 0) {
@@ -122,7 +123,6 @@ class PracticePageManager {
       }
       return;
     }
-    localStorage.fetchCollections().then((value) => _collections = value);
     _resetUi();
   }
 

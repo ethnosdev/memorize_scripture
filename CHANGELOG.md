@@ -1,3 +1,7 @@
+## 2.0.2 - April 27, 2024
+
+- Fix practice page menu item not working when no verses due.
+
 ## 2.0.1 - April 9, 2024
 
 - Fix crash on startup due to a database migration issue.
