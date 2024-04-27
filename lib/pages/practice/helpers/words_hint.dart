@@ -5,19 +5,16 @@ const transparent = Color(0x00000000);
 class WordsHintHelper {
   Color _textColor = const Color(0xff000000);
   String _text = '';
-  // void Function()? _onFinished;
 
   int _numberHintWordsShowing = 0;
 
   void init({
     required String text,
     required Color textColor,
-    // required void Function() onFinished,
   }) {
     _numberHintWordsShowing = 0;
     _text = _removeBold(text);
     _textColor = textColor;
-    // _onFinished = onFinished;
   }
 
   String _removeBold(String text) {
@@ -78,13 +75,14 @@ class WordsHintHelper {
   }
 
   int? _advanceToNextNonWhiteSpace(int start, String text) {
-    final nonWhiteSpace = RegExp(r'\S');
+    final nonWhiteSpace = RegExp(r'[^\s\-—]');
     final index = text.indexOf(nonWhiteSpace, start);
     return (index < 0) ? null : index;
   }
 
   int? _advanceToNextWhiteSpace(int start, String text) {
-    final whiteSpace = RegExp(r'\s');
+    // counting hyphens and em dashes as white space
+    final whiteSpace = RegExp(r'[\s\-—]');
     final index = text.indexOf(whiteSpace, start);
     return (index < 0) ? null : index;
   }

@@ -5,6 +5,7 @@
 - Make emails lowercase before registering.
 - Enable highlighting across line breaks.
 - Fix and improve highlighting. 
+- In word hints, show the parts of a hyphenated one at a time rather than everything at once.
 
 ## 2.0.1 - April 9, 2024
 
