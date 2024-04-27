@@ -67,7 +67,7 @@ bool _isWordCharacter(String text, int index) {
   if (index < 0 || index >= text.length) return false;
   final regex = RegExp(r'\w');
   final c = text[index];
-  if (c == "'") {
+  if (c == "'" || c == "’") {
     if (index < 1 || index >= text.length - 1) return false;
     final previous = text[index - 1];
     final next = text[index + 1];

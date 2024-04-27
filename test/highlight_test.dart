@@ -45,6 +45,20 @@ void main() {
       expect(index, 6);
     });
 
+    test('highlight words with slanted apostrophe', () {
+      const input = "a doesn’t b";
+      final (output, index) = updateHighlight(input, 2, 2);
+      expect(output, "a **doesn’t** b");
+      expect(index, 4);
+    });
+
+    test("don't highlight right single quote mark", () {
+      const input = "a ‘word’ b";
+      final (output, index) = updateHighlight(input, 4, 4);
+      expect(output, "a ‘**word**’ b");
+      expect(index, 6);
+    });
+
     test("combine highlights if only separated by whitespace", () {
       var input = "word **word**";
       var (output, index) = updateHighlight(input, 0, 0);
