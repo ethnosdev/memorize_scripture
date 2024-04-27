@@ -47,8 +47,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               title: const Text('Sign Up'),
               actions: [
                 TextButton(
-                  onPressed: () =>
-                      manager.showSignInScreen(emailController.text),
+                  onPressed: () => manager.showSignInScreen(
+                    emailController.text.toLowerCase(),
+                  ),
                   child: const Text('Sign in'),
                 )
               ],
@@ -109,7 +110,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       OutlinedButton(
                         onPressed: () {
                           manager.createAccount(
-                            email: emailController.text,
+                            email: emailController.text.toLowerCase(),
                             passphrase: passwordController.text,
                           );
                         },

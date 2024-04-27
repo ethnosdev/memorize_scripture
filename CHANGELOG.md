@@ -2,6 +2,7 @@
 
 - Fix practice page menu item not working when no verses due.
 - Fix grammar: Say "1 verse was added" instead of "1 verses were added".
+- Make emails lowercase before registering.
 
 ## 2.0.1 - April 9, 2024
 

@@ -105,7 +105,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       OutlinedButton(
                         onPressed: () {
                           manager.signIn(
-                            email: emailController.text,
+                            email: emailController.text.toLowerCase(),
                             passphrase: passwordController.text,
                           );
                         },
@@ -113,8 +113,9 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       const SizedBox(height: 16),
                       TextButton(
-                        onPressed: () =>
-                            manager.forgotPassword(emailController.text),
+                        onPressed: () => manager.forgotPassword(
+                          emailController.text.toLowerCase(),
+                        ),
                         child: const Text('Forgot password?'),
                       ),
                     ],
