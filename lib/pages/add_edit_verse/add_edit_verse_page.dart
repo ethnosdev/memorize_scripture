@@ -4,6 +4,8 @@ import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/pages/add_edit_verse/add_edit_verse_page_manager.dart';
 import 'package:memorize_scripture/pages/add_edit_verse/import/import_dialog.dart';
 
+import 'helpers/highlight_helper.dart';
+
 class AddEditVersePage extends StatefulWidget {
   const AddEditVersePage({
     super.key,
@@ -144,7 +146,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
     var text = controller.text;
     final start = controller.selection.start;
     final end = controller.selection.end;
-    final (newText, index) = manager.updateHighlight(text, start, end);
+    final (newText, index) = updateHighlight(text, start, end);
     controller.text = newText;
     controller.selection = TextSelection.collapsed(offset: index);
     if (controller == promptController) {
