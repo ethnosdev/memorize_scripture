@@ -150,7 +150,7 @@ class PracticePageManager {
   // Text surrounded by double asterisks should be highlighted.
   TextSpan _addHighlighting(String text) {
     final spans = <TextSpan>[];
-    final regExp = RegExp(r'\*\*(.*?)\*\*');
+    final regExp = RegExp(r'\*\*(.*?)\*\*', dotAll: true);
     int lastEnd = 0;
     final highlightStyle = TextStyle(
       color: _textHighlightColor,
