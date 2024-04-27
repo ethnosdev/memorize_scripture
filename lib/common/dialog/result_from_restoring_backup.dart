@@ -30,7 +30,8 @@ String resultOfRestoringBackup(int added, int updated, int errorCount) {
   }
   // 110
   if (added != 0 && updated != 0 && errorCount == 0) {
-    return '$added verses were added, and $updated verses were updated.';
+    return '$added ${_versesWere(added)} added, '
+        'and $updated ${_versesWere(updated)} updated.';
   }
 
   /// 111
