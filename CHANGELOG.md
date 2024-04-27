@@ -1,3 +1,7 @@
+## 2.0.1 - April 9, 2024
+
+- Fix crash on startup due to a database migration issue.
+
 ## 2.0.0 - April 3, 2024
 
 - Allow user registration for the purpose of online syncing.

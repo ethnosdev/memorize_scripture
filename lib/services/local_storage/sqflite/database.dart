@@ -53,7 +53,11 @@ class SqfliteStorage implements LocalStorage {
     // rename access_date to modified_date in collection table
     await db.execute('ALTER TABLE collection ADD COLUMN modified_date INTEGER');
     await db.execute('UPDATE collection SET modified_date = access_date');
-    await db.execute('ALTER TABLE collection DROP COLUMN access_date');
+
+    // The following line was in version 2.0.0 but SQLite apparently doesn't
+    // support dropping columns so we will remove this line and just ignore
+    // it in the database from here on out.
+    // await db.execute('ALTER TABLE collection DROP COLUMN access_date');
 
     // add created_date to verses and collection tables
     await db.execute(
