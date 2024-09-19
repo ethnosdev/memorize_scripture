@@ -65,7 +65,7 @@ class Spinner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ColoredBox(
-        color: Theme.of(context).colorScheme.background.withOpacity(0.8),
+        color: Theme.of(context).colorScheme.surface.withOpacity(0.8),
         child: const Center(
           child: CircularProgressIndicator(),
         ),

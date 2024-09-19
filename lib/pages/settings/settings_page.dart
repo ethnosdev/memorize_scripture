@@ -31,15 +31,15 @@ class _SettingsPageState extends State<SettingsPage> {
         builder: (context, widget) {
           return SettingsList(
             lightTheme: SettingsThemeData(
-              settingsListBackground: colorScheme.background,
-              settingsSectionBackground: colorScheme.surfaceVariant,
-              dividerColor: colorScheme.background,
+              settingsListBackground: colorScheme.surface,
+              settingsSectionBackground: colorScheme.surfaceContainerHighest,
+              dividerColor: colorScheme.surface,
               titleTextColor: colorScheme.secondary,
             ),
             darkTheme: SettingsThemeData(
-              settingsListBackground: colorScheme.background,
-              settingsSectionBackground: colorScheme.surfaceVariant,
-              dividerColor: colorScheme.background,
+              settingsListBackground: colorScheme.surface,
+              settingsSectionBackground: colorScheme.surfaceContainerHighest,
+              dividerColor: colorScheme.surface,
               titleTextColor: colorScheme.secondary,
             ),
             sections: [
@@ -102,15 +102,11 @@ class _SettingsPageState extends State<SettingsPage> {
                     enabled: manager.isNotificationsOn,
                     title: Text(
                       'Time',
-                      style: (!manager.isNotificationsOn)
-                          ? TextStyle(color: disabledColor)
-                          : null,
+                      style: (!manager.isNotificationsOn) ? TextStyle(color: disabledColor) : null,
                     ),
                     value: Text(
                       manager.notificationTimeDisplay,
-                      style: (!manager.isNotificationsOn)
-                          ? TextStyle(color: disabledColor)
-                          : null,
+                      style: (!manager.isNotificationsOn) ? TextStyle(color: disabledColor) : null,
                     ),
                     onPressed: (context) async {
                       final pickedTime = await showTimePicker(
