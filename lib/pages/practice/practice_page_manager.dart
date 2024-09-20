@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/verse.dart';
@@ -58,8 +56,7 @@ class PracticePageManager {
   final promptNotifier = ValueNotifier<TextSpan>(const TextSpan());
   final answerNotifier = ValueNotifier<AnswerType>(const NoAnswer());
   final isShowingAnswerNotifier = ValueNotifier<bool>(false);
-  final hintButtonNotifier =
-      ValueNotifier<HintButtonState>(HintButtonState.initial());
+  final hintButtonNotifier = ValueNotifier<HintButtonState>(HintButtonState.initial());
   final canUndoNotifier = ValueNotifier<bool>(false);
 
   late List<Verse> _verses;
@@ -74,16 +71,15 @@ class PracticePageManager {
     return _verses.first.id;
   }
 
-  bool get shouldShowEasyButton {
-    return _verses.first.interval.inDays < userSettings.getMaxInterval - 1;
-  }
+  // bool get shouldShowEasyButton {
+  //   return _verses.first.interval.inDays < userSettings.getMaxInterval - 1;
+  // }
 
   Color _textThemeColor = Colors.black;
   set textThemeColor(Color? value) => _textThemeColor = value ?? Colors.black;
 
   Color _textHighlightColor = Colors.black;
-  set textHighlightColor(Color? value) =>
-      _textHighlightColor = value ?? Colors.black;
+  set textHighlightColor(Color? value) => _textHighlightColor = value ?? Colors.black;
 
   // Response button titles
   String hardTitle = '';
@@ -262,9 +258,7 @@ class PracticePageManager {
   void showCustomHint() {
     final hint = _verses.first.hint;
     final currentText = answerNotifier.value.textSpan.text;
-    answerNotifier.value = (currentText == hint)
-        ? const NoAnswer()
-        : CustomHint(_addHighlighting(hint));
+    answerNotifier.value = (currentText == hint) ? const NoAnswer() : CustomHint(_addHighlighting(hint));
   }
 
   void onResponse(Difficulty response) {
@@ -394,7 +388,7 @@ class PracticePageManager {
       case Difficulty.easy:
         days = 2 * (days + 1);
     }
-    return math.min(days, userSettings.getMaxInterval);
+    return days;
   }
 
   Future<void> onFinishedAddingEditing(String? verseId) async {
@@ -427,9 +421,7 @@ class PracticePageManager {
   bool get shouldShowMoveMenuItem => _collections.length > 1;
 
   List<Collection> otherCollections() {
-    return _collections
-        .where((collection) => collection.id != _collectionId)
-        .toList();
+    return _collections.where((collection) => collection.id != _collectionId).toList();
   }
 
   void moveVerse(String toCollectionId) async {

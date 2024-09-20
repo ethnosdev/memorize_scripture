@@ -69,18 +69,6 @@ class _SettingsPageState extends State<SettingsPage> {
                       );
                     },
                   ),
-                  SettingsTile(
-                    title: const Text('Max days between reviews'),
-                    value: Text(manager.maxInterval),
-                    onPressed: (BuildContext context) {
-                      _showDailyLimitDialog(
-                        title: 'Max days',
-                        oldValue: manager.maxInterval,
-                        onValidate: manager.validateMaxInterval,
-                        onConfirm: manager.updateMaxInterval,
-                      );
-                    },
-                  ),
                   SettingsTile.switchTile(
                     activeSwitchColor: colorScheme.primary,
                     title: const Text('Two-button mode'),

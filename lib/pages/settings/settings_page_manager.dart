@@ -25,12 +25,6 @@ class SettingsPageManager extends ChangeNotifier {
     return userSettings.getDailyLimit.toString();
   }
 
-  String get maxInterval {
-    final value = userSettings.getMaxInterval;
-    if (value >= UserSettings.defaultMaxInterval) return '';
-    return value.toString();
-  }
-
   bool get isTwoButtonMode => userSettings.isTwoButtonMode;
 
   bool get isNotificationsOn => userSettings.isNotificationsOn;
@@ -65,19 +59,6 @@ class SettingsPageManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  String validateMaxInterval(String value) {
-    int result = int.tryParse(value) ?? UserSettings.defaultMaxInterval;
-    if (result < 1) return UserSettings.defaultMaxInterval.toString();
-    return result.toString();
-  }
-
-  Future<void> updateMaxInterval(String number) async {
-    final interval = int.tryParse(number);
-    if (interval == null) return;
-    await userSettings.setMaxInterval(interval);
-    notifyListeners();
-  }
-
   Future<void> setTwoButtonMode(bool value) async {
     await userSettings.setTwoButtonMode(value);
     notifyListeners();
@@ -107,14 +88,12 @@ class SettingsPageManager extends ChangeNotifier {
     final plugin = FlutterLocalNotificationsPlugin();
     if (Platform.isIOS) {
       return await plugin
-              .resolvePlatformSpecificImplementation<
-                  IOSFlutterLocalNotificationsPlugin>()
+              .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
               ?.requestPermissions(alert: true) ??
           false;
     } else if (Platform.isAndroid) {
       return await plugin
-              .resolvePlatformSpecificImplementation<
-                  AndroidFlutterLocalNotificationsPlugin>()
+              .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
               ?.requestNotificationsPermission() ??
           false;
     }
