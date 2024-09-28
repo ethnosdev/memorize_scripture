@@ -1,3 +1,7 @@
+## 2.1.0
+
+- Remove max days between reviews.
+
 ## 2.0.2 - April 27, 2024
 
 - Fix practice page menu item not working when no verses due.
@@ -111,7 +115,7 @@
 ## 1.2.0 - July 14, 2023
 
 - Support 4-button mode (Hard, OK, Good, Easy) and 2-button mode (Hard, Good)
-- Added mokito library for better testing
+- Added mockito library for better testing
 
 ## 1.1.1 - June 24, 2023
 

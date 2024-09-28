@@ -12,7 +12,7 @@ import 'package:path/path.dart';
 
 // This affects both the schema in this file and also the backup/restore
 // features of the app.
-const databaseVersion = 3;
+const databaseVersion = 4;
 
 class SqfliteStorage implements LocalStorage {
   final String _databaseName = "database.db";
@@ -43,6 +43,9 @@ class SqfliteStorage implements LocalStorage {
     if (oldVersion < 3) {
       await _upgradeFrom2to3(db);
     }
+    if (oldVersion < 4) {
+      await _upgradeFrom3to4(db);
+    }
   }
 
   Future<void> _upgradeFrom1to2(Database db) async {
@@ -60,10 +63,15 @@ class SqfliteStorage implements LocalStorage {
     // await db.execute('ALTER TABLE collection DROP COLUMN access_date');
 
     // add created_date to verses and collection tables
-    await db.execute(
-        'ALTER TABLE verses ADD COLUMN created_date INTEGER DEFAULT 0');
-    await db.execute(
-        'ALTER TABLE collection ADD COLUMN created_date INTEGER DEFAULT 0');
+    await db.execute('ALTER TABLE verses ADD COLUMN created_date INTEGER DEFAULT 0');
+    await db.execute('ALTER TABLE collection ADD COLUMN created_date INTEGER DEFAULT 0');
+  }
+
+  Future<void> _upgradeFrom3to4(Database db) async {
+    await db.execute('ALTER TABLE collection ADD COLUMN study_style TEXT');
+    await db.execute("UPDATE collection SET study_style = 'date'");
+    await db.execute('ALTER TABLE collection ADD COLUMN verses_per_day INTEGER');
+    await db.execute('UPDATE collection SET verses_per_day = 5');
   }
 
   @override
@@ -72,10 +80,17 @@ class SqfliteStorage implements LocalStorage {
       CollectionEntry.tableName,
       orderBy: 'LOWER(${CollectionEntry.name}) ASC',
     );
+    print(collections);
     return List.generate(collections.length, (i) {
+      final style = collections[i][CollectionEntry.studyStyle] as String?;
+      final versesPerDay = collections[i][CollectionEntry.versesPerDay] as int?;
+      final date = _dateFromSecondsSinceEpoch(collections[i][CollectionEntry.createdDate] as int?);
       return Collection(
         id: collections[i][CollectionEntry.id] as String,
         name: collections[i][CollectionEntry.name] as String,
+        studyStyle: StudyStyle.fromValue(style),
+        versesPerDay: versesPerDay ?? Collection.defaultVersesPerDay,
+        createdDate: date,
       );
     });
   }
@@ -151,8 +166,7 @@ class SqfliteStorage implements LocalStorage {
     );
   }
 
-  Future<List<Map<String, Object?>>> _fetchReviewVerses(
-      String collectionId) async {
+  Future<List<Map<String, Object?>>> _fetchReviewVerses(String collectionId) async {
     final today = _timestampNow();
     return await _database.query(
       VerseEntry.tableName,
@@ -227,6 +241,11 @@ class SqfliteStorage implements LocalStorage {
     return date.millisecondsSinceEpoch ~/ 1000;
   }
 
+  DateTime _dateFromSecondsSinceEpoch(int? timestamp) {
+    final seconds = timestamp ?? 0;
+    return DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
+  }
+
   @override
   Future<void> batchInsertVerses({
     required Collection collection,
@@ -270,28 +289,29 @@ class SqfliteStorage implements LocalStorage {
 
   @override
   Future<void> insertCollection(Collection collection) async {
-    await _upsertCollection(collection);
+    await _upsertCollection(collection, isInsert: true);
     await getIt<UserSettings>().setLastLocalUpdate();
   }
 
   @override
   Future<void> updateCollection(Collection collection) async {
-    await _upsertCollection(collection);
+    await _upsertCollection(collection, isInsert: false);
     await getIt<UserSettings>().setLastLocalUpdate();
   }
 
-  Future<void> _upsertCollection(Collection collection) async {
+  Future<void> _upsertCollection(Collection collection, {required bool isInsert}) async {
     // Check if another collection has the same name
     final results = await _database.query(
       CollectionEntry.tableName,
       where: '${CollectionEntry.name} = ?',
       whereArgs: [collection.name.trim()],
     );
-    if (results.isNotEmpty &&
-        results.first[CollectionEntry.id] != collection.id) {
+    if (results.isNotEmpty && results.first[CollectionEntry.id] != collection.id) {
       debugPrint('Don\'t allow duplicate collection names');
       return;
     }
+
+    final createdDate = _dateToSecondsSinceEpoch(collection.createdDate);
 
     // Insert or replace the collection
     await _database.insert(
@@ -299,8 +319,10 @@ class SqfliteStorage implements LocalStorage {
       {
         CollectionEntry.id: collection.id,
         CollectionEntry.name: collection.name.trim(),
-        // TODO: handle creation date
+        CollectionEntry.createdDate: createdDate,
         CollectionEntry.modifiedDate: _timestampNow(),
+        CollectionEntry.studyStyle: collection.studyStyle.value,
+        CollectionEntry.versesPerDay: collection.versesPerDay,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -393,11 +415,9 @@ class SqfliteStorage implements LocalStorage {
   }
 
   @override
-  Future<(int added, int updated, int errors)> restoreBackup(String json,
-      {String? timestamp}) async {
+  Future<(int added, int updated, int errors)> restoreBackup(String json, {String? timestamp}) async {
     final jsonMap = await compute(jsonDecode, json);
-    final collections =
-        (jsonMap['collections'] as List).cast<Map<String, Object?>>();
+    final collections = (jsonMap['collections'] as List).cast<Map<String, Object?>>();
     final verses = (jsonMap['verses'] as List).cast<Map<String, Object?>>();
     await _restoreCollections(collections);
     final counts = await _restoreVerses(verses);
@@ -413,6 +433,8 @@ class SqfliteStorage implements LocalStorage {
       try {
         final id = collection[CollectionEntry.id] as String;
         var name = collection[CollectionEntry.name] as String;
+        final studyStyle = collection[CollectionEntry.studyStyle] as String?;
+        final versesPerDay = collection[CollectionEntry.versesPerDay] as int?;
         final modifiedDate = collection[CollectionEntry.modifiedDate] as int?;
         final createdDate = collection[CollectionEntry.createdDate] as int?;
 
@@ -438,6 +460,8 @@ class SqfliteStorage implements LocalStorage {
           {
             CollectionEntry.id: id,
             CollectionEntry.name: name,
+            CollectionEntry.studyStyle: studyStyle ?? 'date',
+            CollectionEntry.versesPerDay: versesPerDay ?? 5,
             CollectionEntry.createdDate: createdDate ?? 0,
             CollectionEntry.modifiedDate: modifiedDate ?? _timestampNow(),
           },

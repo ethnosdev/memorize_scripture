@@ -14,7 +14,6 @@ import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:uuid/uuid.dart';
 
 class HomePageManager {
   HomePageManager({
@@ -27,12 +26,10 @@ class HomePageManager {
   late final LocalStorage localStorage;
   late final UserSettings userSettings;
 
-  final collectionNotifier =
-      ValueNotifier<HomePageUiState>(LoadingCollections());
+  final collectionNotifier = ValueNotifier<HomePageUiState>(LoadingCollections());
   var isSyncingNotifier = ValueNotifier<bool>(false);
 
-  List<Collection> get _getList =>
-      (collectionNotifier.value as LoadedCollections).list;
+  List<Collection> get _getList => (collectionNotifier.value as LoadedCollections).list;
 
   Future<void> init() async {
     await _reloadCollections();
@@ -63,22 +60,13 @@ class HomePageManager {
     return sortedCollections;
   }
 
-  Future<void> addCollection(String? name) async {
-    if (name == null || name.isEmpty) return;
-    final collection = Collection(
-      id: const Uuid().v4(),
-      name: name,
-    );
+  Future<void> addCollection(Collection collection) async {
     await localStorage.insertCollection(collection);
     await _reloadCollections();
   }
 
-  Future<void> renameCollection({required int index, String? newName}) async {
-    if (newName == null || newName.isEmpty) return;
-    final oldCollection = _getList[index];
-    await localStorage.updateCollection(
-      oldCollection.copyWith(name: newName),
-    );
+  Future<void> editCollection(Collection collection) async {
+    await localStorage.updateCollection(collection);
     await _reloadCollections();
   }
 
@@ -160,8 +148,7 @@ class HomePageManager {
     final file = File(path);
     final jsonString = await file.readAsString();
     try {
-      final (added, updated, errorCount) =
-          await localStorage.restoreBackup(jsonString);
+      final (added, updated, errorCount) = await localStorage.restoreBackup(jsonString);
       onResult.call(resultOfRestoringBackup(added, updated, errorCount));
     } on FormatException {
       onResult.call('The data in the file was in the wrong format.');

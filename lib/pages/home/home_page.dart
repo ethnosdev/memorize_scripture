@@ -9,6 +9,7 @@ import 'package:memorize_scripture/go_router.dart';
 import 'package:memorize_scripture/pages/home/home_page_manager.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../common/widgets/syncing_overlay.dart';
 
@@ -42,8 +43,9 @@ class _HomePageState extends State<HomePage> {
                   icon: const Icon(Icons.add),
                   tooltip: 'Add collection',
                   onPressed: () async {
-                    final name = await _showEditNameDialog(context);
-                    manager.addCollection(name);
+                    final collection = await _showEditNameDialog(context);
+                    if (collection == null) return;
+                    manager.addCollection(collection);
                   },
                 ),
                 Builder(builder: (context) {
@@ -82,8 +84,7 @@ class _HomePageState extends State<HomePage> {
                           );
                         case 2:
                           final box = context.findRenderObject() as RenderBox?;
-                          final rect =
-                              box!.localToGlobal(Offset.zero) & box.size;
+                          final rect = box!.localToGlobal(Offset.zero) & box.size;
                           manager.backupCollections(sharePositionOrigin: rect);
                         case 3:
                           manager.import(
@@ -223,9 +224,7 @@ class _BodyWidgetState extends State<BodyWidget> {
             children: [
               if (collection.isPinned || showPinTile)
                 ListTile(
-                  title: (collection.isPinned)
-                      ? const Text('Unpin')
-                      : const Text('Pin to top'),
+                  title: (collection.isPinned) ? const Text('Unpin') : const Text('Pin to top'),
                   onTap: () async {
                     Navigator.of(context).pop();
                     manager.togglePin(collection);
@@ -272,16 +271,16 @@ class _BodyWidgetState extends State<BodyWidget> {
                 },
               ),
               ListTile(
-                title: const Text('Rename'),
+                title: const Text('Edit'),
                 onTap: () async {
                   Navigator.of(context).pop();
-                  final oldName = manager.collectionAt(index).name;
-                  final newName =
-                      await _showEditNameDialog(context, oldName: oldName);
-                  await manager.renameCollection(
-                    index: index,
-                    newName: newName,
+                  final old = manager.collectionAt(index);
+                  final collection = await _showEditNameDialog(
+                    context,
+                    oldCollection: old,
                   );
+                  if (collection == null) return;
+                  await manager.editCollection(collection);
                 },
               ),
               ListTile(
@@ -336,32 +335,96 @@ void _showMessage(BuildContext context, String message) {
   );
 }
 
-Future<String?> _showEditNameDialog(
+Future<Collection?> _showEditNameDialog(
   BuildContext context, {
-  String? oldName,
+  Collection? oldCollection,
 }) async {
-  final controller = TextEditingController(text: oldName);
-  Widget okButton = TextButton(
-    child: const Text("OK"),
-    onPressed: () {
-      Navigator.of(context).pop(controller.text);
-    },
-  );
-
-  AlertDialog alert = AlertDialog(
-    title: const Text("Name"),
-    content: TextField(
-      textCapitalization: TextCapitalization.sentences,
-      autofocus: true,
-      controller: controller,
-    ),
-    actions: [okButton],
-  );
+  final oldName = oldCollection?.name;
+  final versesPerDay = oldCollection?.versesPerDay ?? Collection.defaultVersesPerDay;
+  final nameController = TextEditingController(text: oldName);
+  StudyStyle studyStyle = oldCollection?.studyStyle ?? StudyStyle.reviewByDate;
+  final versesPerDayController = TextEditingController(text: versesPerDay.toString());
+  final versesPerDayFocusNode = FocusNode();
 
   return showDialog(
     context: context,
     builder: (BuildContext context) {
-      return alert;
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: const Text("Collection"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  textCapitalization: TextCapitalization.sentences,
+                  autofocus: true,
+                  controller: nameController,
+                  decoration: const InputDecoration(labelText: 'Name'),
+                  onChanged: (value) {
+                    setState(() {});
+                  },
+                ),
+                const SizedBox(height: 32),
+                DropdownButtonFormField<StudyStyle>(
+                  value: studyStyle,
+                  items: const [
+                    DropdownMenuItem(
+                      value: StudyStyle.reviewByDate,
+                      child: Text('Review by due date'),
+                    ),
+                    DropdownMenuItem(
+                      value: StudyStyle.fixedReview,
+                      child: Text('Fixed review'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      studyStyle = value!;
+                      if (studyStyle == StudyStyle.fixedReview) {
+                        versesPerDayFocusNode.requestFocus();
+                        versesPerDayController.selection = TextSelection(
+                          baseOffset: 0,
+                          extentOffset: versesPerDayController.text.length,
+                        );
+                      }
+                    });
+                  },
+                  decoration: const InputDecoration(labelText: 'Review style'),
+                ),
+                if (studyStyle == StudyStyle.fixedReview) const SizedBox(height: 16),
+                if (studyStyle == StudyStyle.fixedReview)
+                  TextField(
+                    keyboardType: TextInputType.number,
+                    controller: versesPerDayController,
+                    focusNode: versesPerDayFocusNode,
+                    decoration: const InputDecoration(
+                      labelText: 'Verses per day',
+                    ),
+                  ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: nameController.text.isEmpty
+                    ? null
+                    : () {
+                        Navigator.of(context).pop(
+                          Collection(
+                            id: oldCollection?.id ?? const Uuid().v4(),
+                            name: nameController.text,
+                            studyStyle: studyStyle,
+                            versesPerDay: int.tryParse(versesPerDayController.text) ?? Collection.defaultVersesPerDay,
+                            createdDate: oldCollection?.createdDate ?? DateTime.now(),
+                          ),
+                        );
+                      },
+                child: const Text("OK"),
+              )
+            ],
+          );
+        },
+      );
     },
   );
 }

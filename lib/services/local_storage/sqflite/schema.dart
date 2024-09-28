@@ -41,6 +41,8 @@ class CollectionEntry {
   // Column names
   static const String id = '_id';
   static const String name = 'name';
+  static const String studyStyle = 'study_style'; // 'date' or 'fixed'
+  static const String versesPerDay = 'verses_per_day'; // only for 'fixed'
   // seconds since epoch
   static const String createdDate = 'created_date';
   static const String modifiedDate = 'modified_date';
@@ -50,6 +52,8 @@ class CollectionEntry {
   CREATE TABLE $tableName (
     $id TEXT PRIMARY KEY,
     $name TEXT NOT NULL UNIQUE,
+    $studyStyle TEXT,
+    $versesPerDay INTEGER,
     $createdDate INTEGER DEFAULT 0,
     $modifiedDate INTEGER)
   ''';
