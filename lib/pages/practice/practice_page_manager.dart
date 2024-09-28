@@ -71,10 +71,6 @@ class PracticePageManager {
     return _verses.first.id;
   }
 
-  // bool get shouldShowEasyButton {
-  //   return _verses.first.interval.inDays < userSettings.getMaxInterval - 1;
-  // }
-
   Color _textThemeColor = Colors.black;
   set textThemeColor(Color? value) => _textThemeColor = value ?? Colors.black;
 
@@ -92,8 +88,6 @@ class PracticePageManager {
     if (userSettings.isTwoButtonMode) return ResponseButtonMode.two;
     return ResponseButtonMode.four;
   }
-
-  static const hardNewInsertionIndex = 2;
 
   late String _collectionId;
   late List<Collection> _collections;
@@ -289,13 +283,7 @@ class PracticePageManager {
     if (isTwoButtonMode) {
       switch (response) {
         case Difficulty.hard:
-          // The user needs to practice a new verse again soon,
-          // so put it third in line (unless there aren't enough)
-          if (_verses.length > hardNewInsertionIndex) {
-            _verses.insert(hardNewInsertionIndex, verse);
-          } else {
-            _verses.add(verse);
-          }
+          _verses.add(verse);
         case Difficulty.good:
           if (_verses.isEmpty) {
             // If this is the only verse, we're finished.
@@ -314,13 +302,7 @@ class PracticePageManager {
       // 4-button mode
       switch (response) {
         case Difficulty.hard:
-          // The user needs to practice a new verse again soon,
-          // so put it third in line (unless there aren't enough)
-          if (_verses.length > hardNewInsertionIndex) {
-            _verses.insert(hardNewInsertionIndex, verse);
-          } else {
-            _verses.add(verse);
-          }
+          _verses.add(verse);
         case Difficulty.ok:
           _verses.add(verse);
         case Difficulty.good:
@@ -344,13 +326,7 @@ class PracticePageManager {
         case Difficulty.hard:
           final updatedVerse = _adjustVerseStats(verse, response);
           localStorage.updateVerse(_collectionId, updatedVerse);
-          if (_verses.length > hardNewInsertionIndex &&
-              // insert last if good greater than 1
-              verse.interval.inDays == 0) {
-            _verses.insert(hardNewInsertionIndex, updatedVerse);
-          } else {
-            _verses.add(updatedVerse);
-          }
+          _verses.add(updatedVerse);
         case Difficulty.ok:
           if (verse.interval.inDays == 0) {
             _verses.add(verse);
