@@ -410,17 +410,6 @@ class PracticePageManager {
 
 enum Difficulty { hard, ok, good, easy }
 
-class AppBarNotifier extends ValueNotifier<(bool, bool)> {
-  AppBarNotifier() : super((false, false));
-
-  bool get isPracticing => value.$1;
-  bool get canUndo => value.$2;
-
-  void updatek({required bool isPracticing, required bool canUndo}) {
-    value = (isPracticing, canUndo);
-  }
-}
-
 sealed class AnswerType {
   const AnswerType(this.textSpan);
   final TextSpan textSpan;
