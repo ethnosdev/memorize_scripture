@@ -1,7 +1,10 @@
 ## 2.1.0
 
+- Add a new collection type where the reviews are fixed no matter the due date.
+- Simplify the buttons to only use two (but you can still get OK by long pressing Hard and you can get Easy by long pressing Good).
 - Remove max days between reviews.
 - If you mark a new verse as hard, it will go to the bottom of the day's practice pile rather than three verses down the pile.
+- Don't treat new verses differently.
 
 ## 2.0.2 - April 27, 2024
 

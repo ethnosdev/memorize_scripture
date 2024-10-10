@@ -69,12 +69,6 @@ class _SettingsPageState extends State<SettingsPage> {
                       );
                     },
                   ),
-                  SettingsTile.switchTile(
-                    activeSwitchColor: colorScheme.primary,
-                    title: const Text('Two-button mode'),
-                    initialValue: manager.isTwoButtonMode,
-                    onToggle: manager.setTwoButtonMode,
-                  ),
                 ],
               ),
               SettingsSection(

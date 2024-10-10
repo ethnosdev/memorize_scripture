@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:memorize_scripture/go_router.dart';
+import 'package:memorize_scripture/pages/home/home_page.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/app_manager.dart';
 
@@ -25,11 +25,11 @@ class _MemorizeScriptureAppState extends State<MemorizeScriptureApp> {
     return ValueListenableBuilder<ThemeData>(
       valueListenable: manager.themeListener,
       builder: (context, theme, child) {
-        return MaterialApp.router(
+        return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Memorize Scripture',
-          routerConfig: router,
           theme: theme,
+          home: const HomePage(),
         );
       },
     );

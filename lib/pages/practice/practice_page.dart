@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/widgets/loading_screen.dart';
 import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
 import 'package:memorize_scripture/pages/practice/widgets/app_bar.dart';
@@ -8,12 +9,10 @@ import 'package:memorize_scripture/service_locator.dart';
 class PracticePage extends StatefulWidget {
   const PracticePage({
     super.key,
-    required this.collectionId,
-    required this.collectionName,
+    required this.collection,
   });
 
-  final String collectionId;
-  final String collectionName;
+  final Collection collection;
 
   @override
   State<PracticePage> createState() => _PracticePageState();
@@ -25,7 +24,7 @@ class _PracticePageState extends State<PracticePage> {
   @override
   void initState() {
     super.initState();
-    manager.init(collectionId: widget.collectionId);
+    manager.init(collection: widget.collection);
   }
 
   @override
@@ -40,8 +39,7 @@ class _PracticePageState extends State<PracticePage> {
     return Scaffold(
       appBar: MyAppBar(
         manager: manager,
-        collectionId: widget.collectionId,
-        collectionName: widget.collectionName,
+        collection: widget.collection,
       ),
       body: ValueListenableBuilder<PracticeState>(
         valueListenable: manager.uiNotifier,

@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/verse.dart';
-import 'package:memorize_scripture/go_router.dart';
+import 'package:memorize_scripture/pages/add_edit_verse/add_edit_verse_page.dart';
 import 'package:memorize_scripture/pages/verse_browser/verse_browser_manager.dart';
 
 class VerseBrowser extends StatefulWidget {
   const VerseBrowser({
     super.key,
-    required this.collectionId,
-    required this.collectionName,
+    required this.collection,
     this.onFinished,
   });
 
-  final String collectionId;
-  final String collectionName;
+  final Collection collection;
   final void Function(String?)? onFinished;
 
   @override
@@ -26,7 +24,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
   @override
   void initState() {
     super.initState();
-    manager.init(widget.collectionId);
+    manager.init(widget.collection.id);
     manager.onFinishedModifyingCollection = widget.onFinished;
   }
 
@@ -34,19 +32,19 @@ class _VerseBrowserState extends State<VerseBrowser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.collectionName),
+        title: Text(widget.collection.name),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
             tooltip: 'Add verse',
             onPressed: () {
-              context.pushNamed(
-                RouteName.add,
-                queryParameters: {
-                  Params.colId: widget.collectionId,
-                  Params.colName: widget.collectionName,
-                },
-                extra: manager.onFinishedEditing,
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => AddEditVersePage(
+                    collectionId: widget.collection.id,
+                    onFinished: manager.onFinishedEditing,
+                  ),
+                ),
               );
             },
           ),
@@ -76,14 +74,14 @@ class _VerseBrowserState extends State<VerseBrowser> {
                   ],
                 ),
                 onTap: () {
-                  context.pushNamed(
-                    RouteName.edit,
-                    queryParameters: {
-                      Params.colId: widget.collectionId,
-                      Params.colName: widget.collectionName,
-                      Params.verseId: verse.id,
-                    },
-                    extra: manager.onFinishedEditing,
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => AddEditVersePage(
+                        collectionId: widget.collection.id,
+                        verseId: verse.id,
+                        onFinished: manager.onFinishedEditing,
+                      ),
+                    ),
                   );
                 },
                 onLongPress: () => _showCollectionOptionsDialog(verse),

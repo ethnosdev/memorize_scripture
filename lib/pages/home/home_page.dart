@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/common/collection.dart';
+import 'package:memorize_scripture/pages/account/account_page.dart';
 import 'package:memorize_scripture/pages/home/widgets/drawer.dart';
 import 'package:memorize_scripture/common/strings.dart';
 import 'package:memorize_scripture/common/widgets/icon_text_menu_row.dart';
 import 'package:memorize_scripture/common/widgets/loading_screen.dart';
-import 'package:memorize_scripture/go_router.dart';
 import 'package:memorize_scripture/pages/home/home_page_manager.dart';
+import 'package:memorize_scripture/pages/practice/practice_page.dart';
+import 'package:memorize_scripture/pages/verse_browser/verse_browser.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
@@ -79,7 +80,9 @@ class _HomePageState extends State<HomePage> {
                           manager.sync(
                             onResult: _notifyResult,
                             onUserNotLoggedIn: () {
-                              context.goNamed(RouteName.account);
+                              Navigator.of(context).push(
+                                MaterialPageRoute(builder: (_) => const AccountPage()),
+                              );
                             },
                           );
                         case 2:
@@ -184,12 +187,12 @@ class _BodyWidgetState extends State<BodyWidget> {
                     ? const Icon(Icons.push_pin)
                     : null,
                 onTap: () {
-                  context.goNamed(
-                    RouteName.practice,
-                    queryParameters: {
-                      Params.colId: collection.id,
-                      Params.colName: collection.name,
-                    },
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => PracticePage(
+                        collection: collection,
+                      ),
+                    ),
                   );
                 },
                 onLongPress: () {
@@ -234,12 +237,11 @@ class _BodyWidgetState extends State<BodyWidget> {
                 title: const Text('Browse verses'),
                 onTap: () async {
                   Navigator.of(context).pop();
-                  context.goNamed(
-                    RouteName.verseBrowser,
-                    queryParameters: {
-                      Params.colId: collection.id,
-                      Params.colName: collection.name,
-                    },
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (_) => VerseBrowser(
+                              collection: collection,
+                            )),
                   );
                 },
               ),

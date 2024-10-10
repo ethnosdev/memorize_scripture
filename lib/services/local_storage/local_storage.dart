@@ -17,7 +17,7 @@ abstract class LocalStorage {
   /// `newVerseLimit` specifies the max number of new verses to return. If null,
   /// then all new verses in the collection are returned.
   Future<List<Verse>> fetchTodaysVerses({
-    required String collectionId,
+    required Collection collection,
     int? newVerseLimit,
   });
 

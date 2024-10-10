@@ -6,11 +6,13 @@ class ResponseButton extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.onPressed,
+    this.onLongPress,
   });
 
   final String title;
   final String? subtitle;
   final void Function()? onPressed;
+  final void Function()? onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +22,7 @@ class ResponseButton extends StatelessWidget {
         children: [
           OutlinedButton(
             onPressed: onPressed,
+            onLongPress: onLongPress,
             child: const SizedBox(
               height: double.infinity,
               width: double.infinity,
@@ -32,15 +35,13 @@ class ResponseButton extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: DefaultTextStyle.of(context)
-                        .style
-                        .copyWith(color: Theme.of(context).colorScheme.primary),
+                    style: DefaultTextStyle.of(context).style.copyWith(color: Theme.of(context).colorScheme.primary),
                   ),
                   if (subtitle != null)
                     Text(
                       subtitle!,
-                      style: DefaultTextStyle.of(context).style.copyWith(
-                          color: Theme.of(context).colorScheme.secondary),
+                      style:
+                          DefaultTextStyle.of(context).style.copyWith(color: Theme.of(context).colorScheme.secondary),
                       textScaler: const TextScaler.linear(0.9),
                     ),
                 ],

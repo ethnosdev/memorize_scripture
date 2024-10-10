@@ -80,7 +80,6 @@ class SqfliteStorage implements LocalStorage {
       CollectionEntry.tableName,
       orderBy: 'LOWER(${CollectionEntry.name}) ASC',
     );
-    print(collections);
     return List.generate(collections.length, (i) {
       final style = collections[i][CollectionEntry.studyStyle] as String?;
       final versesPerDay = collections[i][CollectionEntry.versesPerDay] as int?;
@@ -103,6 +102,7 @@ class SqfliteStorage implements LocalStorage {
         VerseEntry.tableName,
         where: '${VerseEntry.collectionId} = ?',
         whereArgs: [collectionId],
+        orderBy: '${VerseEntry.prompt} ASC',
       );
     } else {
       verses = await _database.query(VerseEntry.tableName);
@@ -133,12 +133,15 @@ class SqfliteStorage implements LocalStorage {
 
   @override
   Future<List<Verse>> fetchTodaysVerses({
-    required String collectionId,
+    required Collection collection,
     int? newVerseLimit,
   }) async {
-    final newVerses = await _fetchNewVerses(collectionId, newVerseLimit);
-    final reviewVerses = await _fetchReviewVerses(collectionId);
-    final verses = [...newVerses, ...reviewVerses];
+    List<Map<String, Object?>> verses = [];
+    if (collection.studyStyle == StudyStyle.reviewByDate) {
+      verses = await _fetchVersesByDueDate(collection, newVerseLimit);
+    } else {
+      verses = await _fetchFixedVerses(collection);
+    }
     return List.generate(verses.length, (i) {
       final verse = verses[i];
       return Verse(
@@ -150,6 +153,15 @@ class SqfliteStorage implements LocalStorage {
         interval: _dbVerseToInterval(verse),
       );
     });
+  }
+
+  Future<List<Map<String, Object?>>> _fetchVersesByDueDate(
+    Collection collection,
+    int? limit,
+  ) async {
+    final newVerses = await _fetchNewVerses(collection.id, limit);
+    final reviewVerses = await _fetchReviewVerses(collection.id);
+    return [...newVerses, ...reviewVerses];
   }
 
   Future<List<Map<String, Object?>>> _fetchNewVerses(
@@ -175,6 +187,53 @@ class SqfliteStorage implements LocalStorage {
       whereArgs: [collectionId, today],
       orderBy: '${VerseEntry.prompt} ASC',
     );
+  }
+
+  Future<List<Map<String, Object?>>> _fetchFixedVerses(
+    Collection collection,
+  ) async {
+    final allVerses = await _database.query(
+      VerseEntry.tableName,
+      where: '${VerseEntry.collectionId} = ?',
+      whereArgs: [collection.id],
+      orderBy: '${VerseEntry.prompt} ASC',
+    );
+
+    if (allVerses.isEmpty) {
+      return [];
+    }
+
+    int newestVerseIndex = 0;
+    int modifiedDate = 0;
+
+    for (int i = 0; i < allVerses.length; i++) {
+      final nextDate = allVerses[i][VerseEntry.modifiedDate] as int?;
+      if (nextDate == null) continue;
+      if (nextDate > modifiedDate) {
+        modifiedDate = nextDate;
+        newestVerseIndex = i;
+      }
+    }
+
+    List<Map<String, Object?>> result = [];
+    int totalVerses = allVerses.length;
+
+    if (totalVerses == 0) {
+      return result;
+    }
+
+    // start with the verse after the most recently modified one.
+    newestVerseIndex++;
+
+    for (int i = 0; i < collection.versesPerDay; i++) {
+      int currentIndex = (newestVerseIndex + i) % totalVerses;
+      result.add(allVerses[currentIndex]);
+      if (result.length == totalVerses) {
+        break;
+      }
+    }
+
+    return result;
   }
 
   @override

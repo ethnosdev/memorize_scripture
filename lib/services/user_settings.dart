@@ -5,8 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class UserSettings {
   static const defaultDailyLimit = 100000;
   Future<void> init();
-  bool get isTwoButtonMode;
-  Future<void> setTwoButtonMode(bool value);
   bool get isDarkMode;
   Future<void> setDarkMode(bool value);
   int get getDailyLimit;
@@ -30,7 +28,6 @@ abstract class UserSettings {
 }
 
 class SharedPreferencesStorage extends UserSettings {
-  static const String _twoButtonModeKey = 'twoButtonMode';
   static const String _darkModeKey = 'darkMode';
   static const String _dailyLimitKey = 'dailyLimit';
   static const String _notificationsKey = 'notifications';
@@ -45,14 +42,6 @@ class SharedPreferencesStorage extends UserSettings {
   @override
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
-  }
-
-  @override
-  bool get isTwoButtonMode => prefs.getBool(_twoButtonModeKey) ?? false;
-
-  @override
-  Future<void> setTwoButtonMode(bool value) async {
-    await prefs.setBool(_twoButtonModeKey, value);
   }
 
   @override

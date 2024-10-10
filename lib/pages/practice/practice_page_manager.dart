@@ -24,9 +24,15 @@ enum PracticeState {
   finished,
 }
 
-enum ResponseButtonMode {
-  two,
-  four,
+enum PracticeMode {
+  /// Spaced repetition practice.
+  reviewByDueDate,
+
+  /// Always give a fixed number of practice verses.
+  fixedReview,
+
+  /// Casual practice is when a user practices all of the verses in a collection
+  /// but the responses are not saved.
   casualPractice,
 }
 
@@ -62,10 +68,6 @@ class PracticePageManager {
   late List<Verse> _verses;
   Verse? _undoVerse;
 
-  // Casual practice is when a user practices all of the verses in a collection
-  // but the responses are not saved.
-  var _isCasualPracticeMode = false;
-
   String? get currentVerseId {
     if (_verses.isEmpty) return null;
     return _verses.first.id;
@@ -79,33 +81,30 @@ class PracticePageManager {
 
   // Response button titles
   String hardTitle = '';
-  String okTitle = '';
   String goodTitle = '';
-  String easyTitle = '';
 
-  ResponseButtonMode get buttonMode {
-    if (_isCasualPracticeMode) return ResponseButtonMode.casualPractice;
-    if (userSettings.isTwoButtonMode) return ResponseButtonMode.two;
-    return ResponseButtonMode.four;
-  }
+  PracticeMode get practiceMode => _practiceMode;
 
-  late String _collectionId;
+  late PracticeMode _practiceMode;
+  late Collection _collection;
   late List<Collection> _collections;
 
   Future<void> init({
-    required String collectionId,
+    required Collection collection,
   }) async {
     uiNotifier.value = PracticeState.loading;
-    _collectionId = collectionId;
-    _isCasualPracticeMode = false;
+    _collection = collection;
+    _practiceMode = (collection.studyStyle == StudyStyle.reviewByDate) //
+        ? PracticeMode.reviewByDueDate
+        : PracticeMode.fixedReview;
     final newVerseLimit = userSettings.getDailyLimit;
     _verses = await localStorage.fetchTodaysVerses(
-      collectionId: collectionId,
+      collection: collection,
       newVerseLimit: newVerseLimit,
     );
     localStorage.fetchCollections().then((value) => _collections = value);
     if (_verses.isEmpty) {
-      final number = await localStorage.numberInCollection(collectionId);
+      final number = await localStorage.numberInCollection(collection.id);
       if (number > 0) {
         uiNotifier.value = PracticeState.noVersesDue;
       } else {
@@ -118,23 +117,25 @@ class PracticePageManager {
 
   void _resetUi() {
     canUndoNotifier.value = _undoVerse != null;
+
     if (_verses.isEmpty) {
       uiNotifier.value = PracticeState.finished;
-    } else {
-      uiNotifier.value = PracticeState.practicing;
-      isShowingAnswerNotifier.value = false;
-      hintButtonNotifier.value = HintButtonState(
-        isEnabled: true,
-        hasCustomHint: _verses.first.hint.isNotEmpty,
-      );
-      answerNotifier.value = const NoAnswer();
-      promptNotifier.value = _addHighlighting(_verses.first.prompt);
-      countNotifier.value = _verses.length.toString();
-      _wordsHintHelper.init(
-        text: _verses.first.text,
-        textColor: _textThemeColor,
-      );
+      return;
     }
+
+    uiNotifier.value = PracticeState.practicing;
+    isShowingAnswerNotifier.value = false;
+    hintButtonNotifier.value = HintButtonState(
+      isEnabled: true,
+      hasCustomHint: _verses.first.hint.isNotEmpty,
+    );
+    answerNotifier.value = const NoAnswer();
+    promptNotifier.value = _addHighlighting(_verses.first.prompt);
+    countNotifier.value = _verses.length.toString();
+    _wordsHintHelper.init(
+      text: _verses.first.text,
+      textColor: _textThemeColor,
+    );
   }
 
   // Text surrounded by double asterisks should be highlighted.
@@ -176,7 +177,7 @@ class PracticePageManager {
   }
 
   void _showResponseButtons() {
-    if (!_isCasualPracticeMode) {
+    if (_practiceMode == PracticeMode.reviewByDueDate) {
       _setResponseButtonTimeSubtitles();
     }
     isShowingAnswerNotifier.value = true;
@@ -192,27 +193,9 @@ class PracticePageManager {
     // hard
     hardTitle = 'Again';
 
-    // ok
-    if (verse.isNew || verse.interval.inDays == 0) {
-      final minutes = _verses.length - 1;
-      okTitle = _formatDuration(Duration(minutes: minutes));
-    } else {
-      okTitle = _formatDuration(const Duration(days: 1));
-    }
-
     // good
-    final isTwoButtonMode = buttonMode == ResponseButtonMode.two;
-    if (isTwoButtonMode && verse.isNew && _verses.length > 1) {
-      final minutes = _verses.length - 1;
-      goodTitle = _formatDuration(Duration(minutes: minutes));
-    } else {
-      final goodDays = _nextIntervalInDays(verse, Difficulty.good);
-      goodTitle = _formatDuration(Duration(days: goodDays));
-    }
-
-    // easy
-    final easyDays = _nextIntervalInDays(verse, Difficulty.easy);
-    easyTitle = _formatDuration(Duration(days: easyDays));
+    final goodDays = _nextIntervalInDays(verse, Difficulty.good);
+    goodTitle = _formatDuration(Duration(days: goodDays));
   }
 
   String _formatDuration(Duration duration) {
@@ -263,10 +246,8 @@ class PracticePageManager {
   void _updateVerses(Difficulty response) {
     final verse = _verses.removeAt(0);
     _undoVerse = verse;
-    if (_isCasualPracticeMode) {
+    if (_practiceMode == PracticeMode.casualPractice) {
       _handleCasualPracticeVerse(verse, response);
-    } else if (verse.isNew) {
-      _handleNewVerse(verse, response);
     } else {
       _handleReviewVerse(verse, response);
     }
@@ -278,67 +259,11 @@ class PracticePageManager {
     }
   }
 
-  void _handleNewVerse(Verse verse, Difficulty response) {
-    final isTwoButtonMode = buttonMode == ResponseButtonMode.two;
-    if (isTwoButtonMode) {
-      switch (response) {
-        case Difficulty.hard:
-          _verses.add(verse);
-        case Difficulty.good:
-          if (_verses.isEmpty) {
-            // If this is the only verse, we're finished.
-            final updated = _adjustVerseStats(verse, response);
-            localStorage.updateVerse(_collectionId, updated);
-          } else {
-            // Giving it a due date will make it no longer new.
-            final updated = verse.copyWith(nextDueDate: DateTime.now());
-            localStorage.updateVerse(_collectionId, updated);
-            _verses.add(updated);
-          }
-        default:
-          throw 'Illegal state: This is two-button mode.';
-      }
-    } else {
-      // 4-button mode
-      switch (response) {
-        case Difficulty.hard:
-          _verses.add(verse);
-        case Difficulty.ok:
-          _verses.add(verse);
-        case Difficulty.good:
-        case Difficulty.easy:
-          final update = _adjustVerseStats(verse, response);
-          localStorage.updateVerse(_collectionId, update);
-      }
-    }
-  }
-
   void _handleReviewVerse(Verse verse, Difficulty response) {
-    final isTwoButtonMode = buttonMode == ResponseButtonMode.two;
-    if (isTwoButtonMode) {
-      final updatedVerse = _adjustVerseStats(verse, response);
-      localStorage.updateVerse(_collectionId, updatedVerse);
-      if (response == Difficulty.hard) {
-        _verses.add(updatedVerse);
-      }
-    } else {
-      switch (response) {
-        case Difficulty.hard:
-          final updatedVerse = _adjustVerseStats(verse, response);
-          localStorage.updateVerse(_collectionId, updatedVerse);
-          _verses.add(updatedVerse);
-        case Difficulty.ok:
-          if (verse.interval.inDays == 0) {
-            _verses.add(verse);
-          } else {
-            final updatedVerse = _adjustVerseStats(verse, response);
-            localStorage.updateVerse(_collectionId, updatedVerse);
-          }
-        case Difficulty.good:
-        case Difficulty.easy:
-          final updatedVerse = _adjustVerseStats(verse, response);
-          localStorage.updateVerse(_collectionId, updatedVerse);
-      }
+    final updatedVerse = _adjustVerseStats(verse, response);
+    localStorage.updateVerse(_collection.id, updatedVerse);
+    if (response == Difficulty.hard) {
+      _verses.add(updatedVerse);
     }
   }
 
@@ -370,7 +295,7 @@ class PracticePageManager {
   Future<void> onFinishedAddingEditing(String? verseId) async {
     final isAdding = verseId == null;
     if (isAdding) {
-      init(collectionId: _collectionId);
+      init(collection: _collection);
       return;
     }
     final verse = await localStorage.fetchVerse(verseId: verseId);
@@ -383,21 +308,21 @@ class PracticePageManager {
     final verse = _undoVerse;
     if (verse == null) return;
     _verses.insert(0, verse);
-    localStorage.updateVerse(_collectionId, verse);
+    localStorage.updateVerse(_collection.id, verse);
     _undoVerse = null;
     _resetUi();
   }
 
   Future<void> practiceAllVerses() async {
-    _verses = await localStorage.fetchAllVerses(_collectionId);
-    _isCasualPracticeMode = true;
+    _verses = await localStorage.fetchAllVerses(_collection.id);
+    _practiceMode = PracticeMode.casualPractice;
     _resetUi();
   }
 
   bool get shouldShowMoveMenuItem => _collections.length > 1;
 
   List<Collection> otherCollections() {
-    return _collections.where((collection) => collection.id != _collectionId).toList();
+    return _collections.where((collection) => collection.id != _collection.id).toList();
   }
 
   void moveVerse(String toCollectionId) async {

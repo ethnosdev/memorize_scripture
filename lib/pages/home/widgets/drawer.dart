@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:memorize_scripture/common/strings.dart';
-import 'package:memorize_scripture/go_router.dart';
+import 'package:memorize_scripture/pages/about/about_page.dart';
+import 'package:memorize_scripture/pages/account/account_page.dart';
+import 'package:memorize_scripture/pages/settings/settings_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MenuDrawer extends StatelessWidget {
@@ -46,14 +47,22 @@ class MenuDrawer extends StatelessWidget {
               title: const Text('Settings'),
               onTap: () {
                 Navigator.pop(context);
-                context.goNamed(RouteName.settings);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const SettingsPage(),
+                  ),
+                );
               },
             ),
             ListTile(
               title: const Text('Account'),
               onTap: () {
                 Navigator.pop(context);
-                context.goNamed(RouteName.account);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const AccountPage(),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -70,7 +79,11 @@ class MenuDrawer extends StatelessWidget {
               title: const Text('About'),
               onTap: () {
                 Navigator.pop(context);
-                context.goNamed(RouteName.about);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const AboutPage(),
+                  ),
+                );
               },
             ),
           ],

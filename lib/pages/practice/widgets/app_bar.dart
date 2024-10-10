@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/widgets/icon_text_menu_row.dart';
-import 'package:memorize_scripture/go_router.dart';
+import 'package:memorize_scripture/pages/add_edit_verse/add_edit_verse_page.dart';
 import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
+import 'package:memorize_scripture/pages/verse_browser/verse_browser.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   const MyAppBar({
     super.key,
     required this.manager,
-    required this.collectionId,
-    required this.collectionName,
+    required this.collection,
   });
 
   final PracticePageManager manager;
-  final String collectionId;
-  final String collectionName;
+  final Collection collection;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +25,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           builder: (context, canUndo, child) {
             final title = FittedBox(
               fit: BoxFit.scaleDown,
-              child: Text(collectionName),
+              child: Text(collection.name),
             );
             switch (practiceState) {
               case PracticeState.loading:
@@ -150,36 +149,36 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   void _goEdit(BuildContext context) {
-    context.pushNamed(
-      RouteName.edit,
-      queryParameters: {
-        Params.colId: collectionId,
-        Params.colName: collectionName,
-        Params.verseId: manager.currentVerseId!,
-      },
-      extra: manager.onFinishedAddingEditing,
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => AddEditVersePage(
+          collectionId: collection.id,
+          verseId: manager.currentVerseId!,
+          onFinished: manager.onFinishedAddingEditing,
+        ),
+      ),
     );
   }
 
   void _goAdd(BuildContext context) {
-    context.pushNamed(
-      RouteName.add,
-      queryParameters: {
-        Params.colId: collectionId,
-        Params.colName: collectionName,
-      },
-      extra: manager.onFinishedAddingEditing,
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => AddEditVersePage(
+          collectionId: collection.id,
+          onFinished: manager.onFinishedAddingEditing,
+        ),
+      ),
     );
   }
 
   void _goBrowse(BuildContext context) {
-    context.pushNamed(
-      RouteName.verseBrowser,
-      queryParameters: {
-        Params.colId: collectionId,
-        Params.colName: collectionName,
-      },
-      extra: manager.onFinishedAddingEditing,
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => VerseBrowser(
+          collection: collection,
+          onFinished: manager.onFinishedAddingEditing,
+        ),
+      ),
     );
   }
 

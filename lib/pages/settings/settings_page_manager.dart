@@ -25,8 +25,6 @@ class SettingsPageManager extends ChangeNotifier {
     return userSettings.getDailyLimit.toString();
   }
 
-  bool get isTwoButtonMode => userSettings.isTwoButtonMode;
-
   bool get isNotificationsOn => userSettings.isNotificationsOn;
 
   String get notificationTimeDisplay {
@@ -56,11 +54,6 @@ class SettingsPageManager extends ChangeNotifier {
     final limit = int.tryParse(number);
     if (limit == null) return;
     await userSettings.setDailyLimit(limit);
-    notifyListeners();
-  }
-
-  Future<void> setTwoButtonMode(bool value) async {
-    await userSettings.setTwoButtonMode(value);
     notifyListeners();
   }
 
