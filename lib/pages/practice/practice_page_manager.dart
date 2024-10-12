@@ -26,10 +26,13 @@ enum PracticeState {
 
 enum PracticeMode {
   /// Spaced repetition practice.
-  reviewByDueDate,
+  reviewBySpacedRepetition,
+
+  /// User chooses the number of days later to review a verse.
+  reviewByFixedDays,
 
   /// Always give a fixed number of practice verses.
-  fixedReview,
+  reviewSameNumberPerDay,
 
   /// Casual practice is when a user practices all of the verses in a collection
   /// but the responses are not saved.
@@ -81,7 +84,9 @@ class PracticePageManager {
 
   // Response button titles
   String hardTitle = '';
+  String okTitle = '';
   String goodTitle = '';
+  String easyTitle = '';
 
   PracticeMode get practiceMode => _practiceMode;
 
@@ -94,9 +99,11 @@ class PracticePageManager {
   }) async {
     uiNotifier.value = PracticeState.loading;
     _collection = collection;
-    _practiceMode = (collection.studyStyle == StudyStyle.reviewByDate) //
-        ? PracticeMode.reviewByDueDate
-        : PracticeMode.fixedReview;
+    _practiceMode = switch (collection.studyStyle) {
+      StudyStyle.spacedRepetition => PracticeMode.reviewBySpacedRepetition,
+      StudyStyle.fixedDays => PracticeMode.reviewByFixedDays,
+      StudyStyle.sameNumberPerDay => PracticeMode.reviewSameNumberPerDay,
+    };
     final newVerseLimit = userSettings.getDailyLimit;
     _verses = await localStorage.fetchTodaysVerses(
       collection: collection,
@@ -177,8 +184,10 @@ class PracticePageManager {
   }
 
   void _showResponseButtons() {
-    if (_practiceMode == PracticeMode.reviewByDueDate) {
-      _setResponseButtonTimeSubtitles();
+    if (_practiceMode == PracticeMode.reviewBySpacedRepetition) {
+      _setSpacedRepetitionSubtitles();
+    } else if (_practiceMode == PracticeMode.reviewByFixedDays) {
+      _setFixedDayButtonsSubtitles();
     }
     isShowingAnswerNotifier.value = true;
     hintButtonNotifier.value = HintButtonState(
@@ -187,7 +196,7 @@ class PracticePageManager {
     );
   }
 
-  void _setResponseButtonTimeSubtitles() {
+  void _setSpacedRepetitionSubtitles() {
     final verse = _verses.first;
 
     // hard
@@ -198,9 +207,33 @@ class PracticePageManager {
     goodTitle = _formatDuration(Duration(days: goodDays));
   }
 
+  void _setFixedDayButtonsSubtitles() {
+    final verse = _verses.first;
+
+    // hard
+    hardTitle = 'Again';
+
+    // ok
+    final okDays = _nextIntervalInDays(verse, Difficulty.ok);
+    okTitle = _formatDuration(Duration(days: okDays));
+
+    // good
+    final goodDays = _nextIntervalInDays(verse, Difficulty.good);
+    goodTitle = _formatDuration(Duration(days: goodDays));
+
+    // easy
+    final easyDays = _nextIntervalInDays(verse, Difficulty.easy);
+    easyTitle = _formatDuration(Duration(days: easyDays));
+  }
+
   String _formatDuration(Duration duration) {
     final days = duration.inDays;
     if (days == 1) return '1 day';
+    if (days == 7) return '1 week';
+    if (days == 14) return '2 weeks';
+    if (days == 21) return '3 weeks';
+    if (days == 30) return '1 month';
+    if (days == 31) return '1 month';
     if (days > 1) return '$days days';
     final minutes = duration.inMinutes;
     if (minutes == 0) return 'Now';
@@ -278,6 +311,18 @@ class PracticePageManager {
   }
 
   int _nextIntervalInDays(Verse verse, Difficulty difficulty) {
+    switch (_practiceMode) {
+      case PracticeMode.reviewBySpacedRepetition:
+      case PracticeMode.reviewSameNumberPerDay:
+        return _nextIntervalForSpacedRepetition(verse, difficulty);
+      case PracticeMode.reviewByFixedDays:
+        return _nextIntervalForFixedDays(verse, difficulty);
+      case PracticeMode.casualPractice:
+        throw UnimplementedError();
+    }
+  }
+
+  int _nextIntervalForSpacedRepetition(Verse verse, Difficulty difficulty) {
     int days = verse.interval.inDays;
     switch (difficulty) {
       case Difficulty.hard:
@@ -290,6 +335,19 @@ class PracticePageManager {
         days = 2 * (days + 1);
     }
     return days;
+  }
+
+  int _nextIntervalForFixedDays(Verse verse, Difficulty difficulty) {
+    switch (difficulty) {
+      case Difficulty.hard:
+        return 0;
+      case Difficulty.ok:
+        return 1;
+      case Difficulty.good:
+        return 7;
+      case Difficulty.easy:
+        return 30;
+    }
   }
 
   Future<void> onFinishedAddingEditing(String? verseId) async {

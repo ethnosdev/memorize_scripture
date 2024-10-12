@@ -49,19 +49,25 @@ class Collection {
 }
 
 enum StudyStyle {
-  reviewByDate('date'),
-  fixedReview('fixed');
+  /// Review by spaced repetition. The interval between reviews gradually increases.
+  spacedRepetition('spaced'),
+
+  /// User chooses a set number of days later to review a verse (day, week, month, etc.).
+  fixedDays('days'),
+
+  /// Review a fixed number of verses per day.
+  sameNumberPerDay('number');
 
   const StudyStyle(this.value);
   final String value;
 
   static StudyStyle fromValue(String? value) {
     if (value == null) {
-      return StudyStyle.reviewByDate;
+      return StudyStyle.spacedRepetition;
     }
     return StudyStyle.values.firstWhere(
       (style) => style.value == value,
-      orElse: () => StudyStyle.reviewByDate,
+      orElse: () => StudyStyle.spacedRepetition,
     );
   }
 }

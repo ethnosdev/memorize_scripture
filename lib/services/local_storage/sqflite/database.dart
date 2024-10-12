@@ -137,10 +137,12 @@ class SqfliteStorage implements LocalStorage {
     int? newVerseLimit,
   }) async {
     List<Map<String, Object?>> verses = [];
-    if (collection.studyStyle == StudyStyle.reviewByDate) {
-      verses = await _fetchVersesByDueDate(collection, newVerseLimit);
-    } else {
-      verses = await _fetchFixedVerses(collection);
+    switch (collection.studyStyle) {
+      case StudyStyle.spacedRepetition:
+      case StudyStyle.fixedDays:
+        verses = await _fetchVersesByDueDate(collection, newVerseLimit);
+      case StudyStyle.sameNumberPerDay:
+        verses = await _fetchFixedNumberVerses(collection);
     }
     return List.generate(verses.length, (i) {
       final verse = verses[i];
@@ -189,7 +191,7 @@ class SqfliteStorage implements LocalStorage {
     );
   }
 
-  Future<List<Map<String, Object?>>> _fetchFixedVerses(
+  Future<List<Map<String, Object?>>> _fetchFixedNumberVerses(
     Collection collection,
   ) async {
     final allVerses = await _database.query(

@@ -1,7 +1,9 @@
 ## 2.1.0
 
-- Add a new collection type where the reviews are fixed no matter the due date.
-- Simplify the buttons to only use two (but you can still get OK by long pressing Hard and you can get Easy by long pressing Good).
+- Three study styles that can be selected per collection: Spaced repetition, User chooses frequency, and fixed number of verses per day. 
+- The spaced repetition style only has two buttons: Hard and Good. (But you can still get OK by long pressing Hard and you can get Easy by long pressing Good)
+- The user chooses frequency style has four buttons: Again, 1 day, 1 week, 1 month.
+- For the fixed number of verses per day style, the due dates are ignored. (But they are still updated in the background.)
 - Remove max days between reviews.
 - If you mark a new verse as hard, it will go to the bottom of the day's practice pile rather than three verses down the pile.
 - Don't treat new verses differently.

@@ -227,7 +227,9 @@ class _BodyWidgetState extends State<BodyWidget> {
             children: [
               if (collection.isPinned || showPinTile)
                 ListTile(
-                  title: (collection.isPinned) ? const Text('Unpin') : const Text('Pin to top'),
+                  title: (collection.isPinned) //
+                      ? const Text('Unpin')
+                      : const Text('Pin to top'),
                   onTap: () async {
                     Navigator.of(context).pop();
                     manager.togglePin(collection);
@@ -344,7 +346,7 @@ Future<Collection?> _showEditNameDialog(
   final oldName = oldCollection?.name;
   final versesPerDay = oldCollection?.versesPerDay ?? Collection.defaultVersesPerDay;
   final nameController = TextEditingController(text: oldName);
-  StudyStyle studyStyle = oldCollection?.studyStyle ?? StudyStyle.reviewByDate;
+  StudyStyle studyStyle = oldCollection?.studyStyle ?? StudyStyle.fixedDays;
   final versesPerDayController = TextEditingController(text: versesPerDay.toString());
   final versesPerDayFocusNode = FocusNode();
 
@@ -372,18 +374,22 @@ Future<Collection?> _showEditNameDialog(
                   value: studyStyle,
                   items: const [
                     DropdownMenuItem(
-                      value: StudyStyle.reviewByDate,
-                      child: Text('Review by due date'),
+                      value: StudyStyle.spacedRepetition,
+                      child: Text('Spaced repetition'),
                     ),
                     DropdownMenuItem(
-                      value: StudyStyle.fixedReview,
-                      child: Text('Fixed review'),
+                      value: StudyStyle.fixedDays,
+                      child: Text('Choose frequency'),
+                    ),
+                    DropdownMenuItem(
+                      value: StudyStyle.sameNumberPerDay,
+                      child: Text('Fixed number of verses'),
                     ),
                   ],
                   onChanged: (value) {
                     setState(() {
                       studyStyle = value!;
-                      if (studyStyle == StudyStyle.fixedReview) {
+                      if (studyStyle == StudyStyle.sameNumberPerDay) {
                         versesPerDayFocusNode.requestFocus();
                         versesPerDayController.selection = TextSelection(
                           baseOffset: 0,
@@ -394,8 +400,8 @@ Future<Collection?> _showEditNameDialog(
                   },
                   decoration: const InputDecoration(labelText: 'Review style'),
                 ),
-                if (studyStyle == StudyStyle.fixedReview) const SizedBox(height: 16),
-                if (studyStyle == StudyStyle.fixedReview)
+                if (studyStyle == StudyStyle.sameNumberPerDay) const SizedBox(height: 16),
+                if (studyStyle == StudyStyle.sameNumberPerDay)
                   TextField(
                     keyboardType: TextInputType.number,
                     controller: versesPerDayController,

@@ -41,8 +41,8 @@ class CollectionEntry {
   // Column names
   static const String id = '_id';
   static const String name = 'name';
-  static const String studyStyle = 'study_style'; // 'date' or 'fixed'
-  static const String versesPerDay = 'verses_per_day'; // only for 'fixed'
+  static const String studyStyle = 'study_style'; // 'spaced', 'days', or 'number'
+  static const String versesPerDay = 'verses_per_day'; // only for 'number'
   // seconds since epoch
   static const String createdDate = 'created_date';
   static const String modifiedDate = 'modified_date';
