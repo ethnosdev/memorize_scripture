@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memorize_scripture/common/dialog/set_number_dialog.dart';
 import 'package:memorize_scripture/pages/settings/settings_page_manager.dart';
 import 'package:settings_ui/settings_ui.dart';
 
@@ -61,7 +62,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     title: const Text('Max new verses per day'),
                     value: Text(manager.dailyLimit),
                     onPressed: (BuildContext context) {
-                      _showDailyLimitDialog(
+                      showSetNumberDialog(
+                        context: context,
                         title: 'Daily limit',
                         oldValue: manager.dailyLimit,
                         onValidate: manager.validateDailyLimit,
@@ -111,49 +113,6 @@ class _SettingsPageState extends State<SettingsPage> {
           );
         },
       ),
-    );
-  }
-
-  Future<String?> _showDailyLimitDialog({
-    required String title,
-    required String oldValue,
-    required void Function(String) onConfirm,
-    required String Function(String) onValidate,
-  }) async {
-    var newValue = oldValue;
-    final controller = TextEditingController(text: oldValue);
-    Widget okButton = TextButton(
-      child: const Text("OK"),
-      onPressed: () {
-        onConfirm(newValue);
-        Navigator.of(context).pop(controller.text);
-      },
-    );
-
-    AlertDialog alert = AlertDialog(
-      title: Text(title),
-      content: TextField(
-        autofocus: true,
-        keyboardType: TextInputType.number,
-        controller: controller,
-        onChanged: (value) {
-          newValue = onValidate(value);
-        },
-        onTap: () {
-          controller.selection = TextSelection(
-            baseOffset: 0,
-            extentOffset: controller.value.text.length,
-          );
-        },
-      ),
-      actions: [okButton],
-    );
-
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
     );
   }
 }

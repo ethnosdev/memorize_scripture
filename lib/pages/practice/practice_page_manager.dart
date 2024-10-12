@@ -67,6 +67,8 @@ class PracticePageManager {
   final isShowingAnswerNotifier = ValueNotifier<bool>(false);
   final hintButtonNotifier = ValueNotifier<HintButtonState>(HintButtonState.initial());
   final canUndoNotifier = ValueNotifier<bool>(false);
+  final goodTitleNotifier = ValueNotifier<String>('');
+  final easyTitleNotifier = ValueNotifier<String>('');
 
   late List<Verse> _verses;
   Verse? _undoVerse;
@@ -85,8 +87,7 @@ class PracticePageManager {
   // Response button titles
   String hardTitle = '';
   String okTitle = '';
-  String goodTitle = '';
-  String easyTitle = '';
+  String get goodTitle => goodTitleNotifier.value;
 
   PracticeMode get practiceMode => _practiceMode;
 
@@ -204,7 +205,7 @@ class PracticePageManager {
 
     // good
     final goodDays = _nextIntervalInDays(verse, Difficulty.good);
-    goodTitle = _formatDuration(Duration(days: goodDays));
+    goodTitleNotifier.value = _formatDuration(Duration(days: goodDays));
   }
 
   void _setFixedDayButtonsSubtitles() {
@@ -219,21 +220,16 @@ class PracticePageManager {
 
     // good
     final goodDays = _nextIntervalInDays(verse, Difficulty.good);
-    goodTitle = _formatDuration(Duration(days: goodDays));
+    goodTitleNotifier.value = _formatDuration(Duration(days: goodDays));
 
     // easy
     final easyDays = _nextIntervalInDays(verse, Difficulty.easy);
-    easyTitle = _formatDuration(Duration(days: easyDays));
+    easyTitleNotifier.value = _formatDuration(Duration(days: easyDays));
   }
 
   String _formatDuration(Duration duration) {
     final days = duration.inDays;
     if (days == 1) return '1 day';
-    if (days == 7) return '1 week';
-    if (days == 14) return '2 weeks';
-    if (days == 21) return '3 weeks';
-    if (days == 30) return '1 month';
-    if (days == 31) return '1 month';
     if (days > 1) return '$days days';
     final minutes = duration.inMinutes;
     if (minutes == 0) return 'Now';
@@ -268,7 +264,9 @@ class PracticePageManager {
   void showCustomHint() {
     final hint = _verses.first.hint;
     final currentText = answerNotifier.value.textSpan.text;
-    answerNotifier.value = (currentText == hint) ? const NoAnswer() : CustomHint(_addHighlighting(hint));
+    answerNotifier.value = (currentText == hint) //
+        ? const NoAnswer()
+        : CustomHint(_addHighlighting(hint));
   }
 
   void onResponse(Difficulty response) {
@@ -344,10 +342,40 @@ class PracticePageManager {
       case Difficulty.ok:
         return 1;
       case Difficulty.good:
-        return 7;
+        return userSettings.getFixedGoodDays;
       case Difficulty.easy:
-        return 30;
+        return userSettings.getFixedEasyDays;
     }
+  }
+
+  String get fixedGoodDays => userSettings.getFixedGoodDays.toString();
+
+  String validateFixedGoodDays(String value) {
+    int result = int.tryParse(value) ?? UserSettings.defaultFixedGoodDays;
+    if (result <= 1) return UserSettings.defaultFixedGoodDays.toString();
+    return result.toString();
+  }
+
+  Future<void> updateFixedGoodDays(String number) async {
+    final days = int.tryParse(number);
+    if (days == null) return;
+    await userSettings.setFixedGoodDays(days);
+    goodTitleNotifier.value = _formatDuration(Duration(days: days));
+  }
+
+  String get fixedEasyDays => userSettings.getFixedEasyDays.toString();
+
+  String validateFixedEasyDays(String value) {
+    int result = int.tryParse(value) ?? UserSettings.defaultFixedEasyDays;
+    if (result <= 1) return UserSettings.defaultFixedEasyDays.toString();
+    return result.toString();
+  }
+
+  Future<void> updateFixedEasyDays(String number) async {
+    final days = int.tryParse(number);
+    if (days == null) return;
+    await userSettings.setFixedEasyDays(days);
+    easyTitleNotifier.value = _formatDuration(Duration(days: days));
   }
 
   Future<void> onFinishedAddingEditing(String? verseId) async {

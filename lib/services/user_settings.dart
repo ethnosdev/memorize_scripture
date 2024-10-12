@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class UserSettings {
   static const defaultDailyLimit = 100000;
+  static const defaultFixedGoodDays = 7;
+  static const defaultFixedEasyDays = 30;
   Future<void> init();
   bool get isDarkMode;
   Future<void> setDarkMode(bool value);
@@ -25,6 +27,10 @@ abstract class UserSettings {
   Future<void> setPinnedCollections(List<String> ids);
   DateTime? get lastLocalUpdate;
   Future<void> setLastLocalUpdate([String? timestamp]);
+  int get getFixedGoodDays;
+  Future<void> setFixedGoodDays(int value);
+  int get getFixedEasyDays;
+  Future<void> setFixedEasyDays(int value);
 }
 
 class SharedPreferencesStorage extends UserSettings {
@@ -35,6 +41,8 @@ class SharedPreferencesStorage extends UserSettings {
   static const String _recentReferenceKey = 'recentReference';
   static const String _pinnedCollectionsKey = 'pinnedCollections';
   static const String _lastLocalUpdateKey = 'lastLocalUpdateKey';
+  static const String _fixedGoodDaysKey = 'fixedGoodDaysKey';
+  static const String _fixedEasyDaysKey = 'fixedEasyDaysKey';
 
   // getters cache
   late final SharedPreferences prefs;
@@ -149,5 +157,21 @@ class SharedPreferencesStorage extends UserSettings {
       await prefs.remove(_lastLocalUpdateKey);
     }
     await prefs.setString(_lastLocalUpdateKey, dateTime);
+  }
+
+  @override
+  int get getFixedGoodDays => prefs.getInt(_fixedGoodDaysKey) ?? UserSettings.defaultFixedGoodDays;
+
+  @override
+  Future<void> setFixedGoodDays(int value) async {
+    await prefs.setInt(_fixedGoodDaysKey, value);
+  }
+
+  @override
+  int get getFixedEasyDays => prefs.getInt(_fixedEasyDaysKey) ?? UserSettings.defaultFixedEasyDays;
+
+  @override
+  Future<void> setFixedEasyDays(int value) async {
+    await prefs.setInt(_fixedEasyDaysKey, value);
   }
 }

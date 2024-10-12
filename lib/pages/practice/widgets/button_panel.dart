@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memorize_scripture/common/dialog/set_number_dialog.dart';
 import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
 import 'package:memorize_scripture/pages/practice/widgets/buttons.dart';
 
@@ -25,7 +26,7 @@ class BottomButtons extends StatelessWidget {
   }
 }
 
-class ButtonPanel extends StatelessWidget {
+class ButtonPanel extends StatefulWidget {
   const ButtonPanel({
     super.key,
     required this.manager,
@@ -33,6 +34,11 @@ class ButtonPanel extends StatelessWidget {
 
   final PracticePageManager manager;
 
+  @override
+  State<ButtonPanel> createState() => _ButtonPanelState();
+}
+
+class _ButtonPanelState extends State<ButtonPanel> {
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -42,7 +48,7 @@ class ButtonPanel extends StatelessWidget {
         width: double.infinity,
         margin: const EdgeInsets.all(8),
         child: Row(
-            children: switch (manager.practiceMode) {
+            children: switch (widget.manager.practiceMode) {
           PracticeMode.reviewBySpacedRepetition => _spacedRepetitionButtons(),
           PracticeMode.reviewByFixedDays => _fixedDaysButtons(),
           PracticeMode.reviewSameNumberPerDay => _plainButtons(),
@@ -57,18 +63,18 @@ class ButtonPanel extends StatelessWidget {
       Expanded(
         child: ResponseButton(
           title: 'Hard',
-          subtitle: manager.hardTitle,
-          onPressed: () => manager.onResponse(Difficulty.hard),
-          onLongPress: () => manager.onResponse(Difficulty.ok),
+          subtitle: widget.manager.hardTitle,
+          onPressed: () => widget.manager.onResponse(Difficulty.hard),
+          onLongPress: () => widget.manager.onResponse(Difficulty.ok),
         ),
       ),
       const SizedBox(width: 5),
       Expanded(
         child: ResponseButton(
           title: 'Good',
-          subtitle: manager.goodTitle,
-          onPressed: () => manager.onResponse(Difficulty.good),
-          onLongPress: () => manager.onResponse(Difficulty.easy),
+          subtitle: widget.manager.goodTitle,
+          onPressed: () => widget.manager.onResponse(Difficulty.good),
+          onLongPress: () => widget.manager.onResponse(Difficulty.easy),
         ),
       ),
     ];
@@ -79,33 +85,59 @@ class ButtonPanel extends StatelessWidget {
       Expanded(
         child: ResponseButton(
           title: 'Hard',
-          subtitle: manager.hardTitle,
-          onPressed: () => manager.onResponse(Difficulty.hard),
+          subtitle: widget.manager.hardTitle,
+          onPressed: () => widget.manager.onResponse(Difficulty.hard),
         ),
       ),
       const SizedBox(width: 5),
       Expanded(
         child: ResponseButton(
           title: 'OK',
-          subtitle: manager.okTitle,
-          onPressed: () => manager.onResponse(Difficulty.ok),
+          subtitle: widget.manager.okTitle,
+          onPressed: () => widget.manager.onResponse(Difficulty.ok),
         ),
       ),
       const SizedBox(width: 5),
       Expanded(
-        child: ResponseButton(
-          title: 'Good',
-          subtitle: manager.goodTitle,
-          onPressed: () => manager.onResponse(Difficulty.good),
-        ),
+        child: ValueListenableBuilder<String>(
+            valueListenable: widget.manager.goodTitleNotifier,
+            builder: (context, goodTitle, child) {
+              return ResponseButton(
+                title: 'Good',
+                subtitle: goodTitle,
+                onPressed: () => widget.manager.onResponse(Difficulty.good),
+                onLongPress: () async {
+                  await showSetNumberDialog(
+                    context: context,
+                    title: 'Set days for Good',
+                    oldValue: widget.manager.fixedGoodDays,
+                    onValidate: widget.manager.validateFixedGoodDays,
+                    onConfirm: widget.manager.updateFixedGoodDays,
+                  );
+                },
+              );
+            }),
       ),
       const SizedBox(width: 5),
       Expanded(
-        child: ResponseButton(
-          title: 'Easy',
-          subtitle: manager.easyTitle,
-          onPressed: () => manager.onResponse(Difficulty.easy),
-        ),
+        child: ValueListenableBuilder<String>(
+            valueListenable: widget.manager.easyTitleNotifier,
+            builder: (context, easyTitle, child) {
+              return ResponseButton(
+                  title: 'Easy',
+                  subtitle: easyTitle,
+                  onPressed: () => widget.manager.onResponse(Difficulty.easy),
+                  onLongPress: () async {
+                    await showSetNumberDialog(
+                      context: context,
+                      title: 'Set days for Easy',
+                      oldValue: widget.manager.fixedEasyDays,
+                      onValidate: widget.manager.validateFixedEasyDays,
+                      onConfirm: widget.manager.updateFixedEasyDays,
+                    );
+                    setState(() {});
+                  });
+            }),
       ),
     ];
   }
@@ -115,14 +147,14 @@ class ButtonPanel extends StatelessWidget {
       Expanded(
         child: ResponseButton(
           title: 'Again',
-          onPressed: () => manager.onResponse(Difficulty.hard),
+          onPressed: () => widget.manager.onResponse(Difficulty.hard),
         ),
       ),
       const SizedBox(width: 5),
       Expanded(
         child: ResponseButton(
           title: 'Good',
-          onPressed: () => manager.onResponse(Difficulty.good),
+          onPressed: () => widget.manager.onResponse(Difficulty.good),
         ),
       ),
     ];
