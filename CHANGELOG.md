@@ -8,6 +8,7 @@
 - If you mark a new verse as hard, it will go to the bottom of the day's practice pile rather than three verses down the pile.
 - Don't treat new verses differently.
 - Add option to shuffle verses so that you can practice them in a random order.
+- Add option to only show the answer column in a the verse browser.
 
 ## 2.0.2 - April 27, 2024
 

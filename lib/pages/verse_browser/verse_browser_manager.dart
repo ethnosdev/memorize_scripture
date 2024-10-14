@@ -4,10 +4,19 @@ import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/local_storage/local_storage.dart';
+import 'package:memorize_scripture/services/user_settings.dart';
 
-class VerseBrowserManager {
+enum ViewOptions {
+  empty,
+  oneColumn,
+  twoColumns,
+}
+
+class VerseBrowserManager extends ChangeNotifier {
   final dataRepo = getIt<LocalStorage>();
-  final listNotifier = ValueNotifier<List<Verse>>([]);
+  var list = <Verse>[];
+  var viewOptions = ViewOptions.empty;
+  final userSettings = getIt<UserSettings>();
 
   late String _collectionId;
   late List<Collection> _collections;
@@ -17,15 +26,22 @@ class VerseBrowserManager {
   Future<void> init(String collectionId) async {
     _collectionId = collectionId;
     _collections = await dataRepo.fetchCollections();
-    final list = await dataRepo.fetchAllVerses(collectionId);
-    listNotifier.value = list;
+    list = await dataRepo.fetchAllVerses(collectionId);
+    if (list.isNotEmpty) {
+      final columns = userSettings.getBrowserPreferredNumberOfColumns;
+      if (columns == 1) {
+        viewOptions = ViewOptions.oneColumn;
+      } else {
+        viewOptions = ViewOptions.twoColumns;
+      }
+    }
+    notifyListeners();
   }
 
   Future<void> deleteVerse(Verse verse) async {
     await dataRepo.deleteVerse(verseId: verse.id);
-    final list = listNotifier.value.toList();
     list.removeWhere((v) => v.id == verse.id);
-    listNotifier.value = list;
+    notifyListeners();
     onFinishedModifyingCollection?.call(null);
   }
 
@@ -50,16 +66,24 @@ class VerseBrowserManager {
   bool shouldShowMoveMenuItem() => _collections.length > 1;
 
   List<Collection> otherCollections() {
-    return _collections
-        .where((collection) => collection.id != _collectionId)
-        .toList();
+    return _collections.where((collection) => collection.id != _collectionId).toList();
   }
 
   void moveVerse(Verse verse, String toCollectionId) async {
     await dataRepo.updateVerse(toCollectionId, verse);
-    final list = listNotifier.value.toList();
     list.removeWhere((v) => v.id == verse.id);
-    listNotifier.value = list;
+    notifyListeners();
     onFinishedModifyingCollection?.call(null);
+  }
+
+  void toggleView() {
+    if (viewOptions == ViewOptions.oneColumn) {
+      viewOptions = ViewOptions.twoColumns;
+      userSettings.setBrowserPreferredNumberOfColumns(2);
+    } else {
+      viewOptions = ViewOptions.oneColumn;
+      userSettings.setBrowserPreferredNumberOfColumns(1);
+    }
+    notifyListeners();
   }
 }

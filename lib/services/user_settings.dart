@@ -2,38 +2,44 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-abstract class UserSettings {
+// abstract class UserSettings {
+//   static const defaultDailyLimit = 100000;
+//   static const defaultFixedGoodDays = 7;
+//   static const defaultFixedEasyDays = 30;
+//   Future<void> init();
+//   bool get isDarkMode;
+//   Future<void> setDarkMode(bool value);
+//   int get getDailyLimit;
+//   Future<void> setDailyLimit(int value);
+//   bool get isNotificationsOn;
+//   Future<void> setNotifications(bool value);
+//   (int hour, int minute) get getNotificationTime;
+//   Future<void> setNotificationTime({required int hour, required int minute});
+//   (String? version, String? book, int? chapter) getRecentReference();
+//   Future<void> setRecentReference({
+//     required String? version,
+//     required String? book,
+//     required int? chapter,
+//   });
+//   int getChapterForBook(String book);
+//   Future<void> setChapterForBook(String book, int chapter);
+//   List<String> get pinnedCollections;
+//   Future<void> setPinnedCollections(List<String> ids);
+//   DateTime? get lastLocalUpdate;
+//   Future<void> setLastLocalUpdate([String? timestamp]);
+//   int get getFixedGoodDays;
+//   Future<void> setFixedGoodDays(int value);
+//   int get getFixedEasyDays;
+//   Future<void> setFixedEasyDays(int value);
+//   int get getBrowserPreferredNumberOfColumns;
+
+// }
+
+class UserSettings {
   static const defaultDailyLimit = 100000;
   static const defaultFixedGoodDays = 7;
   static const defaultFixedEasyDays = 30;
-  Future<void> init();
-  bool get isDarkMode;
-  Future<void> setDarkMode(bool value);
-  int get getDailyLimit;
-  Future<void> setDailyLimit(int value);
-  bool get isNotificationsOn;
-  Future<void> setNotifications(bool value);
-  (int hour, int minute) get getNotificationTime;
-  Future<void> setNotificationTime({required int hour, required int minute});
-  (String? version, String? book, int? chapter) getRecentReference();
-  Future<void> setRecentReference({
-    required String? version,
-    required String? book,
-    required int? chapter,
-  });
-  int getChapterForBook(String book);
-  Future<void> setChapterForBook(String book, int chapter);
-  List<String> get pinnedCollections;
-  Future<void> setPinnedCollections(List<String> ids);
-  DateTime? get lastLocalUpdate;
-  Future<void> setLastLocalUpdate([String? timestamp]);
-  int get getFixedGoodDays;
-  Future<void> setFixedGoodDays(int value);
-  int get getFixedEasyDays;
-  Future<void> setFixedEasyDays(int value);
-}
 
-class SharedPreferencesStorage extends UserSettings {
   static const String _darkModeKey = 'darkMode';
   static const String _dailyLimitKey = 'dailyLimit';
   static const String _notificationsKey = 'notifications';
@@ -43,42 +49,35 @@ class SharedPreferencesStorage extends UserSettings {
   static const String _lastLocalUpdateKey = 'lastLocalUpdateKey';
   static const String _fixedGoodDaysKey = 'fixedGoodDaysKey';
   static const String _fixedEasyDaysKey = 'fixedEasyDaysKey';
+  static const String _browserColumnsKey = 'browserColumnsKey';
 
   // getters cache
   late final SharedPreferences prefs;
 
-  @override
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
   }
 
-  @override
   bool get isDarkMode => prefs.getBool(_darkModeKey) ?? false;
 
-  @override
   Future<void> setDarkMode(bool value) async {
     await prefs.setBool(_darkModeKey, value);
   }
 
-  @override
   int get getDailyLimit {
     return prefs.getInt(_dailyLimitKey) ?? UserSettings.defaultDailyLimit;
   }
 
-  @override
   Future<void> setDailyLimit(int value) async {
     await prefs.setInt(_dailyLimitKey, value);
   }
 
-  @override
   bool get isNotificationsOn => prefs.getBool(_notificationsKey) ?? false;
 
-  @override
   Future<void> setNotifications(bool value) async {
     await prefs.setBool(_notificationsKey, value);
   }
 
-  @override
   (int, int) get getNotificationTime {
     final hourMinute = prefs.getString(_notificationTimeKey) ?? '20:00';
     final parts = hourMinute.split(':');
@@ -88,7 +87,6 @@ class SharedPreferencesStorage extends UserSettings {
     return (hour, minute);
   }
 
-  @override
   Future<void> setNotificationTime({
     required int hour,
     required int minute,
@@ -97,7 +95,6 @@ class SharedPreferencesStorage extends UserSettings {
     await prefs.setString(_notificationTimeKey, value);
   }
 
-  @override
   (String? version, String? book, int? chapter) getRecentReference() {
     final json = prefs.getString(_recentReferenceKey);
     if (json == null) return (null, null, null);
@@ -108,7 +105,6 @@ class SharedPreferencesStorage extends UserSettings {
     return (version, book, chapter);
   }
 
-  @override
   Future<void> setRecentReference({
     required String? version,
     required String? book,
@@ -124,33 +120,27 @@ class SharedPreferencesStorage extends UserSettings {
   }
 
   // The `book` is its own key.
-  @override
   int getChapterForBook(String book) {
     return prefs.getInt(book) ?? 1;
   }
 
   // The `book` is the key to save the chapter number.
-  @override
   Future<void> setChapterForBook(String book, int chapter) async {
     await prefs.setInt(book, chapter);
   }
 
-  @override
   List<String> get pinnedCollections => prefs.getStringList(_pinnedCollectionsKey) ?? [];
 
-  @override
   Future<void> setPinnedCollections(List<String> ids) async {
     await prefs.setStringList(_pinnedCollectionsKey, ids);
   }
 
-  @override
   DateTime? get lastLocalUpdate {
     final timestamp = prefs.getString(_lastLocalUpdateKey);
     if (timestamp == null) return null;
     return DateTime.tryParse(timestamp);
   }
 
-  @override
   Future<void> setLastLocalUpdate([String? timestamp]) async {
     final dateTime = (timestamp != null) ? timestamp : DateTime.now().toUtc().toIso8601String();
     if (timestamp == null) {
@@ -159,19 +149,21 @@ class SharedPreferencesStorage extends UserSettings {
     await prefs.setString(_lastLocalUpdateKey, dateTime);
   }
 
-  @override
   int get getFixedGoodDays => prefs.getInt(_fixedGoodDaysKey) ?? UserSettings.defaultFixedGoodDays;
 
-  @override
   Future<void> setFixedGoodDays(int value) async {
     await prefs.setInt(_fixedGoodDaysKey, value);
   }
 
-  @override
   int get getFixedEasyDays => prefs.getInt(_fixedEasyDaysKey) ?? UserSettings.defaultFixedEasyDays;
 
-  @override
   Future<void> setFixedEasyDays(int value) async {
     await prefs.setInt(_fixedEasyDaysKey, value);
+  }
+
+  int get getBrowserPreferredNumberOfColumns => prefs.getInt(_browserColumnsKey) ?? 2;
+
+  Future<void> setBrowserPreferredNumberOfColumns(int value) async {
+    await prefs.setInt(_browserColumnsKey, value);
   }
 }

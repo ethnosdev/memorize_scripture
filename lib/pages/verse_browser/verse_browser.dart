@@ -30,65 +30,99 @@ class _VerseBrowserState extends State<VerseBrowser> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.collection.name),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            tooltip: 'Add verse',
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => AddEditVersePage(
-                    collectionId: widget.collection.id,
-                    onFinished: manager.onFinishedEditing,
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-      body: ValueListenableBuilder(
-        valueListenable: manager.listNotifier,
-        builder: (context, list, child) {
-          return ListView.builder(
-            itemCount: list.length,
-            itemBuilder: (context, index) {
-              final verse = list[index];
-              return ListTile(
-                title: Row(
-                  children: [
-                    Expanded(
-                        child: Text(
-                      verse.prompt,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    )),
-                    const SizedBox(width: 8),
-                    Expanded(
-                        child: Text(
-                      verse.text,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    )),
-                  ],
-                ),
-                onTap: () {
+    return ListenableBuilder(
+      listenable: manager,
+      builder: (context, child) {
+        final Icon viewIcon;
+        switch (manager.viewOptions) {
+          case ViewOptions.empty:
+            return const SizedBox();
+          case ViewOptions.oneColumn:
+            viewIcon = const Icon(Icons.table_rows_outlined);
+          case ViewOptions.twoColumns:
+            viewIcon = const Icon(Icons.grid_view);
+        }
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(widget.collection.name),
+            actions: [
+              IconButton(
+                icon: viewIcon,
+                tooltip: 'Toggle view',
+                onPressed: manager.toggleView,
+              ),
+              IconButton(
+                icon: const Icon(Icons.add),
+                tooltip: 'Add verse',
+                onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) => AddEditVersePage(
                         collectionId: widget.collection.id,
-                        verseId: verse.id,
                         onFinished: manager.onFinishedEditing,
                       ),
                     ),
                   );
                 },
-                onLongPress: () => _showCollectionOptionsDialog(verse),
-              );
+              ),
+            ],
+          ),
+          body: ListView.builder(
+            itemCount: manager.list.length,
+            itemBuilder: (context, index) {
+              final verse = manager.list[index];
+              if (manager.viewOptions == ViewOptions.oneColumn) {
+                return _buildOneColumnTile(verse, context);
+              }
+              return _buildTwoColumnTile(verse, context);
             },
-          );
-        },
+          ),
+        );
+      },
+    );
+  }
+
+  ListTile _buildOneColumnTile(verse, BuildContext context) {
+    return ListTile(
+      title: Text(
+        verse.text,
+        // style: Theme.of(context).textTheme.bodySmall,
+      ),
+      onTap: () => _goEdit(verse),
+      onLongPress: () => _showCollectionOptionsDialog(verse),
+    );
+  }
+
+  ListTile _buildTwoColumnTile(verse, BuildContext context) {
+    return ListTile(
+      title: Row(
+        children: [
+          Expanded(
+              child: Text(
+            verse.prompt,
+            style: Theme.of(context).textTheme.bodySmall,
+          )),
+          const SizedBox(width: 8),
+          Expanded(
+              child: Text(
+            verse.text,
+            style: Theme.of(context).textTheme.bodySmall,
+          )),
+        ],
+      ),
+      onTap: () => _goEdit(verse),
+      onLongPress: () => _showCollectionOptionsDialog(verse),
+    );
+  }
+
+  void _goEdit(Verse verse) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => AddEditVersePage(
+          collectionId: widget.collection.id,
+          verseId: verse.id,
+          onFinished: manager.onFinishedEditing,
+        ),
       ),
     );
   }

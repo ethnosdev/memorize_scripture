@@ -13,7 +13,7 @@ import 'package:memorize_scripture/app_manager.dart';
 final getIt = GetIt.instance;
 
 void setupServiceLocator() {
-  getIt.registerLazySingleton<UserSettings>(() => SharedPreferencesStorage());
+  getIt.registerLazySingleton<UserSettings>(() => UserSettings());
   getIt.registerLazySingleton<SecureStorage>(() => LocalSecureStorage());
   getIt.registerLazySingleton<LocalStorage>(() => SqfliteStorage());
   getIt.registerLazySingleton<NotificationService>(() => NotificationService());
