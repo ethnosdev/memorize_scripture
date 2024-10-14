@@ -40,7 +40,11 @@ class _ImportDialogState extends State<ImportDialog> {
                       OutlinedButton(
                         onPressed: () async {
                           final version = await _showVersionsDialog();
-                          manager.setVersion(version);
+                          if (version?.abbreviation == 'NIV84') {
+                            _showNiv84Dialog();
+                          } else {
+                            manager.setVersion(version);
+                          }
                         },
                         child: Text(reference.version),
                       ),
@@ -151,6 +155,41 @@ class _ImportDialogState extends State<ImportDialog> {
       },
     );
   }
+
+  void _showNiv84Dialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext buildContext) {
+        return Dialog(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Text(
+                    'Biblica, the copyright holder, regrettably refuses to grant '
+                    'public digital access to the NIV 1984 text. If you have a '
+                    'paper version, one workaround for your private use in '
+                    'memorization is to take a picture of the '
+                    'text with your phone. Long-pressing the image should allow '
+                    'you to select the text on most modern phones.',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 20),
+                  OutlinedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
 class BookList extends StatefulWidget {
@@ -179,8 +218,7 @@ class _BookListState extends State<BookList> {
   }
 
   void _scrollToIndex() {
-    final index =
-        widget.books.indexWhere((book) => book.name == widget.selectedBook);
+    final index = widget.books.indexWhere((book) => book.name == widget.selectedBook);
     if (index == -1) return;
     final scrollTo = (index > 0) ? index - 1 : 0;
     itemScrollController.jumpTo(index: scrollTo);
