@@ -38,9 +38,9 @@ class _VerseBrowserState extends State<VerseBrowser> {
           case ViewOptions.empty:
             return const SizedBox();
           case ViewOptions.oneColumn:
-            viewIcon = const Icon(Icons.table_rows_outlined);
-          case ViewOptions.twoColumns:
             viewIcon = const Icon(Icons.grid_view);
+          case ViewOptions.twoColumns:
+            viewIcon = const Icon(Icons.table_rows_outlined);
         }
         return Scaffold(
           appBar: AppBar(
@@ -82,32 +82,34 @@ class _VerseBrowserState extends State<VerseBrowser> {
     );
   }
 
-  ListTile _buildOneColumnTile(verse, BuildContext context) {
+  ListTile _buildOneColumnTile(Verse verse, BuildContext context) {
+    final highlightColor = Theme.of(context).colorScheme.primary;
     return ListTile(
-      title: Text(
-        verse.text,
-        // style: Theme.of(context).textTheme.bodySmall,
-      ),
+      title: Text.rich(manager.formatText(verse.text, highlightColor)),
       onTap: () => _goEdit(verse),
       onLongPress: () => _showCollectionOptionsDialog(verse),
     );
   }
 
-  ListTile _buildTwoColumnTile(verse, BuildContext context) {
+  ListTile _buildTwoColumnTile(Verse verse, BuildContext context) {
+    final highlightColor = Theme.of(context).colorScheme.primary;
+    const scaler = TextScaler.linear(0.8);
     return ListTile(
       title: Row(
         children: [
           Expanded(
-              child: Text(
-            verse.prompt,
-            style: Theme.of(context).textTheme.bodySmall,
-          )),
+            child: Text.rich(
+              manager.formatText(verse.prompt, highlightColor),
+              textScaler: scaler,
+            ),
+          ),
           const SizedBox(width: 8),
           Expanded(
-              child: Text(
-            verse.text,
-            style: Theme.of(context).textTheme.bodySmall,
-          )),
+            child: RichText(
+              text: manager.formatText(verse.text, highlightColor),
+              textScaler: scaler,
+            ),
+          ),
         ],
       ),
       onTap: () => _goEdit(verse),

@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:memorize_scripture/common/collection.dart';
+import 'package:memorize_scripture/common/highlighting.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/local_storage/local_storage.dart';
@@ -85,5 +87,9 @@ class VerseBrowserManager extends ChangeNotifier {
       userSettings.setBrowserPreferredNumberOfColumns(1);
     }
     notifyListeners();
+  }
+
+  TextSpan formatText(String text, Color color) {
+    return addHighlighting(text, color);
   }
 }

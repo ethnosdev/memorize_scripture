@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
+import 'package:memorize_scripture/common/highlighting.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/pages/practice/helpers/letters_hint.dart';
 import 'package:memorize_scripture/pages/practice/helpers/words_hint.dart';
@@ -138,7 +139,7 @@ class PracticePageManager {
       hasCustomHint: _verses.first.hint.isNotEmpty,
     );
     answerNotifier.value = const NoAnswer();
-    promptNotifier.value = _addHighlighting(_verses.first.prompt);
+    promptNotifier.value = addHighlighting(_verses.first.prompt, _textHighlightColor);
     countNotifier.value = _verses.length.toString();
     _wordsHintHelper.init(
       text: _verses.first.text,
@@ -146,41 +147,9 @@ class PracticePageManager {
     );
   }
 
-  // Text surrounded by double asterisks should be highlighted.
-  TextSpan _addHighlighting(String text) {
-    final spans = <TextSpan>[];
-    final regExp = RegExp(r'\*\*(.*?)\*\*', dotAll: true);
-    int lastEnd = 0;
-    final highlightStyle = TextStyle(
-      color: _textHighlightColor,
-      fontWeight: FontWeight.bold,
-    );
-
-    // Find all matches and create TextSpans
-    regExp.allMatches(text).forEach((match) {
-      spans.add(TextSpan(
-        text: text.substring(lastEnd, match.start),
-      ));
-      spans.add(TextSpan(
-        text: match.group(1),
-        style: highlightStyle,
-      ));
-      lastEnd = match.end;
-    });
-
-    // Add the remaining text if any
-    if (lastEnd < text.length) {
-      spans.add(TextSpan(
-        text: text.substring(lastEnd, text.length),
-      ));
-    }
-
-    return TextSpan(children: spans);
-  }
-
   void show() {
     _showResponseButtons();
-    final text = _addHighlighting(_verses.first.text);
+    final text = addHighlighting(_verses.first.text, _textHighlightColor);
     answerNotifier.value = FinalAnswer(text);
   }
 
@@ -266,7 +235,7 @@ class PracticePageManager {
     final currentText = answerNotifier.value.textSpan.text;
     answerNotifier.value = (currentText == hint) //
         ? const NoAnswer()
-        : CustomHint(_addHighlighting(hint));
+        : CustomHint(addHighlighting(hint, _textHighlightColor));
   }
 
   void onResponse(Difficulty response) {
