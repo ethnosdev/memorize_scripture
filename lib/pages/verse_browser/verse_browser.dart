@@ -33,10 +33,10 @@ class _VerseBrowserState extends State<VerseBrowser> {
     return ListenableBuilder(
       listenable: manager,
       builder: (context, child) {
-        final Icon viewIcon;
+        final Icon? viewIcon;
         switch (manager.viewOptions) {
           case ViewOptions.empty:
-            return const SizedBox();
+            viewIcon = null;
           case ViewOptions.oneColumn:
             viewIcon = const Icon(Icons.grid_view);
           case ViewOptions.twoColumns:
@@ -46,11 +46,12 @@ class _VerseBrowserState extends State<VerseBrowser> {
           appBar: AppBar(
             title: Text(widget.collection.name),
             actions: [
-              IconButton(
-                icon: viewIcon,
-                tooltip: 'Toggle view',
-                onPressed: manager.toggleView,
-              ),
+              if (viewIcon != null)
+                IconButton(
+                  icon: viewIcon,
+                  tooltip: 'Toggle view',
+                  onPressed: manager.toggleView,
+                ),
               IconButton(
                 icon: const Icon(Icons.add),
                 tooltip: 'Add verse',
@@ -67,15 +68,22 @@ class _VerseBrowserState extends State<VerseBrowser> {
               ),
             ],
           ),
-          body: ListView.builder(
-            itemCount: manager.list.length,
-            itemBuilder: (context, index) {
-              final verse = manager.list[index];
-              if (manager.viewOptions == ViewOptions.oneColumn) {
-                return _buildOneColumnTile(verse, context);
-              }
-              return _buildTwoColumnTile(verse, context);
-            },
+          body: Column(
+            children: [
+              Text('Total: ${manager.list.length}'),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: manager.list.length,
+                  itemBuilder: (context, index) {
+                    final verse = manager.list[index];
+                    if (manager.viewOptions == ViewOptions.oneColumn) {
+                      return _buildOneColumnTile(verse, context);
+                    }
+                    return _buildTwoColumnTile(verse, context);
+                  },
+                ),
+              ),
+            ],
           ),
         );
       },

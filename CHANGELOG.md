@@ -9,6 +9,8 @@
 - Don't treat new verses differently.
 - Add option to shuffle verses so that you can practice them in a random order.
 - Add option to only show the answer column in a the verse browser.
+- Highlight words in the verse browser.
+- Show total number of verses in the verse browser.
 
 ## 2.0.2 - April 27, 2024
 
