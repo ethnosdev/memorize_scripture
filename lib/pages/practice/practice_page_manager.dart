@@ -417,6 +417,12 @@ class PracticePageManager {
     await localStorage.updateVerse(toCollectionId, verse);
     _resetUi();
   }
+
+  void shuffleVerses() {
+    _verses.shuffle();
+    _undoVerse = null;
+    _resetUi();
+  }
 }
 
 enum Difficulty { hard, ok, good, easy }

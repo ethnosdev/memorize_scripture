@@ -77,6 +77,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                         if (manager.shouldShowMoveMenuItem) _moveMenuItem(),
                         _addMenuItem(),
                         _verseBrowserMenuItem(),
+                        _shuffleMenuItem(),
                       ],
                       onSelected: (value) {
                         switch (value) {
@@ -88,6 +89,8 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                             _goAdd(context);
                           case 4:
                             _goBrowse(context);
+                          case 5:
+                            _shuffleVerses(context);
                         }
                       },
                     ),
@@ -148,6 +151,16 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
+  PopupMenuItem<int> _shuffleMenuItem() {
+    return const PopupMenuItem(
+      value: 5,
+      child: IconTextRow(
+        icon: Icons.shuffle,
+        text: 'Shuffle',
+      ),
+    );
+  }
+
   void _goEdit(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -180,6 +193,10 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
     );
+  }
+
+  void _shuffleVerses(BuildContext context) {
+    manager.shuffleVerses();
   }
 
   Future<String?> _showMoveDialog(BuildContext context) async {
