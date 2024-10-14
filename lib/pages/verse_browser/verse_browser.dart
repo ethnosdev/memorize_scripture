@@ -113,8 +113,8 @@ class _VerseBrowserState extends State<VerseBrowser> {
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: RichText(
-              text: manager.formatText(verse.text, highlightColor),
+            child: Text.rich(
+              manager.formatText(verse.text, highlightColor),
               textScaler: scaler,
             ),
           ),
