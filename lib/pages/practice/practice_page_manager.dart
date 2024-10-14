@@ -393,6 +393,9 @@ class PracticePageManager {
   void undoResponse() {
     final verse = _undoVerse;
     if (verse == null) return;
+    if (_verses.isNotEmpty && _verses.last.id == verse.id) {
+      _verses.removeLast();
+    }
     _verses.insert(0, verse);
     localStorage.updateVerse(_collection.id, verse);
     _undoVerse = null;
