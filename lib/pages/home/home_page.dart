@@ -371,6 +371,7 @@ Future<Collection?> _showEditNameDialog(
                 ),
                 const SizedBox(height: 32),
                 DropdownButtonFormField<StudyStyle>(
+                  isExpanded: true,
                   value: studyStyle,
                   items: const [
                     DropdownMenuItem(
