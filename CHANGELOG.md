@@ -1,4 +1,9 @@
-## 2.1.0
+## 2.1.1 - October 21, 2024
+
+- Fix bug with same number mode showing previous days verses again.
+- Attempted fix for iPhone 12 not showing dropdown menu for study modes.
+
+## 2.1.0 - October 14, 2024
 
 - Three study styles that can be selected per collection: Spaced repetition, User chooses frequency, and fixed number of verses per day. 
 - The spaced repetition style only has two buttons: Hard and Good. (But you can still get OK by long pressing Hard and you can get Easy by long pressing Good)
