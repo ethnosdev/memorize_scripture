@@ -248,8 +248,10 @@ class PracticePageManager {
     _undoVerse = verse;
     if (_practiceMode == PracticeMode.casualPractice) {
       _handleCasualPracticeVerse(verse, response);
+    } else if (_practiceMode == PracticeMode.reviewSameNumberPerDay) {
+      _handleSameNumberPerDayVerse(verse, response);
     } else {
-      _handleReviewVerse(verse, response);
+      _handleVerse(verse, response);
     }
   }
 
@@ -259,7 +261,21 @@ class PracticePageManager {
     }
   }
 
-  void _handleReviewVerse(Verse verse, Difficulty response) {
+  final Set<String> _alreadySeenIds = {};
+
+  // The set of verses are fetched according to the last modified verse.
+  // Since _handleVerse also updates the modification date, skip this if
+  // the verse is already seen.
+  void _handleSameNumberPerDayVerse(Verse verse, Difficulty response) {
+    if (!_alreadySeenIds.contains(verse.id)) {
+      _handleVerse(verse, response);
+    }
+    if (response == Difficulty.hard) {
+      _alreadySeenIds.add(verse.id);
+    }
+  }
+
+  void _handleVerse(Verse verse, Difficulty response) {
     final updatedVerse = _adjustVerseStats(verse, response);
     localStorage.updateVerse(_collection.id, updatedVerse);
     if (response == Difficulty.hard) {
