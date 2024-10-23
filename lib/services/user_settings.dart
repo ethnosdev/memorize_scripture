@@ -2,39 +2,6 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-// abstract class UserSettings {
-//   static const defaultDailyLimit = 100000;
-//   static const defaultFixedGoodDays = 7;
-//   static const defaultFixedEasyDays = 30;
-//   Future<void> init();
-//   bool get isDarkMode;
-//   Future<void> setDarkMode(bool value);
-//   int get getDailyLimit;
-//   Future<void> setDailyLimit(int value);
-//   bool get isNotificationsOn;
-//   Future<void> setNotifications(bool value);
-//   (int hour, int minute) get getNotificationTime;
-//   Future<void> setNotificationTime({required int hour, required int minute});
-//   (String? version, String? book, int? chapter) getRecentReference();
-//   Future<void> setRecentReference({
-//     required String? version,
-//     required String? book,
-//     required int? chapter,
-//   });
-//   int getChapterForBook(String book);
-//   Future<void> setChapterForBook(String book, int chapter);
-//   List<String> get pinnedCollections;
-//   Future<void> setPinnedCollections(List<String> ids);
-//   DateTime? get lastLocalUpdate;
-//   Future<void> setLastLocalUpdate([String? timestamp]);
-//   int get getFixedGoodDays;
-//   Future<void> setFixedGoodDays(int value);
-//   int get getFixedEasyDays;
-//   Future<void> setFixedEasyDays(int value);
-//   int get getBrowserPreferredNumberOfColumns;
-
-// }
-
 class UserSettings {
   static const defaultDailyLimit = 100000;
   static const defaultFixedGoodDays = 7;
