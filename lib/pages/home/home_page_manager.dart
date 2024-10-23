@@ -195,6 +195,22 @@ class HomePageManager {
       isSyncingNotifier.value = false;
     }
   }
+
+  String get fixedGoodDays => userSettings.getFixedGoodDays.toString();
+  set fixedGoodDays(String value) {
+    if (value == fixedGoodDays) return;
+    final int? intValue = int.tryParse(value);
+    if (intValue == null) return;
+    userSettings.setFixedGoodDays(intValue);
+  }
+
+  String get fixedEasyDays => userSettings.getFixedEasyDays.toString();
+  set fixedEasyDays(String value) {
+    if (value == fixedEasyDays) return;
+    final int? intValue = int.tryParse(value);
+    if (intValue == null) return;
+    userSettings.setFixedEasyDays(intValue);
+  }
 }
 
 sealed class HomePageUiState {}
