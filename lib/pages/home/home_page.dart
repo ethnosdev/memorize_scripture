@@ -347,7 +347,7 @@ Future<Collection?> _showEditNameDialog(
 }) async {
   final oldName = oldCollection?.name;
   final nameController = TextEditingController(text: oldName);
-  StudyStyle studyStyle = oldCollection?.studyStyle ?? StudyStyle.fixedDays;
+  StudyStyle studyStyle = oldCollection?.studyStyle ?? StudyStyle.spacedRepetition;
 
   // Same number per day
   final versesPerDay = oldCollection?.versesPerDay ?? Collection.defaultVersesPerDay;
