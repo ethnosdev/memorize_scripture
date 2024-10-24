@@ -95,18 +95,13 @@ class SqfliteStorage implements LocalStorage {
   }
 
   @override
-  Future<List<Verse>> fetchAllVerses([String? collectionId]) async {
-    List<Map<String, Object?>> verses;
-    if (collectionId != null) {
-      verses = await _database.query(
-        VerseEntry.tableName,
-        where: '${VerseEntry.collectionId} = ?',
-        whereArgs: [collectionId],
-        orderBy: '${VerseEntry.prompt} ASC',
-      );
-    } else {
-      verses = await _database.query(VerseEntry.tableName);
-    }
+  Future<List<Verse>> fetchAllVersesInCollection(String collectionId) async {
+    final verses = await _database.query(
+      VerseEntry.tableName,
+      where: '${VerseEntry.collectionId} = ?',
+      whereArgs: [collectionId],
+      orderBy: '${VerseEntry.prompt} ASC',
+    );
     return List.generate(verses.length, (i) {
       final verse = verses[i];
       return Verse(

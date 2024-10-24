@@ -364,69 +364,73 @@ Future<Collection?> _showEditNameDialog(
         builder: (context, setState) {
           return AlertDialog(
             title: const Text("Collection"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  textCapitalization: TextCapitalization.sentences,
-                  autofocus: oldName == null,
-                  controller: nameController,
-                  decoration: const InputDecoration(labelText: 'Name'),
-                  onChanged: (value) {
-                    setState(() {});
-                  },
-                ),
-                const SizedBox(height: 32),
-                DropdownButtonFormField<StudyStyle>(
-                  isExpanded: true,
-                  value: studyStyle,
-                  items: const [
-                    DropdownMenuItem(
-                      value: StudyStyle.spacedRepetition,
-                      child: Text('Spaced repetition'),
+            content: SingleChildScrollView(
+              child: Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      textCapitalization: TextCapitalization.sentences,
+                      autofocus: oldName == null,
+                      controller: nameController,
+                      decoration: const InputDecoration(labelText: 'Name'),
+                      onChanged: (value) {
+                        setState(() {});
+                      },
                     ),
-                    DropdownMenuItem(
-                      value: StudyStyle.fixedDays,
-                      child: Text('Choose frequency'),
+                    const SizedBox(height: 32),
+                    DropdownButtonFormField<StudyStyle>(
+                      isExpanded: true,
+                      value: studyStyle,
+                      items: const [
+                        DropdownMenuItem(
+                          value: StudyStyle.spacedRepetition,
+                          child: Text('Spaced repetition'),
+                        ),
+                        DropdownMenuItem(
+                          value: StudyStyle.fixedDays,
+                          child: Text('Choose frequency'),
+                        ),
+                        DropdownMenuItem(
+                          value: StudyStyle.sameNumberPerDay,
+                          child: Text('Fixed number of verses'),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          studyStyle = value!;
+                        });
+                      },
+                      decoration: const InputDecoration(labelText: 'Review style'),
                     ),
-                    DropdownMenuItem(
-                      value: StudyStyle.sameNumberPerDay,
-                      child: Text('Fixed number of verses'),
-                    ),
+                    const SizedBox(height: 16),
+                    if (studyStyle == StudyStyle.sameNumberPerDay)
+                      TextField(
+                        keyboardType: TextInputType.number,
+                        controller: versesPerDayController,
+                        decoration: const InputDecoration(
+                          labelText: 'Verses per day',
+                        ),
+                      ),
+                    if (studyStyle == StudyStyle.fixedDays) ...[
+                      TextField(
+                        keyboardType: TextInputType.number,
+                        controller: goodDaysController,
+                        decoration: const InputDecoration(
+                          labelText: 'Days for Good',
+                        ),
+                      ),
+                      TextField(
+                        keyboardType: TextInputType.number,
+                        controller: easyDaysController,
+                        decoration: const InputDecoration(
+                          labelText: 'Days for Easy',
+                        ),
+                      ),
+                    ]
                   ],
-                  onChanged: (value) {
-                    setState(() {
-                      studyStyle = value!;
-                    });
-                  },
-                  decoration: const InputDecoration(labelText: 'Review style'),
                 ),
-                const SizedBox(height: 16),
-                if (studyStyle == StudyStyle.sameNumberPerDay)
-                  TextField(
-                    keyboardType: TextInputType.number,
-                    controller: versesPerDayController,
-                    decoration: const InputDecoration(
-                      labelText: 'Verses per day',
-                    ),
-                  ),
-                if (studyStyle == StudyStyle.fixedDays) ...[
-                  TextField(
-                    keyboardType: TextInputType.number,
-                    controller: goodDaysController,
-                    decoration: const InputDecoration(
-                      labelText: 'Days for Good',
-                    ),
-                  ),
-                  TextField(
-                    keyboardType: TextInputType.number,
-                    controller: easyDaysController,
-                    decoration: const InputDecoration(
-                      labelText: 'Days for Easy',
-                    ),
-                  ),
-                ]
-              ],
+              ),
             ),
             actions: [
               TextButton(

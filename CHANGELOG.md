@@ -1,7 +1,8 @@
-## 2.2.0 - October 23, 2024
+## 2.2.0 - October 24, 2024
 
 - Don't show keyboard by default for editing collection name unless it is a new collection.
 - Allow users to edit the number days for Good and Easy for the Choose Frequency study style while in the edit collection dialog.
+- Add biblical sort order for collections and verse prompts when it is a recognized Bible book.
 
 ## 2.1.1 - October 21, 2024
 

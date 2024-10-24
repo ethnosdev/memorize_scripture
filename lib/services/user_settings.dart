@@ -17,6 +17,7 @@ class UserSettings {
   static const String _fixedGoodDaysKey = 'fixedGoodDaysKey';
   static const String _fixedEasyDaysKey = 'fixedEasyDaysKey';
   static const String _browserColumnsKey = 'browserColumnsKey';
+  static const String _biblicalOrderKey = 'biblicalOrderKey';
 
   // getters cache
   late final SharedPreferences prefs;
@@ -132,5 +133,11 @@ class UserSettings {
 
   Future<void> setBrowserPreferredNumberOfColumns(int value) async {
     await prefs.setInt(_browserColumnsKey, value);
+  }
+
+  bool get isBiblicalOrder => prefs.getBool(_biblicalOrderKey) ?? false;
+
+  Future<void> setIsBiblicalOrder(bool value) async {
+    await prefs.setBool(_biblicalOrderKey, value);
   }
 }

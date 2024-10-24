@@ -109,6 +109,17 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ],
               ),
+              SettingsSection(
+                title: const Text('Experimental'),
+                tiles: [
+                  SettingsTile.switchTile(
+                    activeSwitchColor: colorScheme.primary,
+                    title: const Text('Sort in biblical order'),
+                    initialValue: manager.isBiblicalOrder,
+                    onToggle: manager.setIsBiblicalOrder,
+                  ),
+                ],
+              ),
             ],
           );
         },

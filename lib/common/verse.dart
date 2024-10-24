@@ -33,7 +33,7 @@ class Verse {
   final Duration interval;
 
   /// Whether this is a new verse that has never been practiced before
-  // bool get isNew => nextDueDate == null;
+  bool get isNew => nextDueDate == null;
 
   Verse copyWith({
     String? id,

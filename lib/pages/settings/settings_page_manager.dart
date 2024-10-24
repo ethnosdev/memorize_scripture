@@ -108,4 +108,11 @@ class SettingsPageManager extends ChangeNotifier {
       scheduleToday: true,
     );
   }
+
+  bool get isBiblicalOrder => userSettings.isBiblicalOrder;
+
+  Future<void> setIsBiblicalOrder(bool value) async {
+    await userSettings.setIsBiblicalOrder(value);
+    notifyListeners();
+  }
 }

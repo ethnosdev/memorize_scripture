@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/dialog/result_from_restoring_backup.dart';
+import 'package:memorize_scripture/common/sorting.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/backend/backend_service.dart';
 import 'package:memorize_scripture/services/backend/exceptions.dart';
@@ -38,8 +39,12 @@ class HomePageManager {
   Future<void> _reloadCollections() async {
     final collections = await localStorage.fetchCollections();
     final withPins = _updatePinnedStatus(collections);
-    final sorted = _sortPinned(withPins);
-    collectionNotifier.value = LoadedCollections(sorted);
+    if (userSettings.isBiblicalOrder) {
+      sortCollectionsBiblically(withPins);
+    } else {
+      _sortPinned(withPins);
+    }
+    collectionNotifier.value = LoadedCollections(withPins);
   }
 
   List<Collection> _updatePinnedStatus(List<Collection> collections) {
@@ -50,14 +55,12 @@ class HomePageManager {
     return withPins;
   }
 
-  List<Collection> _sortPinned(List<Collection> collections) {
-    final sortedCollections = collections.toList();
-    sortedCollections.sort((a, b) {
+  void _sortPinned(List<Collection> collections) {
+    collections.sort((a, b) {
       if (a.isPinned && !b.isPinned) return -1;
       if (!a.isPinned && b.isPinned) return 1;
       return a.name.compareTo(b.name);
     });
-    return sortedCollections;
   }
 
   Future<void> addCollection(Collection collection) async {
@@ -160,9 +163,13 @@ class HomePageManager {
     final collections = _getList.toList();
     final index = collections.indexOf(collection);
     collections[index] = collection.copyWith(isPinned: !collection.isPinned);
-    final reordered = _sortPinned(collections);
-    collectionNotifier.value = LoadedCollections(reordered);
-    final pinnedIds = reordered
+    if (userSettings.isBiblicalOrder) {
+      sortCollectionsBiblically(collections);
+    } else {
+      _sortPinned(collections);
+    }
+    collectionNotifier.value = LoadedCollections(collections);
+    final pinnedIds = collections
         .where((c) => c.isPinned) //
         .map((c) => c.id)
         .toList();

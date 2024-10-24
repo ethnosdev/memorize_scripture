@@ -10,7 +10,7 @@ abstract class LocalStorage {
   /// Returns all verses in a collection
   ///
   /// Defaults to all verses in the app if no collection is specified
-  Future<List<Verse>> fetchAllVerses([String? collectionId]);
+  Future<List<Verse>> fetchAllVersesInCollection(String collectionId);
 
   /// Returns verses that are due today
   ///

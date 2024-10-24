@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/common/highlighting.dart';
+import 'package:memorize_scripture/common/sorting.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/pages/practice/helpers/letters_hint.dart';
 import 'package:memorize_scripture/pages/practice/helpers/words_hint.dart';
@@ -111,7 +112,15 @@ class PracticePageManager {
       collection: collection,
       newVerseLimit: newVerseLimit,
     );
-    localStorage.fetchCollections().then((value) => _collections = value);
+    if (userSettings.isBiblicalOrder) {
+      sortVersesBiblically(_verses);
+    }
+    localStorage.fetchCollections().then((value) {
+      _collections = value;
+      if (userSettings.isBiblicalOrder) {
+        sortCollectionsBiblically(_collections);
+      }
+    });
     if (_verses.isEmpty) {
       final number = await localStorage.numberInCollection(collection.id);
       if (number > 0) {
@@ -388,7 +397,10 @@ class PracticePageManager {
   }
 
   Future<void> practiceAllVerses() async {
-    _verses = await localStorage.fetchAllVerses(_collection.id);
+    _verses = await localStorage.fetchAllVersesInCollection(_collection.id);
+    if (userSettings.isBiblicalOrder) {
+      sortVersesBiblically(_verses);
+    }
     _practiceMode = PracticeMode.casualPractice;
     _resetUi();
   }
