@@ -110,6 +110,7 @@ Reference? parseReference(String reference) {
   if (reference.contains('\n')) {
     ref = reference.split('\n')[0];
   }
+  ref = ref.replaceAll('*', '');
   final match = bibleParse.firstMatch(ref);
   if (match == null) return null;
   final book = match.group(1)?.trim();
