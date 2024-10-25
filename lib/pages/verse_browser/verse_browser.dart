@@ -70,12 +70,16 @@ class _VerseBrowserState extends State<VerseBrowser> {
           ),
           body: Column(
             children: [
-              Text('Total: ${manager.list.length}'),
               Expanded(
                 child: ListView.builder(
-                  itemCount: manager.list.length,
+                  itemCount: manager.list.length + 1,
                   itemBuilder: (context, index) {
-                    final verse = manager.list[index];
+                    if (index == 0) {
+                      return Center(
+                        child: Text('Total: ${manager.list.length}'),
+                      );
+                    }
+                    final verse = manager.list[index - 1];
                     if (manager.viewOptions == ViewOptions.oneColumn) {
                       return _buildOneColumnTile(verse, context);
                     }

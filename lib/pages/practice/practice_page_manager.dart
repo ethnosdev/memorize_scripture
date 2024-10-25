@@ -158,6 +158,10 @@ class PracticePageManager {
 
   void show() {
     _showResponseButtons();
+    _showFinalAnswer();
+  }
+
+  void _showFinalAnswer() {
     final text = addHighlighting(_verses.first.text, _textHighlightColor);
     answerNotifier.value = FinalAnswer(text);
   }
@@ -240,11 +244,20 @@ class PracticePageManager {
   }
 
   void showCustomHint() {
-    final hint = _verses.first.hint;
-    final currentText = answerNotifier.value.textSpan.text;
-    answerNotifier.value = (currentText == hint) //
-        ? const NoAnswer()
-        : CustomHint(addHighlighting(hint, _textHighlightColor));
+    switch (answerNotifier.value) {
+      case NoAnswer():
+      case LettersHint():
+      case WordsHint():
+      case FinalAnswer():
+        final hint = _verses.first.hint;
+        answerNotifier.value = CustomHint(addHighlighting(hint, _textHighlightColor));
+      case CustomHint():
+        if (isShowingAnswerNotifier.value) {
+          _showFinalAnswer();
+        } else {
+          answerNotifier.value = const NoAnswer();
+        }
+    }
   }
 
   void onResponse(Difficulty response) {

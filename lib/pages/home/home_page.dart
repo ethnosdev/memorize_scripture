@@ -402,7 +402,7 @@ Future<Collection?> _showEditNameDialog(
                     },
                     decoration: const InputDecoration(labelText: 'Review style'),
                   ),
-                  const SizedBox(height: 16),
+                  if (studyStyle != StudyStyle.spacedRepetition) const SizedBox(height: 16),
                   if (studyStyle == StudyStyle.sameNumberPerDay)
                     TextField(
                       keyboardType: TextInputType.number,

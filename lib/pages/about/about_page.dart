@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg_plus/svg.dart';
 import 'package:memorize_scripture/pages/about/about_page_manager.dart';
 
 class AboutPage extends StatefulWidget {

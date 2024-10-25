@@ -31,6 +31,14 @@ class HintBox extends StatelessWidget {
                   onPressed: (enabled) ? manager.showFirstLettersHint : null,
                 ),
               ),
+              if (buttonState.hasCustomHint)
+                SizedBox(
+                  width: _buttonWidth,
+                  child: SingleLineButton(
+                    title: 'Hint',
+                    onPressed: manager.showCustomHint,
+                  ),
+                ),
               SizedBox(
                 width: _buttonWidth,
                 child: SingleLineButton(
@@ -38,14 +46,6 @@ class HintBox extends StatelessWidget {
                   onPressed: (enabled) ? manager.showNextWordHint : null,
                 ),
               ),
-              if (buttonState.hasCustomHint)
-                SizedBox(
-                  width: _buttonWidth,
-                  child: SingleLineButton(
-                    title: 'Hint',
-                    onPressed: (enabled) ? manager.showCustomHint : null,
-                  ),
-                ),
             ],
           ),
         );

@@ -1,8 +1,14 @@
-## 2.2.0 - October 24, 2024
+## 2.2.0 - October 25, 2024
 
 - Don't show keyboard by default for editing collection name unless it is a new collection.
 - Allow users to edit the number days for Good and Easy for the Choose Frequency study style while in the edit collection dialog.
 - Add biblical sort order for collections and verse prompts when it is a recognized Bible book.
+- Scroll the total count in the verse browser rather than pinning it to the top.
+- Update the tutorial.
+- Make the hint still viewable even after showing the verse text. Also center the Hint button between Letters and Words.
+- Replace the unmaintained `flutter_svg` package with `flutter_svg_plus`.
+- Add a "Rate this app" option in the menu drawer.
+- Adjust the Android app icon.
 
 ## 2.1.1 - October 21, 2024
 

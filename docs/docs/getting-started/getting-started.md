@@ -28,6 +28,12 @@ Name the collection **Key Verses**.
 ![Key Verses naming](img/collection-2.png)
 </div>
 
+You can leave the **Review style** as **Spaced repetition** for now, but here are what the review styles mean:
+
+- **Spaced repetition**: You practice hard verses frequently but easy verses infrequently.
+- **Choose frequency**: You determine how often you want to practice each verse. While practicing, there are four choices: Hard (today), OK (tomorrow), Good (7 days), and Easy (30 days). You can set the Good and Easy options to something different if you like.
+- **Fixed number of verses**: There is no concept of due dates. The app will always give you the same number of review verses every day.
+
 Press **OK** and you should see something like this:
 
 <div class="bordered-image">
@@ -50,12 +56,14 @@ Now your home screen should look like the following:
 You have one key verse collection and two passage collections.
 
 :::tip
-The collection names are displayed alphabetically. If you want to display them in Bible order, one trick is to prefix the name with a number. For example:
+The collection names are displayed alphabetically. If you would like to display them in biblical order, there is a new experimental option for that in the settings. It only works if you spell the book names correctly in English, though.
+
+Another trick is to prefix the name with a number. For example:
 
 ```
-01. Genesis 12
-02. Exodus 20
-66. Revelation 2-3
+01.  Genesis 12
+02.  Exodus 20
+66.  Revelation 2-3
 ```
 :::
 
@@ -82,8 +90,8 @@ Follow the directions and click the **+** button in the top right. That'll show 
 Here's the meaning of the content:
 
 - The **Search online** button allows you to select a translation, book, and chapter and then open a web page with that chapter. You can then copy and paste your desired verse into the Memorize Scripture app. For now, though, you can ignore this button.
-- The **prompt** is what the app will show when it's prompting you to quote a verse from memory. For a key verse collection, most people will probably write the verse reference here.
-- The **verse text** is what you're trying to quote. The app will hide this text from you until you're ready to check yourself.
+- The **Prompt** is what the app will show when it's prompting you to quote a verse from memory. For a key verse collection, most people will probably write the verse reference here.
+- The **Verse text** is what you're trying to quote. The app will hide this text from you until you're ready to check yourself.
 - The **Add hint** button allows you to input a custom hint. You can ignore this for now.
 
 Copy the reference below and paste it into the **Prompt** box:
@@ -148,7 +156,7 @@ proof of things not seen.
 Here are a few things to note:
 
 - The prompt for the very first verse of a passage can use a simple reference.
-- Verses in a collection are sorted alphabetically by the prompt. You used 11:01 rather than 11:1 to make sure that this verse is sorted before Hebrews 11:10.
+- By default, verses in a collection are sorted alphabetically by the prompt. You used 11:01 rather than 11:1 to make sure that this verse is sorted before Hebrews 11:10. If you enable biblical sort order in settings, this is not necessary.
 
 Save that verse, and then add the prompt and text for the **second verse**:
 
