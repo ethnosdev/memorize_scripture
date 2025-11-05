@@ -67,7 +67,8 @@ class PracticePageManager {
   final promptNotifier = ValueNotifier<TextSpan>(const TextSpan());
   final answerNotifier = ValueNotifier<AnswerType>(const NoAnswer());
   final isShowingAnswerNotifier = ValueNotifier<bool>(false);
-  final hintButtonNotifier = ValueNotifier<HintButtonState>(HintButtonState.initial());
+  final hintButtonNotifier =
+      ValueNotifier<HintButtonState>(HintButtonState.initial());
   final canUndoNotifier = ValueNotifier<bool>(false);
   final goodTitleNotifier = ValueNotifier<String>('');
   final easyTitleNotifier = ValueNotifier<String>('');
@@ -84,7 +85,8 @@ class PracticePageManager {
   set textThemeColor(Color? value) => _textThemeColor = value ?? Colors.black;
 
   Color _textHighlightColor = Colors.black;
-  set textHighlightColor(Color? value) => _textHighlightColor = value ?? Colors.black;
+  set textHighlightColor(Color? value) =>
+      _textHighlightColor = value ?? Colors.black;
 
   // Response button titles
   String hardTitle = '';
@@ -148,7 +150,8 @@ class PracticePageManager {
       hasCustomHint: _verses.first.hint.isNotEmpty,
     );
     answerNotifier.value = const NoAnswer();
-    promptNotifier.value = addHighlighting(_verses.first.prompt, _textHighlightColor);
+    promptNotifier.value =
+        addHighlighting(_verses.first.prompt, _textHighlightColor);
     countNotifier.value = _verses.length.toString();
     _wordsHintHelper.init(
       text: _verses.first.text,
@@ -250,7 +253,8 @@ class PracticePageManager {
       case WordsHint():
       case FinalAnswer():
         final hint = _verses.first.hint;
-        answerNotifier.value = CustomHint(addHighlighting(hint, _textHighlightColor));
+        answerNotifier.value =
+            CustomHint(addHighlighting(hint, _textHighlightColor));
       case CustomHint():
         if (isShowingAnswerNotifier.value) {
           _showFinalAnswer();
@@ -270,8 +274,8 @@ class PracticePageManager {
     _undoVerse = verse;
     if (_practiceMode == PracticeMode.casualPractice) {
       _handleCasualPracticeVerse(verse, response);
-    } else if (_practiceMode == PracticeMode.reviewSameNumberPerDay) {
-      _handleSameNumberPerDayVerse(verse, response);
+      // } else if (_practiceMode == PracticeMode.reviewSameNumberPerDay) {
+      //   _handleSameNumberPerDayVerse(verse, response);
     } else {
       _handleVerse(verse, response);
     }
@@ -283,19 +287,17 @@ class PracticePageManager {
     }
   }
 
-  final Set<String> _alreadySeenIds = {};
+  // final Set<String> _alreadySeenIds = {};
 
-  // The set of verses are fetched according to the last modified verse.
-  // Since _handleVerse also updates the modification date, skip this if
-  // the verse is already seen.
-  void _handleSameNumberPerDayVerse(Verse verse, Difficulty response) {
-    if (!_alreadySeenIds.contains(verse.id)) {
-      _handleVerse(verse, response);
-    }
-    if (response == Difficulty.hard) {
-      _alreadySeenIds.add(verse.id);
-    }
-  }
+  // // The set of verses are fetched according to the last modified verse.
+  // // Since _handleVerse also updates the modification date, skip this if
+  // // the verse is already seen.
+  // void _handleSameNumberPerDayVerse(Verse verse, Difficulty response) {
+  //   if (!_alreadySeenIds.contains(verse.id)) {
+  //     _handleVerse(verse, response);
+  //   }
+  //   _alreadySeenIds.add(verse.id);
+  // }
 
   void _handleVerse(Verse verse, Difficulty response) {
     final updatedVerse = _adjustVerseStats(verse, response);
@@ -421,7 +423,9 @@ class PracticePageManager {
   bool get shouldShowMoveMenuItem => _collections.length > 1;
 
   List<Collection> otherCollections() {
-    return _collections.where((collection) => collection.id != _collection.id).toList();
+    return _collections
+        .where((collection) => collection.id != _collection.id)
+        .toList();
   }
 
   void moveVerse(String toCollectionId) async {
