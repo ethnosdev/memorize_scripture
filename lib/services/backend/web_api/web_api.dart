@@ -64,7 +64,7 @@ class WebApi {
         );
     if (result.items.isEmpty) return null;
     final record = result.items.first;
-    return (record.id, DateTime.parse(record.updated));
+    return (record.id, DateTime.parse(record.get<String>('updated')));
   }
 
   Future<void> _pushNewRecordToServer(User user) async {
@@ -76,7 +76,7 @@ class WebApi {
       },
       fields: 'id,updated',
     );
-    final updated = record.updated;
+    final updated = record.get<String>('updated');
     await getIt<UserSettings>().setLastLocalUpdate(updated);
   }
 
@@ -90,7 +90,7 @@ class WebApi {
           },
           fields: 'id,updated',
         );
-    final updated = record.updated;
+    final updated = record.get<String>('updated');
     await getIt<UserSettings>().setLastLocalUpdate(updated);
   }
 
@@ -111,7 +111,7 @@ class WebApi {
       final (added, updated, errorCount) =
           await getIt<LocalStorage>().restoreBackup(
         data,
-        timestamp: record.updated,
+        timestamp: record.get<String>('updated'),
       );
       final message = resultOfRestoringBackup(added, updated, errorCount);
       onFinished.call(message);

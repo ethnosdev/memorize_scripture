@@ -27,10 +27,12 @@ class HomePageManager {
   late final LocalStorage localStorage;
   late final UserSettings userSettings;
 
-  final collectionNotifier = ValueNotifier<HomePageUiState>(LoadingCollections());
+  final collectionNotifier =
+      ValueNotifier<HomePageUiState>(LoadingCollections());
   var isSyncingNotifier = ValueNotifier<bool>(false);
 
-  List<Collection> get _getList => (collectionNotifier.value as LoadedCollections).list;
+  List<Collection> get _getList =>
+      (collectionNotifier.value as LoadedCollections).list;
 
   Future<void> init() async {
     await _reloadCollections();
@@ -120,10 +122,10 @@ class HomePageManager {
   }
 
   void _shareFile(File file, Rect? sharePositionOrigin) {
-    Share.shareXFiles(
-      [XFile(file.path)],
+    SharePlus.instance.share(ShareParams(
+      files: [XFile(file.path)],
       sharePositionOrigin: sharePositionOrigin,
-    );
+    ));
   }
 
   Future<void> backupCollections({
@@ -151,7 +153,8 @@ class HomePageManager {
     final file = File(path);
     final jsonString = await file.readAsString();
     try {
-      final (added, updated, errorCount) = await localStorage.restoreBackup(jsonString);
+      final (added, updated, errorCount) =
+          await localStorage.restoreBackup(jsonString);
       onResult.call(resultOfRestoringBackup(added, updated, errorCount));
     } on FormatException {
       onResult.call('The data in the file was in the wrong format.');

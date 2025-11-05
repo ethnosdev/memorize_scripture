@@ -44,7 +44,8 @@ class _HomePageState extends State<HomePage> {
                   icon: const Icon(Icons.add),
                   tooltip: 'Add collection',
                   onPressed: () async {
-                    final collection = await _showEditNameDialog(context, manager);
+                    final collection =
+                        await _showEditNameDialog(context, manager);
                     if (collection == null) return;
                     manager.addCollection(collection);
                   },
@@ -81,13 +82,15 @@ class _HomePageState extends State<HomePage> {
                             onResult: _notifyResult,
                             onUserNotLoggedIn: () {
                               Navigator.of(context).push(
-                                MaterialPageRoute(builder: (_) => const AccountPage()),
+                                MaterialPageRoute(
+                                    builder: (_) => const AccountPage()),
                               );
                             },
                           );
                         case 2:
                           final box = context.findRenderObject() as RenderBox?;
-                          final rect = box!.localToGlobal(Offset.zero) & box.size;
+                          final rect =
+                              box!.localToGlobal(Offset.zero) & box.size;
                           manager.backupCollections(sharePositionOrigin: rect);
                         case 3:
                           manager.import(
@@ -347,11 +350,14 @@ Future<Collection?> _showEditNameDialog(
 }) async {
   final oldName = oldCollection?.name;
   final nameController = TextEditingController(text: oldName);
-  StudyStyle studyStyle = oldCollection?.studyStyle ?? StudyStyle.spacedRepetition;
+  StudyStyle studyStyle =
+      oldCollection?.studyStyle ?? StudyStyle.spacedRepetition;
 
   // Same number per day
-  final versesPerDay = oldCollection?.versesPerDay ?? Collection.defaultVersesPerDay;
-  final versesPerDayController = TextEditingController(text: versesPerDay.toString());
+  final versesPerDay =
+      oldCollection?.versesPerDay ?? Collection.defaultVersesPerDay;
+  final versesPerDayController =
+      TextEditingController(text: versesPerDay.toString());
 
   // Fixed days
   final goodDaysController = TextEditingController(text: manager.fixedGoodDays);
@@ -380,7 +386,7 @@ Future<Collection?> _showEditNameDialog(
                   const SizedBox(height: 16),
                   DropdownButtonFormField<StudyStyle>(
                     isExpanded: true,
-                    value: studyStyle,
+                    initialValue: studyStyle,
                     items: const [
                       DropdownMenuItem(
                         value: StudyStyle.spacedRepetition,
@@ -400,9 +406,11 @@ Future<Collection?> _showEditNameDialog(
                         studyStyle = value!;
                       });
                     },
-                    decoration: const InputDecoration(labelText: 'Review style'),
+                    decoration:
+                        const InputDecoration(labelText: 'Review style'),
                   ),
-                  if (studyStyle != StudyStyle.spacedRepetition) const SizedBox(height: 16),
+                  if (studyStyle != StudyStyle.spacedRepetition)
+                    const SizedBox(height: 16),
                   if (studyStyle == StudyStyle.sameNumberPerDay)
                     TextField(
                       keyboardType: TextInputType.number,
@@ -442,8 +450,11 @@ Future<Collection?> _showEditNameDialog(
                             id: oldCollection?.id ?? const Uuid().v4(),
                             name: nameController.text,
                             studyStyle: studyStyle,
-                            versesPerDay: int.tryParse(versesPerDayController.text) ?? Collection.defaultVersesPerDay,
-                            createdDate: oldCollection?.createdDate ?? DateTime.now(),
+                            versesPerDay:
+                                int.tryParse(versesPerDayController.text) ??
+                                    Collection.defaultVersesPerDay,
+                            createdDate:
+                                oldCollection?.createdDate ?? DateTime.now(),
                           ),
                         );
                       },

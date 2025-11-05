@@ -14,7 +14,9 @@ class ImportDialogManager {
   Future<void> init() async {
     final (version, book, chapter) = userSettings.getRecentReference();
     if (version != null) {
-      _currentVersion = bibleData.fetchAvailableVersions().firstWhere((v) => v.abbreviation == version);
+      _currentVersion = bibleData
+          .fetchAvailableVersions()
+          .firstWhere((v) => v.abbreviation == version);
     }
     if (book != null) {
       _currentBook = bibleData.fetchBooks().firstWhere((b) => b.name == book);
@@ -40,7 +42,7 @@ class ImportDialogManager {
   Book? _currentBook;
   int? _currentChapter;
 
-  get readyToGo => _currentVersion != null && _currentBook != null;
+  bool get readyToGo => _currentVersion != null && _currentBook != null;
 
   void setVersion(Version? version) {
     if (version == null) return;
@@ -127,9 +129,11 @@ class Reference {
     String? chapter = _nullSentinel,
   }) {
     return Reference(
-      version: (version != _nullSentinel) ? version ?? defaultVersion : this.version,
+      version:
+          (version != _nullSentinel) ? version ?? defaultVersion : this.version,
       book: (book != _nullSentinel) ? book ?? defaultBook : this.book,
-      chapter: (chapter != _nullSentinel) ? chapter ?? defaultChapter : this.chapter,
+      chapter:
+          (chapter != _nullSentinel) ? chapter ?? defaultChapter : this.chapter,
     );
   }
 }

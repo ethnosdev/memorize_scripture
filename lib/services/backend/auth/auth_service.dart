@@ -50,12 +50,12 @@ class AuthService {
             email,
             passphrase,
           );
-      final isVerified = authData.record?.getBoolValue('verified') ?? false;
+      final isVerified = authData.record.getBoolValue('verified');
       if (!isVerified) {
         throw UserNotVerifiedException('User not verified');
       }
       return User(
-        id: authData.record!.id,
+        id: authData.record.id,
         email: email,
         token: authData.token,
       );
@@ -81,7 +81,7 @@ class AuthService {
 
   User? getUser() {
     if (!_pb.authStore.isValid) return null;
-    final model = _pb.authStore.model as RecordModel?;
+    final model = _pb.authStore.record;
     final token = _pb.authStore.token;
     if (model == null || token.isEmpty) return null;
     return User(
@@ -97,7 +97,8 @@ class AuthService {
 
   Future<void> deleteAccount() async {
     try {
-      final model = _pb.authStore.model as RecordModel;
+      final model = _pb.authStore.record;
+      if (model == null) return;
       await _pb.collection('users').delete(model.id);
       _pb.authStore.clear();
     } on ClientException catch (e) {

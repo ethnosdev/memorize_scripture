@@ -65,8 +65,8 @@ abstract class LocalStorage {
   /// reduced content.
   ///
   /// {
-  ///   "date": <seconds since epoch>,
-  ///   "version": <database schema version>,
+  ///   "date": `seconds since epoch`,
+  ///   "version": `database schema version`,
   ///   "collections": JSON list of maps,
   ///   "verses": JSON list of maps
   /// }
@@ -75,8 +75,8 @@ abstract class LocalStorage {
   /// Returns a JSON string of all the collections and verses in the database.
   ///
   /// {
-  ///   "date": <seconds since epoch>,
-  ///   "version": <database schema version>,
+  ///   "date": `seconds since epoch`,
+  ///   "version": `database schema version`,
   ///   "collections": JSON list of maps,
   ///   "verses": JSON list of maps
   /// }
