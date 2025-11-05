@@ -162,7 +162,7 @@ class SqfliteStorage implements LocalStorage {
   ) async {
     final newVerses = await _fetchNewVerses(collection.id, limit);
     final reviewVerses = await _fetchReviewVerses(collection.id);
-    return [...newVerses, ...reviewVerses];
+    return [...reviewVerses, ...newVerses];
   }
 
   Future<List<Map<String, Object?>>> _fetchNewVerses(

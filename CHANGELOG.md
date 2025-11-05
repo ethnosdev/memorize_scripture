@@ -1,3 +1,8 @@
+## 2.2.1
+
+- Fix: repeat verses on consecutive days for fixed-number-of-verses-per-day practice mode.
+- Don't sort new verses in front of other verses anymore.
+
 ## 2.2.0 - October 25, 2024
 
 - Don't show keyboard by default for editing collection name unless it is a new collection.

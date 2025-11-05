@@ -231,23 +231,20 @@ void main() {
       expect(examples.first.id, 'a');
       expect(examples.last.id, 'b');
     });
-
-    test('sort new verses before old verses', () {
-      final b = Verse(id: 'b', prompt: 'Matthew', text: '', nextDueDate: DateTime(2024));
-      final a = Verse(id: 'a', prompt: 'John', text: '');
-      expect(b.isNew, false);
-      expect(a.isNew, true);
-      final examples = [b, a];
-      sortVersesBiblically(examples);
-      expect(examples.first.id, 'a');
-      expect(examples.last.id, 'b');
-    });
   });
 
   group('Sort collections biblically:', () {
     test('book only reference', () {
-      final john = Collection(id: 'a', name: 'John', studyStyle: StudyStyle.fixedDays, createdDate: DateTime(2024));
-      final matt = Collection(id: 'b', name: 'Matthew', studyStyle: StudyStyle.fixedDays, createdDate: DateTime(2024));
+      final john = Collection(
+          id: 'a',
+          name: 'John',
+          studyStyle: StudyStyle.fixedDays,
+          createdDate: DateTime(2024));
+      final matt = Collection(
+          id: 'b',
+          name: 'Matthew',
+          studyStyle: StudyStyle.fixedDays,
+          createdDate: DateTime(2024));
       final examples = [john, matt];
       sortCollectionsBiblically(examples);
       expect(examples.first, matt);
@@ -255,9 +252,16 @@ void main() {
     });
 
     test('book and chapter', () {
-      final john10 =
-          Collection(id: 'a', name: 'John 10', studyStyle: StudyStyle.fixedDays, createdDate: DateTime(2024));
-      final john1 = Collection(id: 'b', name: 'John 1', studyStyle: StudyStyle.fixedDays, createdDate: DateTime(2024));
+      final john10 = Collection(
+          id: 'a',
+          name: 'John 10',
+          studyStyle: StudyStyle.fixedDays,
+          createdDate: DateTime(2024));
+      final john1 = Collection(
+          id: 'b',
+          name: 'John 1',
+          studyStyle: StudyStyle.fixedDays,
+          createdDate: DateTime(2024));
       final examples = [john10, john1];
       sortCollectionsBiblically(examples);
       expect(examples.first, john1);
@@ -265,10 +269,16 @@ void main() {
     });
 
     test('book chapter and verse', () {
-      final john110 =
-          Collection(id: 'a', name: 'John 1:10', studyStyle: StudyStyle.fixedDays, createdDate: DateTime(2024));
-      final john11 =
-          Collection(id: 'b', name: 'John 1:1', studyStyle: StudyStyle.fixedDays, createdDate: DateTime(2024));
+      final john110 = Collection(
+          id: 'a',
+          name: 'John 1:10',
+          studyStyle: StudyStyle.fixedDays,
+          createdDate: DateTime(2024));
+      final john11 = Collection(
+          id: 'b',
+          name: 'John 1:1',
+          studyStyle: StudyStyle.fixedDays,
+          createdDate: DateTime(2024));
       final examples = [john110, john11];
       sortCollectionsBiblically(examples);
       expect(examples.first, john11);
@@ -276,10 +286,16 @@ void main() {
     });
 
     test('reference with extra', () {
-      final john110 =
-          Collection(id: 'a', name: 'John 1:10 (NIV)', studyStyle: StudyStyle.fixedDays, createdDate: DateTime(2024));
-      final john11 =
-          Collection(id: 'b', name: 'John 1:1 (NIV)', studyStyle: StudyStyle.fixedDays, createdDate: DateTime(2024));
+      final john110 = Collection(
+          id: 'a',
+          name: 'John 1:10 (NIV)',
+          studyStyle: StudyStyle.fixedDays,
+          createdDate: DateTime(2024));
+      final john11 = Collection(
+          id: 'b',
+          name: 'John 1:1 (NIV)',
+          studyStyle: StudyStyle.fixedDays,
+          createdDate: DateTime(2024));
       final examples = [john110, john11];
       sortCollectionsBiblically(examples);
       expect(examples.first, john11);
@@ -288,9 +304,15 @@ void main() {
 
     test('sort alphabetically for same reference', () {
       final b = Collection(
-          id: 'b', name: 'John 1:10 (NIV)\nbbb', studyStyle: StudyStyle.fixedDays, createdDate: DateTime(2024));
+          id: 'b',
+          name: 'John 1:10 (NIV)\nbbb',
+          studyStyle: StudyStyle.fixedDays,
+          createdDate: DateTime(2024));
       final a = Collection(
-          id: 'a', name: 'John 1:10 (NIV)\naaa', studyStyle: StudyStyle.fixedDays, createdDate: DateTime(2024));
+          id: 'a',
+          name: 'John 1:10 (NIV)\naaa',
+          studyStyle: StudyStyle.fixedDays,
+          createdDate: DateTime(2024));
       final examples = [b, a];
       sortCollectionsBiblically(examples);
       expect(examples.first.id, 'a');
@@ -299,9 +321,17 @@ void main() {
 
     test('sort pinned first', () {
       final b = Collection(
-          isPinned: false, id: 'b', name: 'Matthew', studyStyle: StudyStyle.fixedDays, createdDate: DateTime(2024));
+          isPinned: false,
+          id: 'b',
+          name: 'Matthew',
+          studyStyle: StudyStyle.fixedDays,
+          createdDate: DateTime(2024));
       final a = Collection(
-          isPinned: true, id: 'a', name: 'John', studyStyle: StudyStyle.fixedDays, createdDate: DateTime(2024));
+          isPinned: true,
+          id: 'a',
+          name: 'John',
+          studyStyle: StudyStyle.fixedDays,
+          createdDate: DateTime(2024));
       final examples = [b, a];
       sortCollectionsBiblically(examples);
       expect(examples.first.id, 'a');

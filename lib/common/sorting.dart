@@ -24,9 +24,6 @@ void sortCollectionsBiblically(List<Collection> list) {
 
 void sortVersesBiblically(List<Verse> list) {
   list.sort((a, b) {
-    // sort new verses before old verses
-    if (a.isNew && !b.isNew) return -1;
-    if (!a.isNew && b.isNew) return 1;
     // try to parse the prompt beginning as a reference
     final aRef = parseReference(a.prompt);
     final bRef = parseReference(b.prompt);
