@@ -5,7 +5,6 @@ import 'package:memorize_scripture/services/backend/backend_service.dart';
 import 'package:memorize_scripture/services/book_data/bible_data.dart';
 import 'package:memorize_scripture/services/local_storage/local_storage.dart';
 import 'package:memorize_scripture/services/local_storage/sqflite/database.dart';
-import 'package:memorize_scripture/services/notification_service.dart';
 import 'package:memorize_scripture/services/secure_settings.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:memorize_scripture/app_manager.dart';
@@ -16,7 +15,6 @@ void setupServiceLocator() {
   getIt.registerLazySingleton<UserSettings>(() => UserSettings());
   getIt.registerLazySingleton<SecureStorage>(() => LocalSecureStorage());
   getIt.registerLazySingleton<LocalStorage>(() => SqfliteStorage());
-  getIt.registerLazySingleton<NotificationService>(() => NotificationService());
   getIt.registerFactory<PracticePageManager>(() => PracticePageManager());
   getIt.registerLazySingleton<AppManager>(() => AppManager());
   getIt.registerLazySingleton<HomePageManager>(() => HomePageManager());

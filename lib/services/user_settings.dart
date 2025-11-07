@@ -9,8 +9,8 @@ class UserSettings {
 
   static const String _darkModeKey = 'darkMode';
   static const String _dailyLimitKey = 'dailyLimit';
-  static const String _notificationsKey = 'notifications';
-  static const String _notificationTimeKey = 'notificationTime';
+  // static const String _notificationsKey = 'notifications';
+  // static const String _notificationTimeKey = 'notificationTime';
   static const String _recentReferenceKey = 'recentReference';
   static const String _pinnedCollectionsKey = 'pinnedCollections';
   static const String _lastLocalUpdateKey = 'lastLocalUpdateKey';
@@ -40,28 +40,28 @@ class UserSettings {
     await prefs.setInt(_dailyLimitKey, value);
   }
 
-  bool get isNotificationsOn => prefs.getBool(_notificationsKey) ?? false;
+  // bool get isNotificationsOn => prefs.getBool(_notificationsKey) ?? false;
 
-  Future<void> setNotifications(bool value) async {
-    await prefs.setBool(_notificationsKey, value);
-  }
+  // Future<void> setNotifications(bool value) async {
+  //   await prefs.setBool(_notificationsKey, value);
+  // }
 
-  (int, int) get getNotificationTime {
-    final hourMinute = prefs.getString(_notificationTimeKey) ?? '20:00';
-    final parts = hourMinute.split(':');
-    final hour = int.tryParse(parts[0]);
-    final minute = int.tryParse(parts[1]);
-    if (hour == null || minute == null) return (20, 0);
-    return (hour, minute);
-  }
+  // (int, int) get getNotificationTime {
+  //   final hourMinute = prefs.getString(_notificationTimeKey) ?? '20:00';
+  //   final parts = hourMinute.split(':');
+  //   final hour = int.tryParse(parts[0]);
+  //   final minute = int.tryParse(parts[1]);
+  //   if (hour == null || minute == null) return (20, 0);
+  //   return (hour, minute);
+  // }
 
-  Future<void> setNotificationTime({
-    required int hour,
-    required int minute,
-  }) async {
-    final value = '$hour:$minute';
-    await prefs.setString(_notificationTimeKey, value);
-  }
+  // Future<void> setNotificationTime({
+  //   required int hour,
+  //   required int minute,
+  // }) async {
+  //   final value = '$hour:$minute';
+  //   await prefs.setString(_notificationTimeKey, value);
+  // }
 
   (String? version, String? book, int? chapter) getRecentReference() {
     final json = prefs.getString(_recentReferenceKey);
@@ -97,7 +97,8 @@ class UserSettings {
     await prefs.setInt(book, chapter);
   }
 
-  List<String> get pinnedCollections => prefs.getStringList(_pinnedCollectionsKey) ?? [];
+  List<String> get pinnedCollections =>
+      prefs.getStringList(_pinnedCollectionsKey) ?? [];
 
   Future<void> setPinnedCollections(List<String> ids) async {
     await prefs.setStringList(_pinnedCollectionsKey, ids);
@@ -110,26 +111,31 @@ class UserSettings {
   }
 
   Future<void> setLastLocalUpdate([String? timestamp]) async {
-    final dateTime = (timestamp != null) ? timestamp : DateTime.now().toUtc().toIso8601String();
+    final dateTime = (timestamp != null)
+        ? timestamp
+        : DateTime.now().toUtc().toIso8601String();
     if (timestamp == null) {
       await prefs.remove(_lastLocalUpdateKey);
     }
     await prefs.setString(_lastLocalUpdateKey, dateTime);
   }
 
-  int get getFixedGoodDays => prefs.getInt(_fixedGoodDaysKey) ?? UserSettings.defaultFixedGoodDays;
+  int get getFixedGoodDays =>
+      prefs.getInt(_fixedGoodDaysKey) ?? UserSettings.defaultFixedGoodDays;
 
   Future<void> setFixedGoodDays(int value) async {
     await prefs.setInt(_fixedGoodDaysKey, value);
   }
 
-  int get getFixedEasyDays => prefs.getInt(_fixedEasyDaysKey) ?? UserSettings.defaultFixedEasyDays;
+  int get getFixedEasyDays =>
+      prefs.getInt(_fixedEasyDaysKey) ?? UserSettings.defaultFixedEasyDays;
 
   Future<void> setFixedEasyDays(int value) async {
     await prefs.setInt(_fixedEasyDaysKey, value);
   }
 
-  int get getBrowserPreferredNumberOfColumns => prefs.getInt(_browserColumnsKey) ?? 2;
+  int get getBrowserPreferredNumberOfColumns =>
+      prefs.getInt(_browserColumnsKey) ?? 2;
 
   Future<void> setBrowserPreferredNumberOfColumns(int value) async {
     await prefs.setInt(_browserColumnsKey, value);

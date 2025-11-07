@@ -14,15 +14,8 @@ class _SettingsPageState extends State<SettingsPage> {
   final manager = SettingsPageManager();
 
   @override
-  void initState() {
-    super.initState();
-    manager.init();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final disabledColor = Theme.of(context).disabledColor;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -68,42 +61,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         oldValue: manager.dailyLimit,
                         onValidate: manager.validateDailyLimit,
                         onConfirm: manager.updateDailyLimit,
-                      );
-                    },
-                  ),
-                ],
-              ),
-              SettingsSection(
-                title: const Text('Notifications'),
-                tiles: [
-                  SettingsTile.switchTile(
-                    activeSwitchColor: colorScheme.primary,
-                    title: const Text('Daily reminder'),
-                    initialValue: manager.isNotificationsOn,
-                    onToggle: manager.setNotifications,
-                  ),
-                  SettingsTile(
-                    enabled: manager.isNotificationsOn,
-                    title: Text(
-                      'Time',
-                      style: (!manager.isNotificationsOn) ? TextStyle(color: disabledColor) : null,
-                    ),
-                    value: Text(
-                      manager.notificationTimeDisplay,
-                      style: (!manager.isNotificationsOn) ? TextStyle(color: disabledColor) : null,
-                    ),
-                    onPressed: (context) async {
-                      final pickedTime = await showTimePicker(
-                        context: context,
-                        initialTime: TimeOfDay(
-                          hour: manager.notificationTimeHour,
-                          minute: manager.notificationTimeMinute,
-                        ),
-                      );
-                      if (pickedTime == null) return;
-                      manager.setNotificationTime(
-                        hour: pickedTime.hour,
-                        minute: pickedTime.minute,
                       );
                     },
                   ),
