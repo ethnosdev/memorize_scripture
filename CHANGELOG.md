@@ -1,4 +1,4 @@
-## 2.3.0
+## 2.3.0 - November 8, 2025
 
 - Fix: repeat verses on consecutive days for fixed-number-of-verses-per-day practice mode.
 - Don't sort new verses in front of other verses anymore.
