@@ -1,7 +1,8 @@
-## 2.2.1
+## 2.3.0
 
 - Fix: repeat verses on consecutive days for fixed-number-of-verses-per-day practice mode.
 - Don't sort new verses in front of other verses anymore.
+- Remove local notifications (They were causing crashes).
 
 ## 2.2.0 - October 25, 2024
 
