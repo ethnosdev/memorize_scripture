@@ -64,17 +64,24 @@ class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            Prompt(manager: manager),
-            const SizedBox(height: 10),
-            HintBox(manager: manager),
-            const SizedBox(height: 10),
-            Answer(manager: manager),
-          ],
-        ),
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                Prompt(manager: manager),
+                const SizedBox(height: 10),
+                HintBox(manager: manager),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Answer(manager: manager),
+          ),
+        ],
       ),
     );
   }
@@ -123,14 +130,24 @@ class Answer extends StatelessWidget {
         builder: (context, answer, child) {
           switch (answer) {
             case NoAnswer():
-              return const SizedBox();
+              return GestureDetector(
+                onTap: manager.showNextWordHint,
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  height: 200,
+                  color: Colors.transparent,
+                ),
+              );
             case CustomHint():
             case FinalAnswer():
             case LettersHint():
-              return SelectableText.rich(
-                answer.textSpan,
-                textAlign: TextAlign.center,
-                textScaler: const TextScaler.linear(textScaleFactor),
+              return Align(
+                alignment: Alignment.topCenter,
+                child: SelectableText.rich(
+                  answer.textSpan,
+                  textAlign: TextAlign.center,
+                  textScaler: const TextScaler.linear(textScaleFactor),
+                ),
               );
             case WordsHint():
               return Stack(
@@ -141,12 +158,11 @@ class Answer extends StatelessWidget {
                     textAlign: TextAlign.center,
                     textScaler: const TextScaler.linear(textScaleFactor),
                   ),
-                  GestureDetector(
-                    onTap: manager.showNextWordHint,
-                    child: Container(
-                      color: Colors.transparent,
-                      width: double.infinity,
-                      height: 600,
+                  Positioned.fill(
+                    child: GestureDetector(
+                      onTap: manager.showNextWordHint,
+                      behavior: HitTestBehavior.opaque,
+                      child: const ColoredBox(color: Colors.transparent),
                     ),
                   ),
                 ],

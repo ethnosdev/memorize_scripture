@@ -1,6 +1,7 @@
 ## 2.4 - December 13, 2025
 
 - Remove "Rate this app" option in the menu drawer.
+- Taps on blank part of practice page show next word hint.
 
 ## 2.3.0 - November 8, 2025
 
