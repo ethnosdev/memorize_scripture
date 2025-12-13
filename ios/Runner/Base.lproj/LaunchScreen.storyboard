@@ -5,6 +5,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -19,15 +20,16 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="YRO-k0-Ey4">
-                                <rect key="frame" x="57" y="298" width="300" height="300"/>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="YRO-k0-Ey4">
+                                <rect key="frame" x="107" y="348" width="200" height="200"/>
+                                <color key="tintColor" name="LaunchLogoColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="300" id="Fb4-0a-Vyt"/>
-                                    <constraint firstAttribute="height" constant="300" id="Yyk-pS-rm0"/>
+                                    <constraint firstAttribute="height" constant="200" id="Yyk-pS-rm0"/>
+                                    <constraint firstAttribute="width" constant="200" id="Fb4-0a-Vyt"/>
                                 </constraints>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" red="0.98410040139999999" green="0.9124616981" blue="0.30566728119999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="backgroundColor" name="LaunchBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="Fnj-2i-Jpc"/>
                             <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="RU5-Q5-dMT"/>
@@ -41,5 +43,11 @@
     </scenes>
     <resources>
         <image name="LaunchImage" width="180" height="180"/>
+        <namedColor name="LaunchBackgroundColor">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="LaunchLogoColor">
+            <color red="0.125" green="0.129" blue="0.141" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
     </resources>
 </document>
