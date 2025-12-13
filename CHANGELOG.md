@@ -4,6 +4,7 @@
 - Taps on blank part of practice page show next word hint.
 - Have different launch screens for system light and dark mode.
 - Make the "Due dates reset" notification show for less time.
+- Fix bug where resetting due date in verse browser doesn't update practice page.
 
 ## 2.3.0 - November 8, 2025
 

@@ -70,12 +70,15 @@ class VerseBrowserManager extends ChangeNotifier {
       text: verse.text,
     );
     await dataRepo.updateVerse(_collectionId, updated);
+    onFinishedModifyingCollection?.call(null);
   }
 
   bool shouldShowMoveMenuItem() => _collections.length > 1;
 
   List<Collection> otherCollections() {
-    return _collections.where((collection) => collection.id != _collectionId).toList();
+    return _collections
+        .where((collection) => collection.id != _collectionId)
+        .toList();
   }
 
   void moveVerse(Verse verse, String toCollectionId) async {
