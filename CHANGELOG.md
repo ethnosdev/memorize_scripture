@@ -8,6 +8,7 @@
 - Update splash screen.
 - Use system dark mode setting by default.
 - Update settings screen UI.
+- Clip to edges of cards and dialogs when selecting.
 
 ## 2.3.0 - November 8, 2025
 

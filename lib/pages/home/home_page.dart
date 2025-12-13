@@ -183,6 +183,7 @@ class _BodyWidgetState extends State<BodyWidget> {
           final collection = widget.collections[index];
           return Card(
             key: ValueKey(collection.name),
+            clipBehavior: Clip.hardEdge,
             child: Builder(builder: (listTileContext) {
               return ListTile(
                 title: Text(collection.name),
@@ -225,6 +226,7 @@ class _BodyWidgetState extends State<BodyWidget> {
         final collection = manager.collectionAt(index);
         final showPinTile = numberOfCollections > 5;
         return Dialog(
+          clipBehavior: Clip.hardEdge,
           child: ListView(
             shrinkWrap: true,
             children: [

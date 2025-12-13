@@ -147,6 +147,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
+          clipBehavior: Clip.hardEdge,
           child: ListView(
             shrinkWrap: true,
             children: [
@@ -193,6 +194,7 @@ class _VerseBrowserState extends State<VerseBrowser> {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
+          clipBehavior: Clip.hardEdge,
           child: ListView.builder(
             shrinkWrap: true,
             itemCount: collections.length,

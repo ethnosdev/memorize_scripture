@@ -205,6 +205,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
+          clipBehavior: Clip.hardEdge,
           child: ListView.builder(
             shrinkWrap: true,
             itemCount: collections.length,

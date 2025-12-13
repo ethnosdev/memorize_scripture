@@ -92,6 +92,7 @@ class _ImportDialogState extends State<ImportDialog> {
       context: context,
       builder: (BuildContext buildContext) {
         return Dialog(
+          clipBehavior: Clip.hardEdge,
           child: ListView.builder(
             shrinkWrap: true,
             itemCount: versions.length,
@@ -115,6 +116,7 @@ class _ImportDialogState extends State<ImportDialog> {
         final otBooks = manager.otBooks;
         final ntBooks = manager.ntBooks;
         return Dialog(
+          clipBehavior: Clip.hardEdge,
           child: Row(children: [
             BookList(books: otBooks, selectedBook: previouslySelected),
             BookList(books: ntBooks, selectedBook: previouslySelected),
@@ -166,14 +168,17 @@ class _ImportDialogState extends State<ImportDialog> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Text(
-                    'Biblica, the copyright holder, regrettably refuses to grant '
-                    'public digital access to the NIV 1984 text. If you have a '
-                    'paper version, one workaround for your private use in '
-                    'memorization is to take a picture of the '
-                    'text with your phone. Long-pressing the image should allow '
-                    'you to select the text on most modern phones.',
-                    style: Theme.of(context).textTheme.bodyMedium,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Biblica, the copyright holder, regrettably refuses to grant '
+                      'public digital access to the NIV 1984 text. If you have a '
+                      'paper version, one workaround for your private use in '
+                      'memorization is to take a picture of the '
+                      'text with your phone. Long-pressing the image should allow '
+                      'you to select the text on most modern phones.',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ),
                   const SizedBox(height: 20),
                   OutlinedButton(
@@ -218,7 +223,8 @@ class _BookListState extends State<BookList> {
   }
 
   void _scrollToIndex() {
-    final index = widget.books.indexWhere((book) => book.name == widget.selectedBook);
+    final index =
+        widget.books.indexWhere((book) => book.name == widget.selectedBook);
     if (index == -1) return;
     final scrollTo = (index > 0) ? index - 1 : 0;
     itemScrollController.jumpTo(index: scrollTo);

@@ -30,7 +30,7 @@ flutter build ipa
 
 ```
 flutter build appbundle
-flutter build apk
+flutter build apk --split-per-abi
 ```
 
 ## For rebuilding macos folder
@@ -57,7 +57,6 @@ flutter create --org dev.ethnos.memorize_scripture .
 Make sure that nothing is added to the package name (do a project search).
 
 - Overview: https://docs.flutter.dev/deployment/android
-- `flutter_local_notifications`: https://pub.dev/packages/flutter_local_notifications#-android-setup
 - `file_picker`: https://github.com/miguelpruivo/flutter_file_picker/wiki/Setup#android
 - `flutter_secure_storage`: https://pub.dev/packages/flutter_secure_storage#configure-android-version
 - `url_launcher`: https://pub.dev/packages/url_launcher#android
