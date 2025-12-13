@@ -5,7 +5,6 @@
 - Have different launch screens for system light and dark mode.
 - Make the "Due dates reset" notification show for less time.
 - Fix bug where resetting due date in verse browser doesn't update practice page.
-- Update splash screen.
 - Use system dark mode setting by default.
 - Update settings screen UI.
 - Clip to edges of cards and dialogs when selecting.
