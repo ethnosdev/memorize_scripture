@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:memorize_scripture/app_manager.dart';
@@ -7,18 +8,18 @@ class SettingsPageManager extends ChangeNotifier {
   final themeManager = getIt<AppManager>();
   final userSettings = getIt<UserSettings>();
 
-  bool get isDarkMode => userSettings.isDarkMode;
+  ThemeMode get themeMode => userSettings.themeMode;
+
+  Future<void> setThemeMode(ThemeMode mode) async {
+    await userSettings.setThemeMode(mode);
+    themeManager.setThemeMode(mode);
+    notifyListeners();
+  }
 
   String get dailyLimit {
     final value = userSettings.getDailyLimit;
     if (value >= UserSettings.defaultDailyLimit) return '';
     return userSettings.getDailyLimit.toString();
-  }
-
-  Future<void> setDarkMode(bool value) async {
-    themeManager.setDarkTheme(value);
-    await userSettings.setDarkMode(value);
-    notifyListeners();
   }
 
   String validateDailyLimit(String value) {

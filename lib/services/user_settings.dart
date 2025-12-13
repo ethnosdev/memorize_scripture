@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserSettings {
@@ -7,10 +8,8 @@ class UserSettings {
   static const defaultFixedGoodDays = 7;
   static const defaultFixedEasyDays = 30;
 
-  static const String _darkModeKey = 'darkMode';
+  static const String _themeModeKey = 'themeMode';
   static const String _dailyLimitKey = 'dailyLimit';
-  // static const String _notificationsKey = 'notifications';
-  // static const String _notificationTimeKey = 'notificationTime';
   static const String _recentReferenceKey = 'recentReference';
   static const String _pinnedCollectionsKey = 'pinnedCollections';
   static const String _lastLocalUpdateKey = 'lastLocalUpdateKey';
@@ -26,10 +25,19 @@ class UserSettings {
     prefs = await SharedPreferences.getInstance();
   }
 
-  bool get isDarkMode => prefs.getBool(_darkModeKey) ?? false;
+  ThemeMode get themeMode {
+    final isDark = prefs.getBool(_themeModeKey);
+    if (isDark == null) return ThemeMode.system;
+    return isDark ? ThemeMode.dark : ThemeMode.light;
+  }
 
-  Future<void> setDarkMode(bool value) async {
-    await prefs.setBool(_darkModeKey, value);
+  Future<void> setThemeMode(ThemeMode mode) async {
+    if (mode == ThemeMode.system) {
+      await prefs.remove(_themeModeKey);
+      return;
+    }
+    final isDark = mode == ThemeMode.dark;
+    await prefs.setBool(_themeModeKey, isDark);
   }
 
   int get getDailyLimit {
@@ -39,29 +47,6 @@ class UserSettings {
   Future<void> setDailyLimit(int value) async {
     await prefs.setInt(_dailyLimitKey, value);
   }
-
-  // bool get isNotificationsOn => prefs.getBool(_notificationsKey) ?? false;
-
-  // Future<void> setNotifications(bool value) async {
-  //   await prefs.setBool(_notificationsKey, value);
-  // }
-
-  // (int, int) get getNotificationTime {
-  //   final hourMinute = prefs.getString(_notificationTimeKey) ?? '20:00';
-  //   final parts = hourMinute.split(':');
-  //   final hour = int.tryParse(parts[0]);
-  //   final minute = int.tryParse(parts[1]);
-  //   if (hour == null || minute == null) return (20, 0);
-  //   return (hour, minute);
-  // }
-
-  // Future<void> setNotificationTime({
-  //   required int hour,
-  //   required int minute,
-  // }) async {
-  //   final value = '$hour:$minute';
-  //   await prefs.setString(_notificationTimeKey, value);
-  // }
 
   (String? version, String? book, int? chapter) getRecentReference() {
     final json = prefs.getString(_recentReferenceKey);

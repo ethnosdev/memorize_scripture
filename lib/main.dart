@@ -22,13 +22,15 @@ class _MemorizeScriptureAppState extends State<MemorizeScriptureApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeData>(
-      valueListenable: manager.themeListener,
-      builder: (context, theme, child) {
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: manager.themeNotifier,
+      builder: (context, mode, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Memorize Scripture',
-          theme: theme,
+          theme: AppManager.lightTheme,
+          darkTheme: AppManager.darkTheme,
+          themeMode: mode,
           home: const HomePage(),
         );
       },

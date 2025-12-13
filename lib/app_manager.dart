@@ -4,33 +4,28 @@ import 'package:memorize_scripture/services/local_storage/local_storage.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 
 class AppManager {
-  final themeListener = ValueNotifier<ThemeData>(_lightTheme);
+  final themeNotifier = ValueNotifier<ThemeMode>(ThemeMode.system);
   final userSettings = getIt<UserSettings>();
 
   Future<void> init() async {
     await userSettings.init();
-    await _setDarkLightTheme();
+    themeNotifier.value = userSettings.themeMode;
     await getIt<LocalStorage>().init();
   }
 
-  Future<void> _setDarkLightTheme() async {
-    final isDarkTheme = userSettings.isDarkMode;
-    setDarkTheme(isDarkTheme);
+  void setThemeMode(ThemeMode mode) {
+    themeNotifier.value = mode;
   }
 
-  void setDarkTheme(bool isDark) {
-    themeListener.value = (isDark) ? _darkTheme : _lightTheme;
-  }
+  static final lightTheme = ThemeData(
+    useMaterial3: true,
+    brightness: Brightness.light,
+    colorSchemeSeed: Colors.yellow,
+  );
+
+  static final darkTheme = ThemeData(
+    useMaterial3: true,
+    colorSchemeSeed: Colors.yellow,
+    brightness: Brightness.dark,
+  );
 }
-
-final _lightTheme = ThemeData(
-  useMaterial3: true,
-  brightness: Brightness.light,
-  colorSchemeSeed: Colors.yellow,
-);
-
-final _darkTheme = ThemeData(
-  useMaterial3: true,
-  colorSchemeSeed: Colors.yellow,
-  brightness: Brightness.dark,
-);
