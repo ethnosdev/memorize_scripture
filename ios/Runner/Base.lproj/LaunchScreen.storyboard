@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
-        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -22,10 +22,10 @@
                         <subviews>
                             <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="YRO-k0-Ey4">
                                 <rect key="frame" x="107" y="348" width="200" height="200"/>
-                                <color key="tintColor" name="LaunchLogoColor"/>
+                                <color key="tintColor" name="LaunchImageColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="200" id="Yyk-pS-rm0"/>
                                     <constraint firstAttribute="width" constant="200" id="Fb4-0a-Vyt"/>
+                                    <constraint firstAttribute="height" constant="200" id="Yyk-pS-rm0"/>
                                 </constraints>
                             </imageView>
                         </subviews>
@@ -42,12 +42,12 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchImage" width="180" height="180"/>
+        <image name="LaunchImage" width="588" height="564"/>
         <namedColor name="LaunchBackgroundColor">
-            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.9638671875" green="0.9423828125" blue="0.8920898438" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
-        <namedColor name="LaunchLogoColor">
-            <color red="0.125" green="0.129" blue="0.141" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        <namedColor name="LaunchImageColor">
+            <color red="0.4079589844" green="0.3725585938" blue="0.07061767578" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
     </resources>
 </document>
