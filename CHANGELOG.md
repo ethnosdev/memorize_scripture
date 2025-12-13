@@ -2,6 +2,8 @@
 
 - Remove "Rate this app" option in the menu drawer.
 - Taps on blank part of practice page show next word hint.
+- Have different launch screens for system light and dark mode.
+- Make the "Due dates reset" notification show for less time.
 
 ## 2.3.0 - November 8, 2025
 
