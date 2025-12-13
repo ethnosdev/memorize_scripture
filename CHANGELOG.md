@@ -1,3 +1,7 @@
+## 2.4 - December 13, 2025
+
+- Remove "Rate this app" option in the menu drawer.
+
 ## 2.3.0 - November 8, 2025
 
 - Fix: repeat verses on consecutive days for fixed-number-of-verses-per-day practice mode.

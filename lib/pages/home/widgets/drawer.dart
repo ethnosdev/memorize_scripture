@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_plus/svg.dart';
-import 'package:in_app_review/in_app_review.dart';
 import 'package:memorize_scripture/common/strings.dart';
 import 'package:memorize_scripture/pages/about/about_page.dart';
 import 'package:memorize_scripture/pages/account/account_page.dart';
@@ -64,12 +63,6 @@ class MenuDrawer extends StatelessWidget {
                     builder: (_) => const AccountPage(),
                   ),
                 );
-              },
-            ),
-            ListTile(
-              title: const Text('Rate this app'),
-              onTap: () async {
-                await InAppReview.instance.requestReview();
               },
             ),
             ListTile(

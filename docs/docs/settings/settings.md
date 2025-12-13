@@ -22,7 +22,6 @@ Here are their meaning:
 
 - **Settings**: Change the app's settings.
 - **Account**: Sign in to your account so that you can sync your collections across devices.
-- **Rate this app**: If you find Memorize Scripture useful, leaving a good review will make it more discoverable for others.
 - **Help**: A link to this tutorial.
 - **About**: Check the app version and get the developer's email address to give feedback.
 
