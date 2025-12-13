@@ -26,6 +26,12 @@ Uri _biblePortalUrl(Book book, int chapter, String version) {
 
 final _versions = [
   Version(
+    name: 'BSB',
+    longName: 'Berean Standard Bible',
+    abbreviation: 'BSB',
+    generateUrl: (book, chapter) => _biblePortalUrl(book, chapter, 'BSB'),
+  ),
+  Version(
     name: 'ESV',
     longName: 'English Standard Version',
     abbreviation: 'ESV',

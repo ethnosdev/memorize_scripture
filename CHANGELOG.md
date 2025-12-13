@@ -9,6 +9,7 @@
 - Use system dark mode setting by default.
 - Update settings screen UI.
 - Clip to edges of cards and dialogs when selecting.
+- Add BSB as an import choice.
 
 ## 2.3.0 - November 8, 2025
 
