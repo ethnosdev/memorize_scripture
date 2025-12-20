@@ -1,3 +1,7 @@
+## 2.5 - December 20, 2025
+
+- Add support for CJK verses.
+
 ## 2.4 - December 13, 2025
 
 - Remove "Rate this app" option in the menu drawer.

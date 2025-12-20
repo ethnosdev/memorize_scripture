@@ -1,18 +1,18 @@
 import 'package:flutter/painting.dart';
+import 'language_utils.dart';
 
 const transparent = Color(0x00000000);
 
 class WordsHintHelper {
   Color _textColor = const Color(0xff000000);
   String _text = '';
-
-  int _numberHintWordsShowing = 0;
+  int _unitsShowing = 0;
 
   void init({
     required String text,
     required Color textColor,
   }) {
-    _numberHintWordsShowing = 0;
+    _unitsShowing = 0;
     _text = _removeBold(text);
     _textColor = textColor;
   }
@@ -21,70 +21,88 @@ class WordsHintHelper {
     return text.replaceAll('**', '');
   }
 
-  /// Returns a text span with the next word visible.
+  /// Returns a text span with the next logical unit (word or CJK character) visible.
   ///
-  /// Throws an OnFinishedException if showing the next word would
-  /// cause the text to be finished.
+  /// Throws an [OnFinishedException] if this is the last unit or if
+  /// no more units are available.
   TextSpan nextWord() {
-    _numberHintWordsShowing++;
-    final textSpan = _formatForNumberOfWords(
-      _numberHintWordsShowing,
-      _text,
-    );
-    return textSpan;
-  }
+    _unitsShowing++;
+    final revealLimit = _calculateRevealLimit(_unitsShowing, _text);
 
-  TextSpan _formatForNumberOfWords(int number, String verseText) {
-    if (verseText.isEmpty) return const TextSpan(text: '');
-
-    final index = _indexAfterNthSpace(number, verseText);
-    final before = verseText.substring(0, index);
-    final after = (index == null) ? '' : verseText.substring(index);
-
-    final finished = index == null;
-    if (finished) {
+    // If we can't find a limit, we are already past the end.
+    if (revealLimit == null) {
       throw OnFinishedException();
     }
 
-    final textSpan = TextSpan(children: [
+    // If skipping the spaces/punctuation after this unit reaches the end of the text,
+    // it means there are no more units to reveal.
+    if (_skipIntermediaryCharacters(revealLimit, _text) >= _text.length) {
+      throw OnFinishedException();
+    }
+
+    //// Otherwise, return the partial text span.
+    return TextSpan(children: [
       TextSpan(
-        text: before,
+        text: _text.substring(0, revealLimit),
         style: TextStyle(color: _textColor),
       ),
       TextSpan(
-        text: after,
+        text: _text.substring(revealLimit),
         style: const TextStyle(color: transparent),
       ),
     ]);
-
-    return textSpan;
   }
 
-  /// number is 1-based
-  int? _indexAfterNthSpace(int number, String verseText) {
-    int index = 0;
-    for (int i = 1; i <= number; i++) {
-      var temp = _advanceToNextWhiteSpace(index, verseText);
-      if (temp == null) return null;
-      index = temp;
-      temp = _advanceToNextNonWhiteSpace(index, verseText);
-      if (temp == null) return null;
-      index = temp;
+  /// Calculates the string index required to reveal [unitCount] units.
+  /// Returns null if the requested count exceeds the available text.
+  int? _calculateRevealLimit(int unitCount, String text) {
+    if (text.isEmpty) return null;
+
+    int currentIndex = 0;
+
+    for (int i = 0; i < unitCount; i++) {
+      // 1. Skip over leading whitespace/punctuation to find the start of the next unit
+      currentIndex = _skipIntermediaryCharacters(currentIndex, text);
+
+      if (currentIndex >= text.length) return null;
+
+      // 2. Find where this specific unit ends
+      currentIndex = _findNextUnitBoundary(currentIndex, text);
+    }
+
+    return currentIndex;
+  }
+
+  /// Determines the end index of the unit starting at [start].
+  int _findNextUnitBoundary(int start, String text) {
+    if (start >= text.length) return text.length;
+
+    final char = text[start];
+
+    // If it's a CJK character, the unit is exactly one character long.
+    if (isCjk(char)) {
+      return start + 1;
+    }
+
+    // If it's Latin/Other, the unit ends at the next whitespace or the start of a CJK block.
+    int index = start;
+    while (index < text.length) {
+      final nextChar = text[index];
+      if (isWhitespaceOrPunctuation(nextChar) || isCjk(nextChar)) {
+        break;
+      }
+      index++;
     }
     return index;
   }
 
-  int? _advanceToNextNonWhiteSpace(int start, String text) {
-    final nonWhiteSpace = RegExp(r'[^\s\-—]');
-    final index = text.indexOf(nonWhiteSpace, start);
-    return (index < 0) ? null : index;
-  }
-
-  int? _advanceToNextWhiteSpace(int start, String text) {
-    // counting hyphens and em dashes as white space
-    final whiteSpace = RegExp(r'[\s\-—]');
-    final index = text.indexOf(whiteSpace, start);
-    return (index < 0) ? null : index;
+  /// Moves the index past any characters that don't constitute a "unit" (e.g., spaces).
+  int _skipIntermediaryCharacters(int start, String text) {
+    int index = start;
+    while (index < text.length && isWhitespaceOrPunctuation(text[index])) {
+      index++;
+    }
+    return index;
   }
 }
 

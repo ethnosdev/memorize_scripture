@@ -9,6 +9,8 @@ import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/local_storage/local_storage.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 
+import 'helpers/language_utils.dart';
+
 enum PracticeState {
   /// The wait time while querying the data repository
   loading,
@@ -44,10 +46,16 @@ enum PracticeMode {
 class HintButtonState {
   final bool isEnabled;
   final bool hasCustomHint;
+  final bool showLettersButton;
 
-  HintButtonState({required this.isEnabled, required this.hasCustomHint});
+  HintButtonState({
+    required this.isEnabled,
+    required this.hasCustomHint,
+    required this.showLettersButton,
+  });
 
-  HintButtonState.initial() : this(isEnabled: true, hasCustomHint: false);
+  HintButtonState.initial()
+      : this(isEnabled: true, hasCustomHint: false, showLettersButton: true);
 }
 
 class PracticePageManager {
@@ -145,10 +153,7 @@ class PracticePageManager {
 
     uiNotifier.value = PracticeState.practicing;
     isShowingAnswerNotifier.value = false;
-    hintButtonNotifier.value = HintButtonState(
-      isEnabled: true,
-      hasCustomHint: _verses.first.hint.isNotEmpty,
-    );
+    _updateHintButtonState(isEnabled: true);
     answerNotifier.value = const NoAnswer();
     promptNotifier.value =
         addHighlighting(_verses.first.prompt, _textHighlightColor);
@@ -157,6 +162,21 @@ class PracticePageManager {
       text: _verses.first.text,
       textColor: _textThemeColor,
     );
+  }
+
+  void _updateHintButtonState({required bool isEnabled}) {
+    final verse = _verses.first;
+
+    hintButtonNotifier.value = HintButtonState(
+      isEnabled: isEnabled,
+      hasCustomHint: verse.hint.isNotEmpty,
+      showLettersButton: !_currentVerseIsCjk,
+    );
+  }
+
+  bool get _currentVerseIsCjk {
+    if (_verses.isEmpty) return false;
+    return isCjk(_verses.first.text);
   }
 
   void show() {
@@ -176,10 +196,7 @@ class PracticePageManager {
       _setFixedDayButtonsSubtitles();
     }
     isShowingAnswerNotifier.value = true;
-    hintButtonNotifier.value = HintButtonState(
-      isEnabled: false,
-      hasCustomHint: _verses.first.hint.isNotEmpty,
-    );
+    _updateHintButtonState(isEnabled: false);
   }
 
   void _setSpacedRepetitionSubtitles() {
@@ -286,18 +303,6 @@ class PracticePageManager {
       _verses.add(verse);
     }
   }
-
-  // final Set<String> _alreadySeenIds = {};
-
-  // // The set of verses are fetched according to the last modified verse.
-  // // Since _handleVerse also updates the modification date, skip this if
-  // // the verse is already seen.
-  // void _handleSameNumberPerDayVerse(Verse verse, Difficulty response) {
-  //   if (!_alreadySeenIds.contains(verse.id)) {
-  //     _handleVerse(verse, response);
-  //   }
-  //   _alreadySeenIds.add(verse.id);
-  // }
 
   void _handleVerse(Verse verse, Difficulty response) {
     final updatedVerse = _adjustVerseStats(verse, response);

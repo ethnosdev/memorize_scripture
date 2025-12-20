@@ -24,13 +24,14 @@ class HintBox extends StatelessWidget {
             spacing: 10,
             runSpacing: 10,
             children: [
-              SizedBox(
-                width: _buttonWidth,
-                child: SingleLineButton(
-                  title: 'Letters',
-                  onPressed: (enabled) ? manager.showFirstLettersHint : null,
+              if (buttonState.showLettersButton)
+                SizedBox(
+                  width: _buttonWidth,
+                  child: SingleLineButton(
+                    title: 'Letters',
+                    onPressed: (enabled) ? manager.showFirstLettersHint : null,
+                  ),
                 ),
-              ),
               if (buttonState.hasCustomHint)
                 SizedBox(
                   width: _buttonWidth,
