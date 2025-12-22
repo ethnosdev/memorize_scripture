@@ -6,13 +6,15 @@ const transparent = Color(0x00000000);
 class WordsHintHelper {
   Color _textColor = const Color(0xff000000);
   String _text = '';
-  int _unitsShowing = 0;
+  // int _unitsShowing = 0;
+  int _visibleIndex = 0;
 
   void init({
     required String text,
     required Color textColor,
   }) {
-    _unitsShowing = 0;
+    // _unitsShowing = 0;
+    _visibleIndex = 0;
     _text = _removeBold(text);
     _textColor = textColor;
   }
@@ -26,28 +28,33 @@ class WordsHintHelper {
   /// Throws an [OnFinishedException] if this is the last unit or if
   /// no more units are available.
   TextSpan nextWord() {
-    _unitsShowing++;
-    final revealLimit = _calculateRevealLimit(_unitsShowing, _text);
+    _visibleIndex = _findEndOfCompleteUnit(_visibleIndex, _text);
+    if (_visibleIndex >= _text.length) throw OnFinishedException();
+
+    // _unitsShowing++;
+    // final revealLimit = _calculateRevealLimit(_unitsShowing, _text);
 
     // If we can't find a limit, we are already past the end.
-    if (revealLimit == null) {
-      throw OnFinishedException();
-    }
+    // if (revealLimit == null) throw OnFinishedException();
 
-    // If skipping the spaces/punctuation after this unit reaches the end of the text,
-    // it means there are no more units to reveal.
-    if (_skipIntermediaryCharacters(revealLimit, _text) >= _text.length) {
-      throw OnFinishedException();
-    }
+    // if (_isLastUnit(revealLimit, _text)) {
+    //   throw OnFinishedException();
+    // }
+
+    // // If skipping the spaces/punctuation after this unit reaches the end of the text,
+    // // it means there are no more units to reveal.
+    // if (_skipIntermediaryCharacters(revealLimit, _text) >= _text.length) {
+    //   throw OnFinishedException();
+    // }
 
     //// Otherwise, return the partial text span.
     return TextSpan(children: [
       TextSpan(
-        text: _text.substring(0, revealLimit),
+        text: _text.substring(0, _visibleIndex),
         style: TextStyle(color: _textColor),
       ),
       TextSpan(
-        text: _text.substring(revealLimit),
+        text: _text.substring(_visibleIndex),
         style: const TextStyle(color: transparent),
       ),
     ]);
@@ -55,54 +62,58 @@ class WordsHintHelper {
 
   /// Calculates the string index required to reveal [unitCount] units.
   /// Returns null if the requested count exceeds the available text.
-  int? _calculateRevealLimit(int unitCount, String text) {
-    if (text.isEmpty) return null;
+  // int? _calculateRevealLimit(int unitCount, String text) {
+  //   if (text.isEmpty) return null;
+  //   int index = 0;
 
-    int currentIndex = 0;
+  //   for (int i = 0; i < unitCount; i++) {
+  //     if (index >= text.length) return null;
+  //     index = _findEndOfCompleteUnit(index, text);
+  //   }
+  //   return index;
+  // }
 
-    for (int i = 0; i < unitCount; i++) {
-      // 1. Skip over leading whitespace/punctuation to find the start of the next unit
-      currentIndex = _skipIntermediaryCharacters(currentIndex, text);
-
-      if (currentIndex >= text.length) return null;
-
-      // 2. Find where this specific unit ends
-      currentIndex = _findNextUnitBoundary(currentIndex, text);
-    }
-
-    return currentIndex;
-  }
-
-  /// Determines the end index of the unit starting at [start].
-  int _findNextUnitBoundary(int start, String text) {
-    if (start >= text.length) return text.length;
-
-    final char = text[start];
-
-    // If it's a CJK character, the unit is exactly one character long.
-    if (isCjk(char)) {
-      return start + 1;
-    }
-
-    // If it's Latin/Other, the unit ends at the next whitespace or the start of a CJK block.
+  int _findEndOfCompleteUnit(int start, String text) {
     int index = start;
-    while (index < text.length) {
-      final nextChar = text[index];
-      if (isWhitespaceOrPunctuation(nextChar) || isCjk(nextChar)) {
-        break;
+
+    // 1. Consume leading whitespace
+    while (index < text.length && isWhitespace(text[index])) {
+      index++;
+    }
+
+    // 2. Consume Prefix Punctuation (e.g., Opening Quote, Parenthesis)
+    while (index < text.length && isPrefixPunctuation(text[index])) {
+      index++;
+    }
+
+    // 3. Consume the "Core"
+    if (index < text.length) {
+      if (isCjk(text[index])) {
+        index++; // CJK core is always exactly one character
+      } else {
+        // Latin core: letters until we hit whitespace, CJK, or any punctuation
+        while (index < text.length &&
+            !isWhitespace(text[index]) &&
+            !isCjk(text[index]) &&
+            !isPrefixPunctuation(text[index]) &&
+            !isSuffixPunctuation(text[index])) {
+          index++;
+        }
       }
+    }
+
+    // 4. Consume Suffix Punctuation (e.g., Period, Comma, Closing Quote, Em-dash)
+    while (index < text.length && isSuffixPunctuation(text[index])) {
       index++;
     }
+
     return index;
   }
 
-  /// Moves the index past any characters that don't constitute a "unit" (e.g., spaces).
-  int _skipIntermediaryCharacters(int start, String text) {
-    int index = start;
-    while (index < text.length && isWhitespaceOrPunctuation(text[index])) {
-      index++;
-    }
-    return index;
+  bool _isLastUnit(int currentLimit, String text) {
+    int nextIndex = _findEndOfCompleteUnit(currentLimit, text);
+    // If the next search can't find anything new, we are at the end
+    return nextIndex <= currentLimit || nextIndex >= text.length;
   }
 }
 

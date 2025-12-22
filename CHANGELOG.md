@@ -1,4 +1,8 @@
-## 2.5 - December 20, 2025
+## 2.5.1 - December 22, 2025
+
+- Fix Word hints so that punctuation shows along with the next word.
+
+## 2.5.0 - December 20, 2025
 
 - Add support for CJK verses.
 

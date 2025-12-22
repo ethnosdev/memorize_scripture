@@ -30,15 +30,16 @@ void main() {
       expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
     });
 
-    test('hyphen should count as space', () {
+    test('should handle hyphens as suffix punctuation', () {
       final helper = WordsHintHelper();
-      helper.init(
-        text: "Hello-world",
-        textColor: Colors.black,
-      );
+      helper.init(text: "Hello-world", textColor: Colors.black);
 
       final span1 = helper.nextWord();
-      expect((span1.children!.first as TextSpan).text, "Hello");
+      // Reveals "Hello-"
+      expect((span1.children!.first as TextSpan).text, "Hello-");
+
+      // Reveals "world" and finishes
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
     });
 
     test('em dash should count as space', () {
@@ -49,7 +50,7 @@ void main() {
       );
 
       final span1 = helper.nextWord();
-      expect((span1.children!.first as TextSpan).text, "Hello");
+      expect((span1.children!.first as TextSpan).text, "Hello—");
     });
 
     test('hide ** bold markers', () {
@@ -134,7 +135,7 @@ void main() {
       );
 
       final span1 = helper.nextWord();
-      expect((span1.children!.first as TextSpan).text, "Wait");
+      expect((span1.children!.first as TextSpan).text, "Wait...");
 
       // Should skip "... " and reveal "what?"
       expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
@@ -147,6 +148,82 @@ void main() {
         textColor: Colors.black,
       );
 
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
+
+    test('should attach trailing punctuation to Latin word', () {
+      final helper = WordsHintHelper();
+      helper.init(text: "Hello, world!", textColor: Colors.black);
+
+      final span = helper.nextWord();
+      // Reveals "Hello," including the comma
+      expect((span.children!.first as TextSpan).text, "Hello,");
+    });
+
+    test('should attach leading and trailing punctuation to Latin word', () {
+      final helper = WordsHintHelper();
+      helper.init(text: 'He said, "(Hello!)"', textColor: Colors.black);
+
+      var span = helper.nextWord(); // "He"
+      var expectedText = (span.children!.first as TextSpan).text;
+      expect(expectedText, 'He');
+
+      span = helper.nextWord(); // "He"
+      expectedText = (span.children!.first as TextSpan).text;
+      expect(expectedText, 'He said,');
+
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
+
+    test('should attach full-width punctuation to CJK character', () {
+      final helper = WordsHintHelper();
+      helper.init(text: "你好。", textColor: Colors.black);
+
+      helper.nextWord(); // "你"
+
+      // Second tap should reveal "好。" (attaching the Chinese period)
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
+
+    test('should attach non-final full-width punctuation to CJK character', () {
+      final helper = WordsHintHelper();
+      helper.init(text: "你。好", textColor: Colors.black);
+
+      final span1 = helper.nextWord();
+      expect((span1.children!.first as TextSpan).text, "你。");
+
+      // Second tap should reveal "好"
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
+
+    test('should attach multiple CJK suffix punctuations', () {
+      final helper = WordsHintHelper();
+      helper.init(text: "好」！", textColor: Colors.black);
+
+      // Should reveal everything in one go because it's a single core + suffixes
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
+
+    test('should handle CJK prefix and suffix in one unit', () {
+      final helper = WordsHintHelper();
+      helper.init(text: "「愛」。", textColor: Colors.black);
+
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
+
+    test('should handle multiple trailing punctuation marks immediately', () {
+      final helper = WordsHintHelper();
+      helper.init(text: 'Stop."', textColor: Colors.black);
+
+      // Should reveal 'Stop."' and finish immediately
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
+
+    test('should reveal prefix punctuation with the word in CJK', () {
+      final helper = WordsHintHelper();
+      helper.init(text: "「愛」", textColor: Colors.black);
+
+      // Should reveal 「愛」 in one unit
       expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
     });
   });
