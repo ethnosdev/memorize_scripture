@@ -1,4 +1,4 @@
-## 2.5.1 - December 22, 2025
+## 2.5.1 - December 23, 2025
 
 - Fix Word hints so that punctuation shows along with the next word.
 

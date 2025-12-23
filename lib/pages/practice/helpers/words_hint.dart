@@ -60,19 +60,6 @@ class WordsHintHelper {
     ]);
   }
 
-  /// Calculates the string index required to reveal [unitCount] units.
-  /// Returns null if the requested count exceeds the available text.
-  // int? _calculateRevealLimit(int unitCount, String text) {
-  //   if (text.isEmpty) return null;
-  //   int index = 0;
-
-  //   for (int i = 0; i < unitCount; i++) {
-  //     if (index >= text.length) return null;
-  //     index = _findEndOfCompleteUnit(index, text);
-  //   }
-  //   return index;
-  // }
-
   int _findEndOfCompleteUnit(int start, String text) {
     int index = start;
 
@@ -108,12 +95,6 @@ class WordsHintHelper {
     }
 
     return index;
-  }
-
-  bool _isLastUnit(int currentLimit, String text) {
-    int nextIndex = _findEndOfCompleteUnit(currentLimit, text);
-    // If the next search can't find anything new, we are at the end
-    return nextIndex <= currentLimit || nextIndex >= text.length;
   }
 }
 
