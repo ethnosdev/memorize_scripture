@@ -247,13 +247,56 @@ void main() {
 
     test('should ignore trailing white space to prevent an extra tap', () {
       final helper = WordsHintHelper();
-      helper.init(text: "Hello world ", textColor: Colors.black);
+      helper.init(text: "Hello world   ", textColor: Colors.black);
 
       final span1 = helper.nextWord();
       expect((span1.children!.first as TextSpan).text, "Hello");
 
       // The second tap should throw OnFinishedException immediately,
       // ignoring the trailing spaces instead of requiring a 3rd tap.
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
+
+    test('initial em dash should be connected to the following word', () {
+      final helper = WordsHintHelper();
+      helper.init(text: "—Hello", textColor: Colors.black);
+
+      // Single units finish and throw immediately
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
+
+    test('initial em dash with space should be connected to the following word',
+        () {
+      final helper = WordsHintHelper();
+      helper.init(text: "— Hello", textColor: Colors.black);
+
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
+
+    test('em dash as a separator with spaces connects to the following word',
+        () {
+      final helper = WordsHintHelper();
+      helper.init(text: "Hello — world", textColor: Colors.black);
+
+      final span = helper.nextWord();
+      expect((span.children!.first as TextSpan).text, "Hello");
+
+      // "— world" is now the final unit, so it finishes and throws
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
+
+    test('em dashes as separators connect to the following words', () {
+      final helper = WordsHintHelper();
+      helper.init(text: "Hello — world — test", textColor: Colors.black);
+
+      var span = helper.nextWord();
+      expect((span.children!.first as TextSpan).text, "Hello");
+
+      // Shows how the dash connects across intermediate steps flawlessly
+      span = helper.nextWord();
+      expect((span.children!.first as TextSpan).text, "Hello — world");
+
+      // "— test" finishes the string
       expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
     });
   });

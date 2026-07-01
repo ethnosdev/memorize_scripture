@@ -61,9 +61,19 @@ class WordsHintHelper {
       index++;
     }
 
-    // 2. Consume Prefix Punctuation (e.g., Opening Quote, Parenthesis)
-    while (index < text.length && isPrefixPunctuation(text[index])) {
-      index++;
+    // 2. Consume Prefix Punctuation (e.g., Opening Quote, Parenthesis, Em-dash)
+    while (index < text.length) {
+      final char = text[index];
+      if (isPrefixPunctuation(char) || char == '—' || char == '–') {
+        index++;
+        // Also consume any whitespace immediately following prefix punctuation
+        // so that it seamlessly connects to the following word.
+        while (index < text.length && isWhitespace(text[index])) {
+          index++;
+        }
+      } else {
+        break;
+      }
     }
 
     // 3. Consume the "Core"
@@ -79,7 +89,10 @@ class WordsHintHelper {
             break;
           }
 
-          if (isPrefixPunctuation(char) || isSuffixPunctuation(char)) {
+          if (isPrefixPunctuation(char) ||
+              isSuffixPunctuation(char) ||
+              char == '—' ||
+              char == '–') {
             // Special check: keep apostrophes inside a word (e.g., father's or father’s)
             final isApostrophe = char == "'" ||
                 char == "’" ||
@@ -91,7 +104,9 @@ class WordsHintHelper {
               final isNextCore = !isWhitespace(nextChar) &&
                   !isCjk(nextChar) &&
                   !isPrefixPunctuation(nextChar) &&
-                  !isSuffixPunctuation(nextChar);
+                  !isSuffixPunctuation(nextChar) &&
+                  nextChar != '—' &&
+                  nextChar != '–';
 
               if (isNextCore) {
                 index++;
@@ -107,7 +122,10 @@ class WordsHintHelper {
     }
 
     // 4. Consume Suffix Punctuation (e.g., Period, Comma, Closing Quote, Em-dash)
-    while (index < text.length && isSuffixPunctuation(text[index])) {
+    while (index < text.length &&
+        (isSuffixPunctuation(text[index]) ||
+            text[index] == '—' ||
+            text[index] == '–')) {
       index++;
     }
 
