@@ -226,5 +226,23 @@ void main() {
       // Should reveal 「愛」 in one unit
       expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
     });
+
+    test('should not split words with standard apostrophe', () {
+      final helper = WordsHintHelper();
+      helper.init(text: "father's car", textColor: Colors.black);
+
+      final span1 = helper.nextWord();
+      expect((span1.children!.first as TextSpan).text, "father's");
+
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
+
+    test('should not split words with slanted apostrophe', () {
+      final helper = WordsHintHelper();
+      helper.init(text: "father’s", textColor: Colors.black);
+
+      // Should finish revealing immediately
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
   });
 }

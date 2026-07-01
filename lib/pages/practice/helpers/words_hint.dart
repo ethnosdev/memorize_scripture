@@ -31,22 +31,6 @@ class WordsHintHelper {
     _visibleIndex = _findEndOfCompleteUnit(_visibleIndex, _text);
     if (_visibleIndex >= _text.length) throw OnFinishedException();
 
-    // _unitsShowing++;
-    // final revealLimit = _calculateRevealLimit(_unitsShowing, _text);
-
-    // If we can't find a limit, we are already past the end.
-    // if (revealLimit == null) throw OnFinishedException();
-
-    // if (_isLastUnit(revealLimit, _text)) {
-    //   throw OnFinishedException();
-    // }
-
-    // // If skipping the spaces/punctuation after this unit reaches the end of the text,
-    // // it means there are no more units to reveal.
-    // if (_skipIntermediaryCharacters(revealLimit, _text) >= _text.length) {
-    //   throw OnFinishedException();
-    // }
-
     //// Otherwise, return the partial text span.
     return TextSpan(children: [
       TextSpan(
@@ -79,11 +63,35 @@ class WordsHintHelper {
         index++; // CJK core is always exactly one character
       } else {
         // Latin core: letters until we hit whitespace, CJK, or any punctuation
-        while (index < text.length &&
-            !isWhitespace(text[index]) &&
-            !isCjk(text[index]) &&
-            !isPrefixPunctuation(text[index]) &&
-            !isSuffixPunctuation(text[index])) {
+        while (index < text.length) {
+          final char = text[index];
+
+          if (isWhitespace(char) || isCjk(char)) {
+            break;
+          }
+
+          if (isPrefixPunctuation(char) || isSuffixPunctuation(char)) {
+            // Special check: keep apostrophes inside a word (e.g., father's or father’s)
+            final isApostrophe = char == "'" ||
+                char == "’" ||
+                char == "‘" ||
+                char == "´" ||
+                char == "`";
+            if (isApostrophe && index + 1 < text.length) {
+              final nextChar = text[index + 1];
+              final isNextCore = !isWhitespace(nextChar) &&
+                  !isCjk(nextChar) &&
+                  !isPrefixPunctuation(nextChar) &&
+                  !isSuffixPunctuation(nextChar);
+
+              if (isNextCore) {
+                index++;
+                continue;
+              }
+            }
+            break;
+          }
+
           index++;
         }
       }
