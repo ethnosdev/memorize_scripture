@@ -140,7 +140,7 @@ class HomePageManager {
   void import(void Function(String message) onResult) async {
     FilePickerResult? result;
     try {
-      result = await FilePicker.platform.pickFiles();
+      result = await FilePicker.pickFiles();
     } on Exception catch (e) {
       onResult.call('FilePicker error: ${e.toString()}');
     }
