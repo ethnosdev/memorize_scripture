@@ -299,5 +299,50 @@ void main() {
       // "— test" finishes the string
       expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
     });
+
+    test('ellipsis without spaces should attach to the word', () {
+      final helper = WordsHintHelper();
+      helper.init(text: "Moses,...", textColor: Colors.black);
+
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
+
+    test('ellipsis with space should attach to the word', () {
+      final helper = WordsHintHelper();
+      helper.init(text: "Moses, ...", textColor: Colors.black);
+
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
+
+    test('single character ellipsis should attach to the word', () {
+      final helper = WordsHintHelper();
+      helper.init(text: "Moses,…", textColor: Colors.black);
+
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
+
+    test('single character ellipsis with space should attach to the word', () {
+      final helper = WordsHintHelper();
+      helper.init(text: "Moses, …", textColor: Colors.black);
+
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
+
+    test('multiple separated dots should attach as ellipsis', () {
+      final helper = WordsHintHelper();
+      helper.init(text: "Moses . . .", textColor: Colors.black);
+
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
+
+    test('separated dots followed by word should not consume the word', () {
+      final helper = WordsHintHelper();
+      helper.init(text: "Moses . . . what?", textColor: Colors.black);
+
+      var span = helper.nextWord();
+      expect((span.children!.first as TextSpan).text, "Moses . . .");
+
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
   });
 }

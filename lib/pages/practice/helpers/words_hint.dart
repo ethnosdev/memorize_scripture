@@ -64,7 +64,7 @@ class WordsHintHelper {
     // 2. Consume Prefix Punctuation (e.g., Opening Quote, Parenthesis, Em-dash)
     while (index < text.length) {
       final char = text[index];
-      if (isPrefixPunctuation(char) || char == '—' || char == '–') {
+      if (isPrefixPunctuation(char)) {
         index++;
         // Also consume any whitespace immediately following prefix punctuation
         // so that it seamlessly connects to the following word.
@@ -89,10 +89,7 @@ class WordsHintHelper {
             break;
           }
 
-          if (isPrefixPunctuation(char) ||
-              isSuffixPunctuation(char) ||
-              char == '—' ||
-              char == '–') {
+          if (isPrefixPunctuation(char) || isSuffixPunctuation(char)) {
             // Special check: keep apostrophes inside a word (e.g., father's or father’s)
             final isApostrophe = char == "'" ||
                 char == "’" ||
@@ -104,9 +101,7 @@ class WordsHintHelper {
               final isNextCore = !isWhitespace(nextChar) &&
                   !isCjk(nextChar) &&
                   !isPrefixPunctuation(nextChar) &&
-                  !isSuffixPunctuation(nextChar) &&
-                  nextChar != '—' &&
-                  nextChar != '–';
+                  !isSuffixPunctuation(nextChar);
 
               if (isNextCore) {
                 index++;
@@ -121,12 +116,27 @@ class WordsHintHelper {
       }
     }
 
-    // 4. Consume Suffix Punctuation (e.g., Period, Comma, Closing Quote, Em-dash)
-    while (index < text.length &&
-        (isSuffixPunctuation(text[index]) ||
-            text[index] == '—' ||
-            text[index] == '–')) {
-      index++;
+    // 4. Consume Suffix Punctuation (e.g., Period, Comma, Closing Quote, Em-dash, Ellipsis)
+    while (index < text.length) {
+      final char = text[index];
+      if (isSuffixPunctuation(char)) {
+        index++;
+      } else if (isWhitespace(char)) {
+        // Check if the space is followed by dots or ellipsis so we can group "Moses, ..." or "Moses, . . ."
+        int lookAhead = index;
+        while (lookAhead < text.length && isWhitespace(text[lookAhead])) {
+          lookAhead++;
+        }
+        if (lookAhead < text.length &&
+            (text[lookAhead] == '.' || text[lookAhead] == '…')) {
+          // Attach the space(s) so the subsequent dots become part of this word's suffix
+          index++;
+        } else {
+          break;
+        }
+      } else {
+        break;
+      }
     }
 
     return index;
