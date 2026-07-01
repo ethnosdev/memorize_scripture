@@ -244,5 +244,17 @@ void main() {
       // Should finish revealing immediately
       expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
     });
+
+    test('should ignore trailing white space to prevent an extra tap', () {
+      final helper = WordsHintHelper();
+      helper.init(text: "Hello world ", textColor: Colors.black);
+
+      final span1 = helper.nextWord();
+      expect((span1.children!.first as TextSpan).text, "Hello");
+
+      // The second tap should throw OnFinishedException immediately,
+      // ignoring the trailing spaces instead of requiring a 3rd tap.
+      expect(helper.nextWord, throwsA(isA<OnFinishedException>()));
+    });
   });
 }

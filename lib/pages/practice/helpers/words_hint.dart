@@ -15,7 +15,16 @@ class WordsHintHelper {
   }) {
     // _unitsShowing = 0;
     _visibleIndex = 0;
-    _text = _removeBold(text);
+
+    String processedText = _removeBold(text);
+
+    // Ignore white space at the end to prevent an extra step
+    int endIndex = processedText.length;
+    while (endIndex > 0 && isWhitespace(processedText[endIndex - 1])) {
+      endIndex--;
+    }
+    _text = processedText.substring(0, endIndex);
+
     _textColor = textColor;
   }
 
