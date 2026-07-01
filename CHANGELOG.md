@@ -1,3 +1,7 @@
+## 2.5.2 - July 2, 2026
+
+- Fix punctuation and spacing bugs with word hints.
+
 ## 2.5.1 - December 23, 2025
 
 - Fix Word hints so that punctuation shows along with the next word.

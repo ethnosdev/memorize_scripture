@@ -1,14 +1,14 @@
 name: memorize_scripture
 description: A spaced repetition based scripture memory app
 publish_to: 'none'
-version: 2.5.1+30
+version: 2.5.2+31
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   cupertino_icons: ^1.0.8
-  file_picker: ^10.3.3
+  file_picker: ^11.0.2
   flutter:
     sdk: flutter
   flutter_secure_storage: ^10.0.0
@@ -18,7 +18,7 @@ dependencies:
   package_info_plus: ^9.0.0
   path: ^1.9.0
   path_provider: ^2.1.4
-  pocketbase: ^0.23.0
+  pocketbase: ^0.24.0
   scrollable_positioned_list: ^0.3.8
   share_plus: ^12.0.1
   shared_preferences: ^2.3.2
