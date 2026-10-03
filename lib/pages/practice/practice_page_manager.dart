@@ -70,6 +70,9 @@ class PracticePageManager {
   late final UserSettings userSettings;
   final _wordsHintHelper = WordsHintHelper();
 
+  double get fontSize => userSettings.fontSize;
+  double scaledFontSize([double scaleFactor = 1.0]) => userSettings.fontSize * scaleFactor;
+
   final uiNotifier = ValueNotifier<PracticeState>(PracticeState.loading);
   final countNotifier = ValueNotifier<String>('');
   final promptNotifier = ValueNotifier<TextSpan>(const TextSpan());

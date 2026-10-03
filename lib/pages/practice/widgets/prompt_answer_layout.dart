@@ -3,9 +3,6 @@ import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
 import 'package:memorize_scripture/pages/practice/widgets/button_panel.dart';
 import 'package:memorize_scripture/pages/practice/widgets/hint_box.dart';
 
-// use this to enlarge the text. Later allow the user to adjust this.
-const textScaleFactor = 1.2;
-
 class PromptAnswerLayout extends StatelessWidget {
   const PromptAnswerLayout({
     super.key,
@@ -45,7 +42,10 @@ class Counter extends StatelessWidget {
         child: ValueListenableBuilder<String>(
           valueListenable: manager.countNotifier,
           builder: (context, count, child) {
-            return Text(count);
+            return Text(
+              count,
+              style: TextStyle(fontSize: manager.fontSize * 0.8),
+            );
           },
         ),
       ),
@@ -105,7 +105,7 @@ class Prompt extends StatelessWidget {
           child: SelectableText.rich(
             text,
             textAlign: TextAlign.center,
-            textScaler: const TextScaler.linear(textScaleFactor),
+            style: TextStyle(fontSize: manager.fontSize),
           ),
         );
       },
@@ -146,7 +146,7 @@ class Answer extends StatelessWidget {
                 child: SelectableText.rich(
                   answer.textSpan,
                   textAlign: TextAlign.center,
-                  textScaler: const TextScaler.linear(textScaleFactor),
+                  style: TextStyle(fontSize: manager.fontSize),
                 ),
               );
             case WordsHint():
@@ -156,7 +156,7 @@ class Answer extends StatelessWidget {
                   SelectableText.rich(
                     answer.textSpan,
                     textAlign: TextAlign.center,
-                    textScaler: const TextScaler.linear(textScaleFactor),
+                    style: TextStyle(fontSize: manager.fontSize),
                   ),
                   Positioned.fill(
                     child: GestureDetector(

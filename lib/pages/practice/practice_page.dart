@@ -5,6 +5,7 @@ import 'package:memorize_scripture/pages/practice/practice_page_manager.dart';
 import 'package:memorize_scripture/pages/practice/widgets/app_bar.dart';
 import 'package:memorize_scripture/pages/practice/widgets/prompt_answer_layout.dart';
 import 'package:memorize_scripture/service_locator.dart';
+import 'package:memorize_scripture/services/user_settings.dart';
 
 class PracticePage extends StatefulWidget {
   const PracticePage({
@@ -69,8 +70,16 @@ class EmptyCollection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Press the + button to add a verse.'),
+    final fontSize = getIt.isRegistered<PracticePageManager>()
+        ? getIt<PracticePageManager>().fontSize
+        : (getIt.isRegistered<UserSettings>()
+            ? getIt<UserSettings>().fontSize
+            : UserSettings.defaultFontSize);
+    return Center(
+      child: Text(
+        'Press the + button to add a verse.',
+        style: TextStyle(fontSize: fontSize * 0.9),
+      ),
     );
   }
 }
@@ -89,11 +98,17 @@ class NoVersesDue extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('There are no more verses due today.'),
+          Text(
+            'There are no more verses due today.',
+            style: TextStyle(fontSize: manager.fontSize * 0.9),
+          ),
           const SizedBox(height: 100),
           OutlinedButton(
             onPressed: manager.practiceAllVerses,
-            child: const Text('Practice all verses'),
+            child: Text(
+              'Practice all verses',
+              style: TextStyle(fontSize: manager.fontSize * 0.8),
+            ),
           ),
         ],
       ),
@@ -116,17 +131,21 @@ class Finished extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Text(
               message,
               textAlign: TextAlign.center,
+              style: TextStyle(fontSize: manager.fontSize * 1.1),
             ),
           ),
           const SizedBox(height: 100),
           OutlinedButton(
             onPressed: manager.practiceAllVerses,
-            child: const Text('Practice all verses'),
+            child: Text(
+              'Practice all verses',
+              style: TextStyle(fontSize: manager.fontSize * 0.8),
+            ),
           ),
         ],
       ),

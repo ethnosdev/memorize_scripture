@@ -16,6 +16,34 @@ class SettingsPageManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  double get fontSize => userSettings.fontSize;
+
+  String validateFontSize(String value) {
+    int? result = int.tryParse(value);
+    if (result == null) {
+      return UserSettings.defaultFontSize.round().toString();
+    }
+    if (result < UserSettings.minFontSize) {
+      return UserSettings.minFontSize.round().toString();
+    }
+    if (result > UserSettings.maxFontSize) {
+      return UserSettings.maxFontSize.round().toString();
+    }
+    return result.toString();
+  }
+
+  Future<void> updateFontSize(String number) async {
+    final size = double.tryParse(number);
+    if (size == null) return;
+    await setFontSize(size);
+  }
+
+  Future<void> setFontSize(double size) async {
+    await userSettings.setFontSize(size);
+    themeManager.setFontSize(size);
+    notifyListeners();
+  }
+
   String get dailyLimit {
     final value = userSettings.getDailyLimit;
     if (value >= UserSettings.defaultDailyLimit) return '';

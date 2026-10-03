@@ -16,6 +16,8 @@ class ResponseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final titleStyle = Theme.of(context).textTheme.labelLarge ?? DefaultTextStyle.of(context).style;
+    final subtitleStyle = Theme.of(context).textTheme.labelSmall ?? DefaultTextStyle.of(context).style;
     return SizedBox(
       height: 48,
       child: Stack(
@@ -35,14 +37,16 @@ class ResponseButton extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: DefaultTextStyle.of(context).style.copyWith(color: Theme.of(context).colorScheme.primary),
+                    style: titleStyle.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                   if (subtitle != null)
                     Text(
                       subtitle!,
-                      style:
-                          DefaultTextStyle.of(context).style.copyWith(color: Theme.of(context).colorScheme.secondary),
-                      textScaler: const TextScaler.linear(0.9),
+                      style: subtitleStyle.copyWith(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
                     ),
                 ],
               ),

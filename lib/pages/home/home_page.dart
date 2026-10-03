@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memorize_scripture/app_manager.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/pages/account/account_page.dart';
 import 'package:memorize_scripture/pages/home/widgets/drawer.dart';
@@ -10,6 +11,7 @@ import 'package:memorize_scripture/pages/home/home_page_manager.dart';
 import 'package:memorize_scripture/pages/practice/practice_page.dart';
 import 'package:memorize_scripture/pages/verse_browser/verse_browser.dart';
 import 'package:memorize_scripture/service_locator.dart';
+import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../common/widgets/syncing_overlay.dart';
@@ -32,11 +34,17 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: manager.isSyncingNotifier,
-      builder: (context, isSyncing, child) {
+    final fontSizeNotifier = getIt.isRegistered<AppManager>()
+        ? getIt<AppManager>().fontSizeNotifier
+        : null;
+    return ListenableBuilder(
+      listenable: Listenable.merge([
+        manager.isSyncingNotifier,
+        if (fontSizeNotifier != null) fontSizeNotifier,
+      ]),
+      builder: (context, child) {
         return WaitingOverlay(
-          isWaiting: isSyncing,
+          isWaiting: manager.isSyncingNotifier.value,
           child: Scaffold(
             appBar: AppBar(
               actions: [
@@ -136,15 +144,15 @@ class _HomePageState extends State<HomePage> {
 class NoCollections extends StatelessWidget {
   const NoCollections({super.key});
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildContent(double fontSize) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
+          Text(
             'Press the + button to add a collection.',
             textAlign: TextAlign.center,
+            style: TextStyle(fontSize: fontSize * 0.9),
           ),
           const SizedBox(height: 50),
           OutlinedButton(
@@ -154,10 +162,33 @@ class NoCollections extends StatelessWidget {
                 launchUrl(url, mode: LaunchMode.externalApplication);
               }
             },
-            child: const Text('App Tutorial'),
+            child: Text(
+              'App Tutorial',
+              style: TextStyle(fontSize: fontSize * 0.8),
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final fontSizeNotifier = getIt.isRegistered<AppManager>()
+        ? getIt<AppManager>().fontSizeNotifier
+        : null;
+    double currentFontSize() => getIt.isRegistered<HomePageManager>()
+        ? getIt<HomePageManager>().fontSize
+        : (getIt.isRegistered<UserSettings>()
+            ? getIt<UserSettings>().fontSize
+            : UserSettings.defaultFontSize);
+
+    if (fontSizeNotifier == null) {
+      return _buildContent(currentFontSize());
+    }
+    return ListenableBuilder(
+      listenable: fontSizeNotifier,
+      builder: (context, child) => _buildContent(currentFontSize()),
     );
   }
 }
@@ -177,8 +208,7 @@ class BodyWidget extends StatefulWidget {
 class _BodyWidgetState extends State<BodyWidget> {
   final manager = getIt<HomePageManager>();
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildList(double fontSize) {
     return SafeArea(
       child: ListView.builder(
         itemCount: widget.collections.length,
@@ -189,7 +219,10 @@ class _BodyWidgetState extends State<BodyWidget> {
             clipBehavior: Clip.hardEdge,
             child: Builder(builder: (listTileContext) {
               return ListTile(
-                title: Text(collection.name),
+                title: Text(
+                  collection.name,
+                  style: TextStyle(fontSize: fontSize * 0.9),
+                ),
                 trailing: (collection.isPinned) //
                     ? const Icon(Icons.push_pin)
                     : null,
@@ -214,6 +247,20 @@ class _BodyWidgetState extends State<BodyWidget> {
           );
         },
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final fontSizeNotifier = getIt.isRegistered<AppManager>()
+        ? getIt<AppManager>().fontSizeNotifier
+        : null;
+    if (fontSizeNotifier == null) {
+      return _buildList(manager.fontSize);
+    }
+    return ListenableBuilder(
+      listenable: fontSizeNotifier,
+      builder: (context, child) => _buildList(manager.fontSize),
     );
   }
 

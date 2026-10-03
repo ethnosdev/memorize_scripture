@@ -12,6 +12,7 @@ import 'package:memorize_scripture/services/backend/backend_service.dart';
 import 'package:memorize_scripture/services/backend/exceptions.dart';
 import 'package:memorize_scripture/services/local_storage/local_storage.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
+import 'package:memorize_scripture/app_manager.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -26,6 +27,10 @@ class HomePageManager {
   }
   late final LocalStorage localStorage;
   late final UserSettings userSettings;
+
+  double get fontSize => getIt.isRegistered<AppManager>()
+      ? getIt<AppManager>().fontSize
+      : userSettings.fontSize;
 
   final collectionNotifier =
       ValueNotifier<HomePageUiState>(LoadingCollections());

@@ -21,6 +21,8 @@ class VerseBrowserManager extends ChangeNotifier {
   var viewOptions = ViewOptions.empty;
   final userSettings = getIt<UserSettings>();
 
+  double get fontSize => userSettings.fontSize;
+
   late String _collectionId;
   late List<Collection> _collections;
 

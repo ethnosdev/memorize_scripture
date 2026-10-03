@@ -263,6 +263,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
           controller: promptController,
           textCapitalization: TextCapitalization.sentences,
           maxLines: null,
+          style: TextStyle(fontSize: manager.fontSize),
           decoration: InputDecoration(
             labelText: 'Prompt',
             floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -285,6 +286,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
       textCapitalization: TextCapitalization.sentences,
       maxLines: null,
       controller: verseTextController,
+      style: TextStyle(fontSize: manager.fontSize),
       decoration: const InputDecoration(
         labelText: 'Verse text',
         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -308,6 +310,7 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
             maxLines: null,
             focusNode: hintFocus,
             controller: hintController,
+            style: TextStyle(fontSize: manager.fontSize),
             decoration: const InputDecoration(
               labelText: 'Hint',
               floatingLabelBehavior: FloatingLabelBehavior.always,

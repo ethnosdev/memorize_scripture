@@ -15,6 +15,7 @@ class SingleLineButton extends StatelessWidget {
     final color = (onPressed == null)
         ? Theme.of(context).disabledColor
         : Theme.of(context).colorScheme.primary;
+    final buttonStyle = Theme.of(context).textTheme.labelLarge ?? DefaultTextStyle.of(context).style;
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -35,7 +36,7 @@ class SingleLineButton extends StatelessWidget {
             child: Text(
               title,
               softWrap: false,
-              style: DefaultTextStyle.of(context).style.copyWith(color: color),
+              style: buttonStyle.copyWith(color: color),
             ),
           ),
         ),

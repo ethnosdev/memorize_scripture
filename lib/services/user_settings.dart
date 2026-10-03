@@ -7,8 +7,12 @@ class UserSettings {
   static const defaultDailyLimit = 100000;
   static const defaultFixedGoodDays = 7;
   static const defaultFixedEasyDays = 30;
+  static const defaultFontSize = 20.0;
+  static const minFontSize = 10.0;
+  static const maxFontSize = 40.0;
 
   static const String _themeModeKey = 'themeMode';
+  static const String _fontSizeKey = 'fontSizeKey';
   static const String _dailyLimitKey = 'dailyLimit';
   static const String _notificationsKey = 'notifications';
   static const String _notificationTimeKey = 'notificationTime';
@@ -21,7 +25,7 @@ class UserSettings {
   static const String _biblicalOrderKey = 'biblicalOrderKey';
 
   // getters cache
-  late final SharedPreferences prefs;
+  late SharedPreferences prefs;
 
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
@@ -40,6 +44,16 @@ class UserSettings {
     }
     final isDark = mode == ThemeMode.dark;
     await prefs.setBool(_themeModeKey, isDark);
+  }
+
+  double get fontSize {
+    final value = prefs.get(_fontSizeKey);
+    if (value is num) return value.toDouble();
+    return UserSettings.defaultFontSize;
+  }
+
+  Future<void> setFontSize(double value) async {
+    await prefs.setDouble(_fontSizeKey, value);
   }
 
   int get getDailyLimit {

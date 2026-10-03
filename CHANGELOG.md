@@ -4,6 +4,7 @@
 - Fix syncing bug.
 - Keep user logged in longer by refreshing token when syncing.
 - Add back daily reminder local notifications.
+- Enable changing the font size in settings.
 
 ## 2.5.2 - July 2, 2026
 

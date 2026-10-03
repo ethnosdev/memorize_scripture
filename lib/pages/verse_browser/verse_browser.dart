@@ -76,7 +76,10 @@ class _VerseBrowserState extends State<VerseBrowser> {
                   itemBuilder: (context, index) {
                     if (index == 0) {
                       return Center(
-                        child: Text('Total: ${manager.list.length}'),
+                        child: Text(
+                          'Total: ${manager.list.length}',
+                          style: TextStyle(fontSize: manager.fontSize * 0.8),
+                        ),
                       );
                     }
                     final verse = manager.list[index - 1];
@@ -97,7 +100,10 @@ class _VerseBrowserState extends State<VerseBrowser> {
   ListTile _buildOneColumnTile(Verse verse, BuildContext context) {
     final highlightColor = Theme.of(context).colorScheme.primary;
     return ListTile(
-      title: Text.rich(manager.formatText(verse.text, highlightColor)),
+      title: Text.rich(
+        manager.formatText(verse.text, highlightColor),
+        style: TextStyle(fontSize: manager.fontSize),
+      ),
       onTap: () => _goEdit(verse),
       onLongPress: () => _showCollectionOptionsDialog(verse),
     );
@@ -105,21 +111,21 @@ class _VerseBrowserState extends State<VerseBrowser> {
 
   ListTile _buildTwoColumnTile(Verse verse, BuildContext context) {
     final highlightColor = Theme.of(context).colorScheme.primary;
-    const scaler = TextScaler.linear(0.8);
+    final fontSize = manager.fontSize * 0.8;
     return ListTile(
       title: Row(
         children: [
           Expanded(
             child: Text.rich(
               manager.formatText(verse.prompt, highlightColor),
-              textScaler: scaler,
+              style: TextStyle(fontSize: fontSize),
             ),
           ),
           const SizedBox(width: 8),
           Expanded(
             child: Text.rich(
               manager.formatText(verse.text, highlightColor),
-              textScaler: scaler,
+              style: TextStyle(fontSize: fontSize),
             ),
           ),
         ],

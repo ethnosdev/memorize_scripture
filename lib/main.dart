@@ -25,16 +25,16 @@ class _MemorizeScriptureAppState extends State<MemorizeScriptureApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: manager.themeNotifier,
-      builder: (context, mode, child) {
+    return ListenableBuilder(
+      listenable: Listenable.merge([manager.themeNotifier, manager.fontSizeNotifier]),
+      builder: (context, child) {
         return MaterialApp(
           navigatorKey: deepLinkService.navigatorKey,
           debugShowCheckedModeBanner: false,
           title: 'Memorize Scripture',
-          theme: AppManager.lightTheme,
-          darkTheme: AppManager.darkTheme,
-          themeMode: mode,
+          theme: AppManager.lightTheme(manager.fontSize),
+          darkTheme: AppManager.darkTheme(manager.fontSize),
+          themeMode: manager.themeNotifier.value,
           home: const HomePage(),
           onGenerateRoute: (settings) {
             final uri = Uri.tryParse(settings.name ?? '');

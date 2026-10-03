@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/dialog/set_number_dialog.dart';
 import 'package:memorize_scripture/pages/settings/settings_page_manager.dart';
+import 'package:memorize_scripture/services/user_settings.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -40,6 +41,16 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 onTap: () {
                   _showThemeDialog(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Font size'),
+                trailing: Text(
+                  manager.fontSize.round().toString(),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                onTap: () {
+                  _showFontSizeDialog(context);
                 },
               ),
               const Divider(),
@@ -160,6 +171,61 @@ class _SettingsPageState extends State<SettingsPage> {
           },
         ),
       ),
+    );
+  }
+
+  void _showFontSizeDialog(BuildContext context) {
+    double currentSize = manager.fontSize;
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: 60,
+                    child: Center(
+                      child: Text(
+                        'Text',
+                        style: TextStyle(fontSize: currentSize),
+                      ),
+                    ),
+                  ),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      showValueIndicator: ShowValueIndicator.onDrag,
+                    ),
+                    child: Slider(
+                      value: currentSize,
+                      min: UserSettings.minFontSize,
+                      max: UserSettings.maxFontSize,
+                      divisions: (UserSettings.maxFontSize - UserSettings.minFontSize).round(),
+                      label: currentSize.round().toString(),
+                      onChanged: (value) {
+                        setDialogState(() {
+                          currentSize = value;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    manager.setFontSize(currentSize);
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

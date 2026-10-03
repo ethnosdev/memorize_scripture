@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/verse.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/local_storage/local_storage.dart';
+import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:uuid/uuid.dart';
 
 class AddEditVersePageManager {
@@ -11,6 +12,13 @@ class AddEditVersePageManager {
   final showHintBoxNotifier = ValueNotifier<bool>(false);
 
   final dataRepo = getIt<LocalStorage>();
+
+  double get fontSize {
+    if (getIt.isRegistered<UserSettings>()) {
+      return getIt<UserSettings>().fontSize;
+    }
+    return UserSettings.defaultFontSize;
+  }
 
   String _prompt = '';
   String _verseText = '';
