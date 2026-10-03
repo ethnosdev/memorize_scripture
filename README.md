@@ -5,6 +5,168 @@ A scripture memory app.
 Android: https://play.google.com/store/apps/details?id=dev.ethnos.memorize_scripture
 Apple: https://apps.apple.com/us/app/memorize-scripture-ethnosdev/id6449814205
 
+## Sharing verses from other apps (Deep Linking)
+
+Other apps (Bible readers, devotionals, study apps, websites) can send Scripture verses directly into Memorize Scripture using the custom URL scheme `memorizescripture://`.
+
+### URL Format
+
+```
+memorizescripture://add?prompt=<PROMPT>&text=<TEXT>&version=<VERSION>
+```
+
+Alternatively, the root path syntax `memorizescripture://?prompt=<PROMPT>&text=<TEXT>&version=<VERSION>` is also supported.
+
+### Query Parameters
+
+| Parameter | Type | Required | Description | Example |
+| :--- | :--- | :--- | :--- | :--- |
+| `prompt` | String | Yes* | The verse reference or flashcard prompt. | `Joel 2:1`, `John 3:16` |
+| `text` | String | Yes* | The Scripture text to memorize. | `Blow the ram's horn in Zion...` |
+| `version` | String | Optional | The Bible translation name or abbreviation. | `BSB`, `ESV`, `KJV`, `NIV` |
+
+*\* At least one of `prompt` or `text` must be provided. All parameter values must be properly URL/percent-encoded.*
+
+### User Experience / Behavior
+
+When Memorize Scripture receives a verse via deep link:
+
+1. **Collection Selection**:
+   - If the user has **no collections yet**, a creation dialog appears prefilled with **"Bible Verses"** (editable; pressing <kbd>Enter</kbd> or **OK** creates it immediately).
+   - If the user **already has collections**, a bottom sheet appears letting them choose an existing collection or create a new one.
+2. **Verse Review & Save**:
+   - The app navigates to the **Add verse** screen with the prompt and verse text prefilled from the deep link.
+   - The user reviews the verse and taps the checkmark (✓) in the upper-right corner to save it.
+
+### Code Examples
+
+#### Flutter / Dart (`url_launcher`)
+
+```dart
+import 'package:url_launcher/url_launcher.dart';
+
+Future<bool> shareToMemorizeScripture({
+  required String reference,
+  required String text,
+  String? version,
+}) async {
+  final uri = Uri(
+    scheme: 'memorizescripture',
+    host: 'add',
+    queryParameters: {
+      'prompt': reference,
+      'text': text,
+      if (version != null) 'version': version,
+    },
+  );
+
+  if (await canLaunchUrl(uri)) {
+    return await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+  return false;
+}
+```
+
+#### Swift (iOS)
+
+```swift
+import UIKit
+
+func shareToMemorizeScripture(reference: String, text: String, version: String? = nil) {
+    var components = URLComponents()
+    components.scheme = "memorizescripture"
+    components.host = "add"
+    var queryItems = [
+        URLQueryItem(name: "prompt", value: reference),
+        URLQueryItem(name: "text", value: text)
+    ]
+    if let version = version {
+        queryItems.append(URLQueryItem(name: "version", value: version))
+    }
+    components.queryItems = queryItems
+
+    guard let url = components.url else { return }
+
+    if UIApplication.shared.canOpenURL(url) {
+        UIApplication.shared.open(url)
+    } else {
+        // Fallback: Open Memorize Scripture on App Store
+        if let appStoreUrl = URL(string: "https://apps.apple.com/us/app/memorize-scripture-ethnosdev/id6449814205") {
+            UIApplication.shared.open(appStoreUrl)
+        }
+    }
+}
+```
+
+> **Note for iOS**: To check `UIApplication.shared.canOpenURL`, add `memorizescripture` to `LSApplicationQueriesSchemes` in your app's `Info.plist`:
+> ```xml
+> <key>LSApplicationQueriesSchemes</key>
+> <array>
+>     <string>memorizescripture</string>
+> </array>
+> ```
+
+#### Kotlin (Android)
+
+```kotlin
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+
+fun shareToMemorizeScripture(
+    context: Context,
+    reference: String,
+    text: String,
+    version: String? = null
+) {
+    val builder = Uri.Builder()
+        .scheme("memorizescripture")
+        .authority("add")
+        .appendQueryParameter("prompt", reference)
+        .appendQueryParameter("text", text)
+
+    version?.let { builder.appendQueryParameter("version", it) }
+
+    val intent = Intent(Intent.ACTION_VIEW, builder.build()).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    }
+
+    try {
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        // Fallback: Open Memorize Scripture on Google Play
+        val playStoreIntent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("https://play.google.com/store/apps/details?id=dev.ethnos.memorize_scripture")
+        ).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(playStoreIntent)
+    }
+}
+```
+
+#### Web / HTML
+
+```html
+<a href="memorizescripture://add?prompt=Joel+2%3A1&text=Blow+the+ram%E2%80%99s+horn+in+Zion...&version=BSB">
+  Save to Memorize Scripture
+</a>
+```
+
+#### Testing with CLI
+
+- **iOS Simulator**:
+  ```bash
+  xcrun simctl openurl booted "memorizescripture://add?prompt=Joel+2:1&text=Blow+the+ram's+horn+in+Zion&version=BSB"
+  ```
+
+- **Android Device / Emulator (ADB)**:
+  ```bash
+  adb shell am start -a android.intent.action.VIEW -d "memorizescripture://add?prompt=Joel+2:1\&text=Blow+the+ram\'s+horn+in+Zion\&version=BSB"
+  ```
+
 ## For publishing iOS
 
 Screen sizes:

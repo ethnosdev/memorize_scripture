@@ -1,6 +1,8 @@
 ## 2.6.0 - October 3, 2026
 
 - Receive memory verses from other apps.
+- Fix syncing bug.
+- Keep user logged in longer by refreshing token when syncing.
 
 ## 2.5.2 - July 2, 2026
 

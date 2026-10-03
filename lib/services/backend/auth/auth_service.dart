@@ -91,6 +91,26 @@ class AuthService {
     );
   }
 
+  Future<User?> refreshUser() async {
+    if (!_pb.authStore.isValid) return null;
+    try {
+      final authData = await _pb.collection('users').authRefresh();
+      return User(
+        id: authData.record.id,
+        email: authData.record.getStringValue('email'),
+        token: authData.token,
+      );
+    } on ClientException catch (e) {
+      if (e.statusCode == 401 || e.statusCode == 403) {
+        _pb.authStore.clear();
+        return null;
+      }
+      return getUser();
+    } catch (_) {
+      return getUser();
+    }
+  }
+
   Future<void> signOut() async {
     _pb.authStore.clear();
   }

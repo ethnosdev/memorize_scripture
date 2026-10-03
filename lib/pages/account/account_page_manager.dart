@@ -13,7 +13,7 @@ class AccountPageManager {
 
     await getIt<BackendService>().init();
 
-    final user = getIt<BackendService>().auth.getUser();
+    final user = await getIt<BackendService>().auth.refreshUser();
     if (user != null) {
       screenNotifier.value = LoggedIn(user: user);
       return;

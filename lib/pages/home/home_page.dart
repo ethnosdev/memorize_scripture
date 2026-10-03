@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
                     manager.addCollection(collection);
                   },
                 ),
-                Builder(builder: (context) {
+                Builder(builder: (buttonContext) {
                   return PopupMenuButton(
                     itemBuilder: (BuildContext context) => [
                       const PopupMenuItem(
@@ -80,21 +80,16 @@ class _HomePageState extends State<HomePage> {
                         case 1:
                           manager.sync(
                             onResult: _notifyResult,
-                            onUserNotLoggedIn: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (_) => const AccountPage()),
-                              );
-                            },
+                            onUserNotLoggedIn: _navigateToAccountPage,
                           );
                         case 2:
-                          final box = context.findRenderObject() as RenderBox?;
+                          final box = buttonContext.findRenderObject() as RenderBox?;
                           final rect =
                               box!.localToGlobal(Offset.zero) & box.size;
                           manager.backupCollections(sharePositionOrigin: rect);
                         case 3:
                           manager.import(
-                            (message) => _showMessage(context, message),
+                            (message) => _showMessage(buttonContext, message),
                           );
                       }
                     },
@@ -121,7 +116,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _navigateToAccountPage() {
+    if (!mounted) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const AccountPage()),
+    );
+  }
+
   void _notifyResult(String message) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),

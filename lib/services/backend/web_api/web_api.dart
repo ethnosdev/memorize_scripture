@@ -17,11 +17,22 @@ class WebApi {
     if (user == null) throw UserNotLoggedInException();
 
     final lastLocalUpdate = getIt<UserSettings>().lastLocalUpdate;
-    final serverIdDate = await _getLastServerUpdateDate(user);
-    final serverHasChanges = serverIdDate != null;
-    final localHasChanges = lastLocalUpdate != null;
 
     try {
+      // Refresh the session token with the server to keep the user logged in
+      try {
+        await _pb.collection('users').authRefresh();
+      } on ClientException catch (e) {
+        if (e.statusCode == 401 || e.statusCode == 403) {
+          _pb.authStore.clear();
+          throw UserNotLoggedInException();
+        }
+      }
+
+      final serverIdDate = await _getLastServerUpdateDate(user);
+      final serverHasChanges = serverIdDate != null;
+      final localHasChanges = lastLocalUpdate != null;
+
       if (serverHasChanges) {
         if (localHasChanges) {
           final (id, lastServerUpdate) = serverIdDate;
@@ -49,6 +60,17 @@ class WebApi {
           onFinished.call('There are no changes to update.');
         }
       }
+    } on ClientException catch (e) {
+      if (e.statusCode == 401 || e.statusCode == 403) {
+        _pb.authStore.clear();
+        throw UserNotLoggedInException();
+      } else if (e.statusCode == 0) {
+        throw ConnectionRefusedException();
+      } else if (e.statusCode >= 500) {
+        throw ServerErrorException();
+      }
+      final message = e.response['message'] ?? e.toString();
+      onFinished.call('There was a problem connecting to the server: $message');
     } catch (e) {
       onFinished.call('There was a problem connecting to the server: $e');
     }

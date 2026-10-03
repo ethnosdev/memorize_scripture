@@ -183,10 +183,15 @@ class HomePageManager {
     required void Function(String) onResult,
     required void Function() onUserNotLoggedIn,
   }) async {
-    isSyncingNotifier.value = true;
     final backend = getIt<BackendService>();
     await backend.init();
     final user = backend.auth.getUser();
+    if (user == null) {
+      onUserNotLoggedIn.call();
+      return;
+    }
+
+    isSyncingNotifier.value = true;
     try {
       await backend.webApi.syncVerses(
         user: user,
