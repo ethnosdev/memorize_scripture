@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/service_locator.dart';
+import 'package:memorize_scripture/services/notification_service.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:memorize_scripture/app_manager.dart';
 
@@ -32,6 +33,49 @@ class SettingsPageManager extends ChangeNotifier {
     if (limit == null) return;
     await userSettings.setDailyLimit(limit);
     notifyListeners();
+  }
+
+  bool get isNotificationsOn => userSettings.isNotificationsOn;
+
+  int get notificationTimeHour => userSettings.getNotificationTime.$1;
+  int get notificationTimeMinute => userSettings.getNotificationTime.$2;
+
+  String get notificationTimeDisplay {
+    final (hour, minute) = userSettings.getNotificationTime;
+    final paddedMinute = minute.toString().padLeft(2, '0');
+    return '$hour:$paddedMinute';
+  }
+
+  Future<void> setNotifications(bool isOn) async {
+    final service = getIt<NotificationService>();
+    if (!isOn) {
+      await userSettings.setNotifications(false);
+      notifyListeners();
+      await service.clearNotifications();
+      return;
+    }
+
+    final isGranted = await service.requestNotificationPermission();
+    if (isGranted) {
+      await userSettings.setNotifications(true);
+      notifyListeners();
+      await service.scheduleNotifications();
+    } else {
+      await userSettings.setNotifications(false);
+      notifyListeners();
+    }
+  }
+
+  Future<void> setNotificationTime({
+    required int hour,
+    required int minute,
+  }) async {
+    await userSettings.setNotificationTime(hour: hour, minute: minute);
+    notifyListeners();
+    if (userSettings.isNotificationsOn) {
+      final service = getIt<NotificationService>();
+      await service.scheduleNotifications();
+    }
   }
 
   bool get isBiblicalOrder => userSettings.isBiblicalOrder;

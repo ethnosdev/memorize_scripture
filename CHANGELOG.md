@@ -3,6 +3,7 @@
 - Receive memory verses from other apps.
 - Fix syncing bug.
 - Keep user logged in longer by refreshing token when syncing.
+- Add back daily reminder local notifications.
 
 ## 2.5.2 - July 2, 2026
 

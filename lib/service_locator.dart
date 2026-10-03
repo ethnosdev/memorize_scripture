@@ -8,6 +8,7 @@ import 'package:memorize_scripture/services/local_storage/sqflite/database.dart'
 import 'package:memorize_scripture/services/secure_settings.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
 import 'package:memorize_scripture/services/deep_link_service.dart';
+import 'package:memorize_scripture/services/notification_service.dart';
 import 'package:memorize_scripture/app_manager.dart';
 
 final getIt = GetIt.instance;
@@ -16,6 +17,7 @@ void setupServiceLocator() {
   getIt.registerLazySingleton<UserSettings>(() => UserSettings());
   getIt.registerLazySingleton<SecureStorage>(() => LocalSecureStorage());
   getIt.registerLazySingleton<LocalStorage>(() => SqfliteStorage());
+  getIt.registerLazySingleton<NotificationService>(() => NotificationService());
   getIt.registerFactory<PracticePageManager>(() => PracticePageManager());
   getIt.registerLazySingleton<AppManager>(() => AppManager());
   getIt.registerLazySingleton<HomePageManager>(() => HomePageManager());

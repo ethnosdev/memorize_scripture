@@ -61,6 +61,49 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
               const Divider(),
+              _buildSectionHeader(context, 'Notifications'),
+              SwitchListTile(
+                title: const Text('Daily reminder'),
+                value: manager.isNotificationsOn,
+                activeThumbColor: Theme.of(context).colorScheme.primary,
+                onChanged: (value) {
+                  manager.setNotifications(value);
+                },
+              ),
+              ListTile(
+                enabled: manager.isNotificationsOn,
+                title: Text(
+                  'Time',
+                  style: (!manager.isNotificationsOn)
+                      ? TextStyle(color: Theme.of(context).disabledColor)
+                      : null,
+                ),
+                trailing: Text(
+                  manager.notificationTimeDisplay,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: (!manager.isNotificationsOn)
+                            ? Theme.of(context).disabledColor
+                            : null,
+                      ),
+                ),
+                onTap: manager.isNotificationsOn
+                    ? () async {
+                        final pickedTime = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay(
+                            hour: manager.notificationTimeHour,
+                            minute: manager.notificationTimeMinute,
+                          ),
+                        );
+                        if (pickedTime == null) return;
+                        manager.setNotificationTime(
+                          hour: pickedTime.hour,
+                          minute: pickedTime.minute,
+                        );
+                      }
+                    : null,
+              ),
+              const Divider(),
               _buildSectionHeader(context, 'Experimental'),
               SwitchListTile(
                 title: const Text('Sort in biblical order'),
