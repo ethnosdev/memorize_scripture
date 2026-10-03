@@ -1,3 +1,7 @@
+## 2.6.0 - October 3, 2026
+
+- Receive memory verses from other apps.
+
 ## 2.5.2 - July 2, 2026
 
 - Fix punctuation and spacing bugs with word hints.

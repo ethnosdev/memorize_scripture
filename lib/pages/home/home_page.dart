@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:memorize_scripture/common/collection.dart';
 import 'package:memorize_scripture/pages/account/account_page.dart';
 import 'package:memorize_scripture/pages/home/widgets/drawer.dart';
+import 'package:memorize_scripture/common/dialog/edit_collection_dialog.dart';
 import 'package:memorize_scripture/common/strings.dart';
 import 'package:memorize_scripture/common/widgets/icon_text_menu_row.dart';
 import 'package:memorize_scripture/common/widgets/loading_screen.dart';
@@ -10,7 +11,6 @@ import 'package:memorize_scripture/pages/practice/practice_page.dart';
 import 'package:memorize_scripture/pages/verse_browser/verse_browser.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../common/widgets/syncing_overlay.dart';
 
@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
                   tooltip: 'Add collection',
                   onPressed: () async {
                     final collection =
-                        await _showEditNameDialog(context, manager);
+                        await showEditCollectionDialog(context, manager: manager);
                     if (collection == null) return;
                     manager.addCollection(collection);
                   },
@@ -284,9 +284,9 @@ class _BodyWidgetState extends State<BodyWidget> {
                 onTap: () async {
                   Navigator.of(context).pop();
                   final old = manager.collectionAt(index);
-                  final collection = await _showEditNameDialog(
+                  final collection = await showEditCollectionDialog(
                     context,
-                    manager,
+                    manager: manager,
                     oldCollection: old,
                   );
                   if (collection == null) return;
@@ -346,127 +346,3 @@ void _showMessage(BuildContext context, String message) {
   );
 }
 
-Future<Collection?> _showEditNameDialog(
-  BuildContext context,
-  HomePageManager manager, {
-  Collection? oldCollection,
-}) async {
-  final oldName = oldCollection?.name;
-  final nameController = TextEditingController(text: oldName);
-  StudyStyle studyStyle =
-      oldCollection?.studyStyle ?? StudyStyle.spacedRepetition;
-
-  // Same number per day
-  final versesPerDay =
-      oldCollection?.versesPerDay ?? Collection.defaultVersesPerDay;
-  final versesPerDayController =
-      TextEditingController(text: versesPerDay.toString());
-
-  // Fixed days
-  final goodDaysController = TextEditingController(text: manager.fixedGoodDays);
-  final easyDaysController = TextEditingController(text: manager.fixedEasyDays);
-
-  return showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return StatefulBuilder(
-        builder: (context, setState) {
-          return AlertDialog(
-            title: const Text("Collection"),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    textCapitalization: TextCapitalization.sentences,
-                    autofocus: oldName == null,
-                    controller: nameController,
-                    decoration: const InputDecoration(labelText: 'Name'),
-                    onChanged: (value) {
-                      setState(() {});
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<StudyStyle>(
-                    isExpanded: true,
-                    initialValue: studyStyle,
-                    items: const [
-                      DropdownMenuItem(
-                        value: StudyStyle.spacedRepetition,
-                        child: Text('Spaced repetition'),
-                      ),
-                      DropdownMenuItem(
-                        value: StudyStyle.fixedDays,
-                        child: Text('Choose frequency'),
-                      ),
-                      DropdownMenuItem(
-                        value: StudyStyle.sameNumberPerDay,
-                        child: Text('Fixed number of verses'),
-                      ),
-                    ],
-                    onChanged: (value) {
-                      setState(() {
-                        studyStyle = value!;
-                      });
-                    },
-                    decoration:
-                        const InputDecoration(labelText: 'Review style'),
-                  ),
-                  if (studyStyle != StudyStyle.spacedRepetition)
-                    const SizedBox(height: 16),
-                  if (studyStyle == StudyStyle.sameNumberPerDay)
-                    TextField(
-                      keyboardType: TextInputType.number,
-                      controller: versesPerDayController,
-                      decoration: const InputDecoration(
-                        labelText: 'Verses per day',
-                      ),
-                    ),
-                  if (studyStyle == StudyStyle.fixedDays) ...[
-                    TextField(
-                      keyboardType: TextInputType.number,
-                      controller: goodDaysController,
-                      decoration: const InputDecoration(
-                        labelText: 'Days for Good',
-                      ),
-                    ),
-                    TextField(
-                      keyboardType: TextInputType.number,
-                      controller: easyDaysController,
-                      decoration: const InputDecoration(
-                        labelText: 'Days for Easy',
-                      ),
-                    ),
-                  ]
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: nameController.text.isEmpty
-                    ? null
-                    : () {
-                        manager.fixedGoodDays = goodDaysController.text;
-                        manager.fixedEasyDays = easyDaysController.text;
-                        Navigator.of(context).pop(
-                          Collection(
-                            id: oldCollection?.id ?? const Uuid().v4(),
-                            name: nameController.text,
-                            studyStyle: studyStyle,
-                            versesPerDay:
-                                int.tryParse(versesPerDayController.text) ??
-                                    Collection.defaultVersesPerDay,
-                            createdDate:
-                                oldCollection?.createdDate ?? DateTime.now(),
-                          ),
-                        );
-                      },
-                child: const Text("OK"),
-              )
-            ],
-          );
-        },
-      );
-    },
-  );
-}

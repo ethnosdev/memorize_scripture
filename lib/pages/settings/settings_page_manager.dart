@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:memorize_scripture/service_locator.dart';
 import 'package:memorize_scripture/services/user_settings.dart';

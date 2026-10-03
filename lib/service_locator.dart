@@ -7,6 +7,7 @@ import 'package:memorize_scripture/services/local_storage/local_storage.dart';
 import 'package:memorize_scripture/services/local_storage/sqflite/database.dart';
 import 'package:memorize_scripture/services/secure_settings.dart';
 import 'package:memorize_scripture/services/user_settings.dart';
+import 'package:memorize_scripture/services/deep_link_service.dart';
 import 'package:memorize_scripture/app_manager.dart';
 
 final getIt = GetIt.instance;
@@ -20,4 +21,5 @@ void setupServiceLocator() {
   getIt.registerLazySingleton<HomePageManager>(() => HomePageManager());
   getIt.registerLazySingleton<BibleData>(() => BibleData());
   getIt.registerLazySingleton<BackendService>(() => PocketBaseBackend());
+  getIt.registerLazySingleton<DeepLinkService>(() => DeepLinkService());
 }

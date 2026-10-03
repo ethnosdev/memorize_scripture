@@ -11,11 +11,15 @@ class AddEditVersePage extends StatefulWidget {
     super.key,
     required this.collectionId,
     this.verseId,
+    this.initialPrompt,
+    this.initialVerseText,
     this.onFinished,
   });
 
   final String collectionId;
   final String? verseId;
+  final String? initialPrompt;
+  final String? initialVerseText;
   final void Function(String?)? onFinished;
 
   @override
@@ -39,6 +43,8 @@ class _AddEditVersePageState extends State<AddEditVersePage> {
     manager.init(
       collectionId: widget.collectionId,
       verseId: widget.verseId,
+      initialPrompt: widget.initialPrompt,
+      initialVerseText: widget.initialVerseText,
     );
   }
 

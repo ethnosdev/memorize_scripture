@@ -23,9 +23,26 @@ class AddEditVersePageManager {
   Future<void> init({
     required String collectionId,
     required String? verseId,
+    String? initialPrompt,
+    String? initialVerseText,
   }) async {
     _collectionId = collectionId;
-    if (verseId == null) return;
+    if (verseId == null) {
+      if (initialPrompt != null || initialVerseText != null) {
+        final prompt = initialPrompt ?? '';
+        final text = initialVerseText ?? '';
+        verseNotifier.value = Verse(
+          id: '',
+          prompt: prompt,
+          text: text,
+        );
+        _prompt = prompt;
+        _verseText = text;
+        onPromptChanged(prompt);
+        onVerseTextChanged(text);
+      }
+      return;
+    }
     final verse = await dataRepo.fetchVerse(verseId: verseId);
     verseNotifier.value = verse;
     _initialVerse = verse;
