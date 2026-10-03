@@ -7,22 +7,22 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
-  cupertino_icons: ^1.0.8
-  file_picker: ^11.0.2
+  cupertino_icons: ^2.0.0
+  file_picker: ^13.1.0
   flutter:
     sdk: flutter
   flutter_local_notifications: ^22.3.1
-  flutter_secure_storage: ^10.0.0
+  flutter_secure_storage: ^11.2.0
   flutter_svg_plus: ^2.0.13+1
   flutter_timezone: ^5.1.1
   get_it: ^9.0.5
   http: ^1.2.2
-  package_info_plus: ^9.0.0
+  package_info_plus: ^10.2.2
   path: ^1.9.0
   path_provider: ^2.1.4
-  pocketbase: ^0.24.0
+  pocketbase: ^0.25.2
   scrollable_positioned_list: ^0.3.8
-  share_plus: ^12.0.1
+  share_plus: ^13.3.1
   shared_preferences: ^2.3.2
   sqflite: ^2.3.3
   timezone: ^0.11.1

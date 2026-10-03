@@ -126,9 +126,9 @@ void main() {
   });
 
   group('UserSettings font size', () {
-    test('default font size is 20.0', () {
-      expect(userSettings.fontSize, equals(20.0));
-      expect(UserSettings.defaultFontSize, equals(20.0));
+    test('default font size is 17.0', () {
+      expect(userSettings.fontSize, equals(17.0));
+      expect(UserSettings.defaultFontSize, equals(17.0));
       expect(UserSettings.minFontSize, equals(10.0));
       expect(UserSettings.maxFontSize, equals(40.0));
     });
@@ -142,7 +142,7 @@ void main() {
   group('SettingsPageManager font size', () {
     test('fontSize initially matches userSettings default', () {
       final manager = SettingsPageManager();
-      expect(manager.fontSize, equals(20.0));
+      expect(manager.fontSize, equals(17.0));
     });
 
     test('validateFontSize clamps lower and upper bounds and parses ints', () {
@@ -150,7 +150,7 @@ void main() {
       expect(manager.validateFontSize('5'), equals('10'));
       expect(manager.validateFontSize('50'), equals('40'));
       expect(manager.validateFontSize('24'), equals('24'));
-      expect(manager.validateFontSize('invalid'), equals('20'));
+      expect(manager.validateFontSize('invalid'), equals('17'));
     });
 
     test('updateFontSize persists and updates AppManager and notifies listeners', () async {
@@ -184,13 +184,13 @@ void main() {
     });
 
     test('lightTheme and darkTheme textTheme scale by font size factor, but buttons (labelLarge) remain unscaled', () {
-      final theme20 = AppManager.lightTheme(20.0);
-      final theme30 = AppManager.lightTheme(30.0);
+      final theme17 = AppManager.lightTheme(17.0);
+      final theme34 = AppManager.lightTheme(34.0);
 
-      expect(theme30.textTheme.bodyMedium?.fontSize,
-          equals((theme20.textTheme.bodyMedium?.fontSize ?? 14.0) * 1.5));
-      expect(theme30.textTheme.labelLarge?.fontSize,
-          equals(theme20.textTheme.labelLarge?.fontSize));
+      expect(theme34.textTheme.bodyMedium?.fontSize,
+          equals((theme17.textTheme.bodyMedium?.fontSize ?? 14.0) * 2.0));
+      expect(theme34.textTheme.labelLarge?.fontSize,
+          equals(theme17.textTheme.labelLarge?.fontSize));
     });
   });
 
@@ -206,7 +206,7 @@ void main() {
 
       expect(find.text('Appearance'), findsOneWidget);
       expect(find.text('Font size'), findsOneWidget);
-      expect(find.text('20'), findsOneWidget);
+      expect(find.text('17'), findsOneWidget);
     });
 
     testWidgets('tapping Font size tile opens font size dialog with "Text" over Slider, without title, Cancel, or +/- buttons',
@@ -242,12 +242,12 @@ void main() {
       final textFinder = find.descendant(of: dialogFinder, matching: find.text('Text'));
       expect(textFinder, findsOneWidget);
 
-      // Verify initial preview font size matches current font size (20)
+      // Verify initial preview font size matches current font size (17)
       final textWidget = tester.widget<Text>(textFinder);
-      expect(textWidget.style?.fontSize, equals(20.0));
+      expect(textWidget.style?.fontSize, equals(17.0));
 
       final sliderWidget = tester.widget<Slider>(find.byType(Slider));
-      expect(sliderWidget.label, equals('20'));
+      expect(sliderWidget.label, equals('17'));
       expect(sliderWidget.divisions, equals(30));
 
       // Tap OK
@@ -344,7 +344,7 @@ void main() {
       await tester.tap(find.text('OK'));
       await tester.pumpAndSettle();
 
-      expect(userSettings.fontSize, greaterThan(20.0));
+      expect(userSettings.fontSize, greaterThan(17.0));
       expect(appManager.fontSize, equals(userSettings.fontSize));
     });
   });
@@ -569,7 +569,7 @@ void main() {
       final collectionFinder = find.text('My Special Collection');
       expect(collectionFinder, findsOneWidget);
       final initialText = tester.widget<Text>(collectionFinder);
-      expect(initialText.style?.fontSize, equals(20.0 * 0.9)); // 18.0
+      expect(initialText.style?.fontSize, equals(17.0 * 0.9));
 
       // Change font size via userSettings and appManager
       await userSettings.setFontSize(30.0);
@@ -595,7 +595,7 @@ void main() {
       final emptyFinder = find.text('Press the + button to add a collection.');
       expect(emptyFinder, findsOneWidget);
       final initialText = tester.widget<Text>(emptyFinder);
-      expect(initialText.style?.fontSize, equals(20.0 * 0.9));
+      expect(initialText.style?.fontSize, equals(17.0 * 0.9));
 
       // Change font size
       await userSettings.setFontSize(32.0);

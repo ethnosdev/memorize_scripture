@@ -15,9 +15,7 @@ class LocalSecureStorage implements SecureStorage {
   static const _tokenKey = 'token';
 
   final _storage = const FlutterSecureStorage(
-    aOptions: AndroidOptions(
-      encryptedSharedPreferences: true,
-    ),
+    aOptions: AndroidOptions(),
     mOptions: MacOsOptions(),
   );
 

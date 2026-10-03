@@ -143,14 +143,14 @@ class HomePageManager {
   }
 
   void import(void Function(String message) onResult) async {
-    FilePickerResult? result;
+    PlatformFile? result;
     try {
-      result = await FilePicker.pickFiles();
+      result = await FilePicker.pickFile();
     } on Exception catch (e) {
       onResult.call('FilePicker error: ${e.toString()}');
     }
     if (result == null) return;
-    final path = result.files.single.path;
+    final path = result.path;
     if (path == null) {
       onResult.call("The file couldn't be read.");
       return;

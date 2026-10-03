@@ -7,7 +7,7 @@ class UserSettings {
   static const defaultDailyLimit = 100000;
   static const defaultFixedGoodDays = 7;
   static const defaultFixedEasyDays = 30;
-  static const defaultFontSize = 20.0;
+  static const defaultFontSize = 17.0;
   static const minFontSize = 10.0;
   static const maxFontSize = 40.0;
 
